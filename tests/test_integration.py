@@ -35,7 +35,7 @@ def test_result_sanity():
     expected_results = {
         "A01": "no inhibition",
         "A02": "complete inhibition",
-        "C03": 195,
+        "C03": 220,
         "C11": 264,
         "E07": 55,
     }
