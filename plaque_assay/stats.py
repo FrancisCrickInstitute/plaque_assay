@@ -1,5 +1,4 @@
 import numpy as np
-import numpy.polynomial.polynomial as poly
 import scipy.optimize
 
 from . import data
@@ -35,9 +34,7 @@ def non_linear_model(x, y):
     """
     # initial guess at sensible parameters
     p0 = [100, 20, 30]
-    popt, pcov = scipy.optimize.curve_fit(
-        dr_3, x, y, p0=p0, method="lm", maxfev=600,
-    )
+    popt, pcov = scipy.optimize.curve_fit(dr_3, x, y, p0=p0, method="lm", maxfev=600,)
     return popt, pcov
 
 

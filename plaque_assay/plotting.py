@@ -25,7 +25,7 @@ def test_plot(df):
         if model_params is not None:
             x_min = group["Dilution"].min()
             x_max = group["Dilution"].max()
-            curve =stats.dr_3(x, *model_params)
+            curve = stats.dr_3(x, *model_params)
             intersect_x, intersect_y = stats.find_intersect_on_curve(
                 x_min, x_max, curve
             )
@@ -38,16 +38,13 @@ def test_plot(df):
             plt.plot(
                 1 / intersect_x, intersect_y, marker="P", color="black", zorder=999
             )
-        poly_fit = stats.polynomial_model(
-            group["Dilution"], group["Percentage Infected"]
-        )
+            plt.legend(loc="upper left")
         plt.xscale("log")
         plt.grid(linestyle=":")
         plt.ylim([0, 110])
         plt.xlim([30, 3000])
         plt.xlabel("Dilution")
         plt.ylabel("% infected")
-        plt.legend(loc="upper left")
         plt.title(name)
         plt.savefig(f"../output/plot_{name}.pdf")
         plt.close()

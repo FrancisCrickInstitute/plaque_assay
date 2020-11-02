@@ -48,8 +48,6 @@ def read_data_14(data_dir=DATA_DIR_14):
     return pd.concat(dataframes)
 
 
-
-
 def read_data_19(data_dir=DATA_DIR_19):
     """
     read in data from the 19 experiment, not yet using standardised barcodes
