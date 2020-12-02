@@ -38,24 +38,6 @@ def non_linear_model(x, y, func=dr_3):
     return popt, pcov
 
 
-def calc_results_simple(df, threshold=50):
-    """
-    simple threshold
-    for each well
-      iterate through dilutions
-      first dilution where "Percentage infected" > 0.5
-    """
-    output = dict()
-    for name, group in df.groupby("Well"):
-        group = group.copy()
-        group.sort_values("Dilution", inplace=True)
-        x = group["Dilution"].values
-        y = group["Percentage Infected"].values
-        result = simple_threshold(x, y, threshold)
-        output[name] = result
-    return output
-
-
 def calc_heuristics_dilutions(group, threshold, weak_threshold):
     """
     simple heuristics based on the values without model fitting
@@ -200,28 +182,14 @@ def hampel(x, k, t0=3):
     return indices
 
 
-def simple_threshold(x, y, ec):
-    """
-    A *really* simple EC50 sort of thing.
-    Determine first dilution value at which 'Percentage Infected' is < 50%
-    """
-    if min(y) > ec:
-        # if y never crosses below ec threshold
-        return "no inhibition"
-    elif y[0] <= ec:
-        # if already starts below ec threshold
-        return "complete inhibition"
-    else:
-        # return first dilution at which y crosses below threshold
-        return x[np.argmax(y <= ec)]
-
-
 def calc_percentage_infected(df):
     colname = "Background subtracted Plaque Area"
     virus_only_median = df[df["Well"].isin(data.VIRUS_ONLY_WELLS)][colname].median()
     # TODO: if virus_only_median < 0.3, indicate plate fail
-    if virus_only_median < 0.3:
-        print("plate fail: virus_only_median < 0.3")
+    if virus_only_median < 0.3 or virus_only_median > 0.7:
+        print(
+            "plate fail: infection outside optimal range (virus_only_median not between 0.3, 0.7)"
+        )
     df["Percentage Infected"] = (df[colname] / virus_only_median) * 100
     return df
 
