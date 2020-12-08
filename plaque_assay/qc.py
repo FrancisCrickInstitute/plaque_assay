@@ -18,9 +18,7 @@ def detect_low_cells_image_region_area(df, lower_threshold=0.7, upper_threshold=
     col_name = "Cells - Image Region Area [µm²] - Mean per Well"
     thresholded_df_low = df[(df[col_name] / all_median) < lower_threshold]
     thresholded_df_high = df[(df[col_name] / all_median) > upper_threshold]
-    thresholded_df = pd.concat(
-        [thresholded_df_low, thresholded_df_high],
-    )
+    thresholded_df = pd.concat([thresholded_df_low, thresholded_df_high])
     # detect failed wells per plate, store in a dictionary
     failed_well_dict = {}
     for name, group in thresholded_df.groupby("PlateNum"):

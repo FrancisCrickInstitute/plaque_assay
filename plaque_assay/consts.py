@@ -1,0 +1,3 @@
+VIRUS_ONLY_WELLS = ("A12", "B12", "C12")
+
+NO_VIRUS_WELLS = ("F12", "G12", "H12")

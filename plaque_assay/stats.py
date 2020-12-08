@@ -185,7 +185,8 @@ def hampel(x, k, t0=3):
 def calc_percentage_infected(df):
     colname = "Background subtracted Plaque Area"
     virus_only_median = df[df["Well"].isin(data.VIRUS_ONLY_WELLS)][colname].median()
-    # TODO: if virus_only_median < 0.3, indicate plate fail
+    # TODO: if virus_only_median < 0.3 or < 0.7, indicate plate fail
+    #       this needs to be done on a plate-by-plate basis
     if virus_only_median < 0.3 or virus_only_median > 0.7:
         print(
             "plate fail: infection outside optimal range (virus_only_median not between 0.3, 0.7)"
