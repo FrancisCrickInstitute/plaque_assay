@@ -43,7 +43,9 @@ class Dilution:
         if self.is_positive_control:
             if self.ic50 < 500 or self.ic50 > 800:
                 # TODO proper failure here
-                print(f"positive control failure {self.sample_name}, IC50 = {self.ic50}")
+                print(
+                    f"positive control failure {self.sample_name}, IC50 = {self.ic50}"
+                )
 
     def plot(self):
         """plot dilution with points and curve"""

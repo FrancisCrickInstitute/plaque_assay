@@ -4,7 +4,7 @@ module docstring
 
 import pandas as pd
 
-from .consts import VIRUS_ONLY_WELLS, NO_VIRUS_WELLS
+from .consts import NO_VIRUS_WELLS
 from .plate import Plate
 from .dilution import Dilution
 
