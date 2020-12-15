@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.optimize
 
-from . import data
+from . import consts
 from . import utils
 
 
@@ -176,7 +176,7 @@ def hampel(x, k, t0=3):
 
 def calc_percentage_infected(df):
     colname = "Background subtracted Plaque Area"
-    virus_only_median = df[df["Well"].isin(data.VIRUS_ONLY_WELLS)][colname].median()
+    virus_only_median = df[df["Well"].isin(consts.VIRUS_ONLY_WELLS)][colname].median()
     # TODO: if virus_only_median < 0.3 or < 0.7, indicate plate fail
     #       this needs to be done on a plate-by-plate basis
     if virus_only_median < 0.3 or virus_only_median > 0.7:
@@ -191,7 +191,7 @@ def subtract_background(
     df,
     colname="Normalised Plaque area",
     new_colname="Background subtracted Plaque Area",
-    no_virus_wells=data.NO_VIRUS_WELLS,
+    no_virus_wells=consts.NO_VIRUS_WELLS,
 ):
     background = df[df["Well"].isin(no_virus_wells)][colname].median()
     df[new_colname] = df[colname] - background
