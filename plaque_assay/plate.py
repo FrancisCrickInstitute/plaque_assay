@@ -14,7 +14,7 @@ class Plate:
     def __init__(self, df):
         self.df = df
         assert df["PlateNum"].nunique() == 1
-        self.barcode = df["PlateNum"].values[0]
+        self.barcode = df["Plate_barcode"].values[0]
         assert df["Dilution"].nunique() == 1
         self.dilution = df["Dilution"].values[0]
         self.plate_failed = False
@@ -31,6 +31,7 @@ class Plate:
         return f"Plate {self.barcode}"
 
     def outside_image_area(self):
+        """docstring"""
         feature = "Cells - Image Region Area [µm²] - Mean per Well"
         experiment_median = self.df[feature].median()
         ratio = self.df[feature] / experiment_median
@@ -84,8 +85,8 @@ class Plate:
         colname = "Cells - Intensity Image Region DAPI (global) Mean - Mean per Well"
         experiment_median = self.df[colname].median()
         threshold = experiment_median * 1.1
-        columns = ["Well", "PlateNum", colname]
-        for idx, well, plate, val in self.df[columns].itertuples():
+        columns = ["Well", "Plate_barcode", colname]
+        for _, well, plate, val in self.df[columns].itertuples():
             if val > threshold:
                 failed_well = failure.WellFailure(
                     well=well,

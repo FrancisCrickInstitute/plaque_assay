@@ -1,18 +1,15 @@
-from .assay import Assay
-from .plate import Plate
+from plaque_assay.experiment import Experiment
+from plaque_assay.plate import Plate
+from plaque_assay import data
 
-from . import data
 
+def main():
+    dataset = data.read_data("../data/RawDataExample")
+    experiment = Experiment(df=dataset)
+    for plate_name, plate in experiment.plates.items():
+        print(plate.plate_failures)
+        print(plate.well_failures)
 
-def main(dataset=data.read_data_19()):
-    assay = Assay(df=dataset)
-    for name, value in assay.plates.items():
-        if len(value.well_failures):
-            print(name, value.well_failures)
-
-    for name, value in assay.plates.items():
-        if value.plate_failed:
-            print(name, value.plate_failures)
 
 
 if __name__ == "__main__":

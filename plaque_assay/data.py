@@ -20,8 +20,39 @@ DATA_DIR_20201202 = os.path.abspath(os.path.join(THIS_DIR, "../data/RuthExpt2020
 # NOTE: this is temporary until the barcodes are standardised
 plate_mapping = {17: 1 / 40, 19: 1 / 160, 21: 1 / 640, 23: 1 / 2560}
 
+real_plate_mapping = {1: 1 / 40, 2: 1 / 160, 3: 1 / 640, 4: 1 / 2560}
+
 VIRUS_ONLY_WELLS = ("A12", "B12", "C12")
 NO_VIRUS_WELLS = ("F12", "G12", "H12")
+
+
+def read_data(data_dir):
+    """
+    read actual barcoded plate directory
+    """
+    experiments = [os.path.join(data_dir, i) for i in os.listdir(data_dir)]
+    plate_name_dict = {
+        os.path.abspath(i): utils.get_dilution_from_barcode(i) for i in experiments
+    }
+    dataframes = []
+    for path, plate_num in plate_name_dict.items():
+        df = pd.read_csv(
+            # NOTE: might not always be Evaluation2
+            os.path.join(path, "Evaluation1/PlateResults.txt"),
+            skiprows=8,
+            sep="\t",
+        )
+        plate_barcode = path.split(os.sep)[-1].split("__")[0]
+        df["Dilution"] = real_plate_mapping[plate_num]
+        # add well labels to dataframe
+        well_labels = []
+        for row, col in df[["Row", "Column"]].itertuples(index=False):
+            well_labels.append(utils.row_col_to_well(row, col))
+        df["Well"] = well_labels
+        df["PlateNum"] = plate_num
+        df["Plate_barcode"] = plate_barcode
+        dataframes.append(df)
+    return pd.concat(dataframes)
 
 
 def read_data_14(data_dir=DATA_DIR_14):
