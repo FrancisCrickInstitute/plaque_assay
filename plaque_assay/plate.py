@@ -94,3 +94,34 @@ class Plate:
                     reason="high fluorescent background in DAPI channel",
                 )
                 self.well_failures.append(failed_well)
+
+    def get_normalised_data(self):
+        """
+        return a simlified dataframe of just the normalised data
+        that is saved alongside the final IC50 results
+        """
+        wanted_cols = [
+            "Well",
+            "Row",
+            "Column",
+            "Dilution",
+            "Plate_barcode",
+            "Background Subtracted Plaque Area",
+            "Percentage Infected",
+        ]
+        temp_df = self.df.copy()
+        df_wanted = temp_df[wanted_cols]
+        df_wanted = df_wanted.rename(
+            columns={
+                "Background Subtracted Plaque Area": "Background_subtracted_plaque_area",
+                "Percentage Infected": "Percentage_infected",
+            }
+        )
+        return df_wanted
+
+    def save_normalised_data(self, output_dir):
+        """
+        save csv of the normalised data
+        """
+        norm_data = self.get_normalised_data()
+        norm_data.to_csv(f"{self.barcode}.csv", index=False)

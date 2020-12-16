@@ -2,15 +2,17 @@
 module docstring
 """
 from . import stats
+from . import failure
+from . import utils
 from .consts import POSITIVE_CONTROL_WELLS
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-class Dilution:
+class Sample:
     """
-    A Dilution object holds the data for a sample across 4 concentrations
+    A Sample object holds the data for a sample across 4 concentrations
     including replicates.
     """
 
@@ -21,6 +23,7 @@ class Dilution:
         """
         self.sample_name = sample_name
         self.data = data
+        self.failures = []
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
         self.check_positive_control()
@@ -32,6 +35,7 @@ class Dilution:
         )
         self.fit_method = fit_method
         self.ic50 = ic50
+        self.ic50_pretty = ic50 if ic50 > 0 else utils.int_to_result(ic50)
         self.model_params = model_params
 
     def check_positive_control(self):
@@ -42,10 +46,12 @@ class Dilution:
         """
         if self.is_positive_control:
             if self.ic50 < 500 or self.ic50 > 800:
-                # TODO proper failure here
-                print(
-                    f"positive control failure {self.sample_name}, IC50 = {self.ic50}"
+                positive_control_failure = failure.WellFailure(
+                    well=self.sample_name,
+                    plate="DILUTION SERIES",
+                    reason=f"positive control failure. IC50 = {self.ic50_pretty}",
                 )
+                self.failures.append(positive_control_failure)
 
     def plot(self):
         """plot dilution with points and curve"""
@@ -68,6 +74,9 @@ class Dilution:
                     1 / intersect_x, intersect_y, marker="P", color="black", zorder=999
                 )
             except RuntimeError:
+                # caused by stats.find_intersect_on_curve finding more than
+                # 1 intersect point, so a model fit failure anyway, so dont
+                # plot the curve
                 pass
         plt.xscale("log")
         plt.grid(linestyle=":")

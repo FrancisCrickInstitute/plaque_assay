@@ -6,13 +6,9 @@ from . import utils
 from . import consts
 
 
-def read_data(data_dir):
-    """
-    read actual barcoded plate directory
-    """
-    experiments = [os.path.join(data_dir, i) for i in os.listdir(data_dir)]
+def read_data_from_list(plate_list):
     plate_name_dict = {
-        os.path.abspath(i): utils.get_dilution_from_barcode(i) for i in experiments
+        os.path.abspath(i): utils.get_dilution_from_barcode(i) for i in plate_list
     }
     dataframes = []
     for path, plate_num in plate_name_dict.items():
@@ -33,3 +29,11 @@ def read_data(data_dir):
         df["Plate_barcode"] = plate_barcode
         dataframes.append(df)
     return pd.concat(dataframes)
+
+
+def read_data_from_directory(data_dir):
+    """
+    read actual barcoded plate directory
+    """
+    plate_list = [os.path.join(data_dir, i) for i in os.listdir(data_dir)]
+    return read_data_from_list(plate_list)

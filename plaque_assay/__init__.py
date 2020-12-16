@@ -6,7 +6,7 @@ from plaque_assay import utils
 from plaque_assay import experiment
 from plaque_assay import plate
 from plaque_assay import failure
-from plaque_assay import dilution
+from plaque_assay import sample
 from plaque_assay import consts
 
 
@@ -19,6 +19,6 @@ __all__ = [
     "experiment",
     "plate",
     "failure",
-    "dilution",
+    "sample",
     "consts",
 ]
