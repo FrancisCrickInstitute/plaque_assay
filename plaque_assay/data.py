@@ -221,6 +221,8 @@ def upload_failures(session, failures):
 def upload_model_parameters(session, model_parameters):
     """docstring"""
     model_parameters.rename(columns={"experiment": "workflow_id"}, inplace=True)
+    # can't store NaNs
+    model_parameters = model_parameters.replace({np.nan: None})
     session.bulk_insert_mappings(
         db_models.NE_model_parameters, model_parameters.to_dict(orient="records")
     )
