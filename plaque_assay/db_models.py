@@ -134,7 +134,7 @@ class NE_failed_results(Base):
 
 class NE_model_parameters(Base):
     __tablename__ = "NE_model_parameters"
-    id = sql.Column(sql.Integer, primary=True)
+    id = sql.Column(sql.Integer, primary_key=True)
     well = sql.Column(sql.String(45), nullable=False)
     param_a = sql.Column(sql.DECIMAL(20, 15))
     param_b = sql.Column(sql.DECIMAL(20, 15))
