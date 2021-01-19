@@ -1,10 +1,12 @@
 import logging
 import os
+import time
 
 import pandas as pd
 
 from . import utils
 from . import consts
+from . import db_models
 
 
 def read_data_from_list(plate_list):
@@ -77,3 +79,74 @@ def read_indexfiles_from_list(plate_list):
 def read_indexfiles_from_directory(data_dir):
     plate_list = get_plate_list(data_dir)
     return read_indexfiles_from_list(plate_list)
+
+
+
+def get_awaiting_raw(session, master_plate):
+    awaiting_raw = (
+        session.query(db_models.NE_workflow_tracking)
+            .filter(db_models.NE_workflow_tracking.master_plate == master_plate)
+            .filter(db_models.NE_workflow_tracking.status == "raw_results")
+            .first()
+    )
+    return awaiting_raw
+
+
+def upload_plate_results(session, awaiting_raw, plate_results_dataset):
+    """docstring"""
+    # check csv matches master plate selected
+    workflow_id = awaiting_raw.workflow_id
+    # TODO: filter and rename columns of raw_dataset
+    plate_results_dataset["workflow_id"] = workflow_id
+    # TODO: build insert into db_models.NE_raw_results
+    awaiting_raw.status = "index_files"
+
+
+def upload_indexfiles(session, awaiting_raw, indexfiles_dataset):
+    """docstring"""
+    # TODO: filter and rename columns
+    indexfiles_dataset["workflow_id"] = awaiting_raw.workflow_id
+    # TODO build insert into db_models.NE_raw_index
+    awaiting_raw.status = "norm_results"
+
+
+def upload_raw_results(session, master_plate, plate_results_dataset, indexfiles_dataset):
+    """docstring"""
+    awaiting_raw = get_awaiting_raw(master_plate)
+    upload_plate_results(awaiting_raw, plate_results_dataset)
+    upload_indexfiles(awaiting_raw, indexfiles_dataset)
+    awaiting_raw.status = "norm_results"
+    awaiting_raw.raw_results_upload = time.strftime("%Y-%m-%d %H:%M%:S")
+    session.commit()
+
+
+def upload_normalised_results(session, master_plate, norm_results):
+    """docstring"""
+    awaiting_norm = (
+        session.query(db_models.NE_workflow_tracking)
+            .filter(db_models.NE_workflow_tracking.master_plate == master_plate)
+            .filter(db_models.NE_workflow_tracking.status == "norm_results")
+            .first()
+    )
+    # TODO: filter and rename columns
+    norm_results["workflow_id"] = awaiting_norm.workflow_id
+    # TODO: bulk insert into db_models.NE_normalized results
+    awaiting_norm.status = "final_results"
+    awaiting_norm.normalized_results_upload = time.strftime("%Y-%m-%d %H:%M%:S")
+    session.commit()
+
+
+def upload_final_results(session):
+    """docstring"""
+    pass
+
+
+def upload_percentage_infected(session):
+    """docstring"""
+    pass
+
+
+def upload_model_parameters(session):
+    """docstring"""
+    pass
+
