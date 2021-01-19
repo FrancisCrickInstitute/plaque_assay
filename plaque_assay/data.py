@@ -124,8 +124,8 @@ def upload_plate_results(session, plate_results_dataset):
     plate_results_dataset.rename(columns=rename_dict, inplace=True)
     # filter to only desired columns
     plate_results_dataset = plate_results_dataset[list(rename_dict.values())]
-    # FIXME: get this from NE_workflow_tracking when it exists
-    plate_results_dataset["workflow_id"] = 0
+    workflow_id = [int(i[3:]) for i in plate_results_dataset["plate_barcode"]]
+    plate_results_dataset["workflow_id"] = workflow_id
     session.bulk_insert_mappings(
         db_models.NE_raw_results, plate_results_dataset.to_dict(orient="records")
     )
@@ -155,8 +155,9 @@ def upload_indexfiles(session, indexfiles_dataset):
     indexfiles_dataset.rename(columns=rename_dict, inplace=True)
     # filter to only desired columns
     indexfiles_dataset = indexfiles_dataset[list(rename_dict.values())]
-    # FIXME: get workflow ID
-    indexfiles_dataset["workflow_id"] = 0
+    # get workflow ID
+    workflow_id = [int(i[3:] for i in indexfiles_dataset["plate_barcode"]]
+    indexfiles_dataset["workflow_id"] = workflow_id
     for i in range(0, len(indexfiles_dataset), 1000):
         df_slice = indexfiles_dataset.iloc[i : i + 1000]
         session.bulk_insert_mappings(
@@ -180,7 +181,9 @@ def upload_normalised_results(session, norm_results):
     norm_results.rename(columns=rename_dict, inplace=True)
     norm_results = norm_results[list(rename_dict.values())]
     # FIXME: get workflow ID
-    norm_results["workflow_id"] = 0
+    workflow_id = [int(i[3:]) for i in norm_results["plate_barcode"]]
+    assert len(set(workflow_id)) == 1
+    norm_results["workflow_id"] = workflow_id
     session.bulk_insert_mappings(
         db_models.NE_normalized_results, norm_results.to_dict(orient="records")
     )
@@ -191,9 +194,10 @@ def upload_normalised_results(session, norm_results):
 def upload_final_results(session, results):
     """docstring"""
     # TODO: double-check what master_plate is??
-    results["master_plate"] = results["experiment"]
-    # FIXME: get workflow_id
-    results["workflow_id"] = 0
+    results["master_plate"] = None
+    # get workflow_id
+    assert results["experiment"].nunique() == 1
+    results["workflow_id"] = results["experiment"].astype(int)
     # can't store NaN in mysql, to convert to None which are stored as null
     results = results.replace({np.nan: None})
     session.bulk_insert_mappings(
@@ -206,7 +210,8 @@ def upload_final_results(session, results):
 def upload_failures(session, failures):
     """docsring"""
     # FIXME: get workflow_id
-    failures["workflow_id"] = 0
+    assert failures["experiment"].nunique() == 1
+    failures["workflow_id"] = failures["experiment"].astype(int)
     session.bulk_insert_mappings(
         db_models.NE_failed_results, failures.to_dict(orient="records")
     )
