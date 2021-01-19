@@ -110,7 +110,7 @@ class NE_normalized_results(Base):
 class NE_final_results(Base):
     __tablename__ = "NE_final_results"
     id = sql.Column(sql.Integer, primary_key=True)
-    master_plate = sql.Column(sql.String(45), nullable=False)
+    master_plate = sql.Column(sql.String(45))
     well = sql.Column(sql.String(45), nullable=False)
     ic50 = sql.Column(sql.DECIMAL(30, 15))
     status = sql.Column(sql.String(45))
@@ -128,6 +128,17 @@ class NE_failed_results(Base):
     well = sql.Column(sql.String(45), nullable=False)
     failure_reason = sql.Column(sql.Text, nullable=False)
     experiment = sql.Column(sql.String(45))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
+    )
+
+class NE_model_parameters(Base):
+    __tablename__ = "NE_model_parameters"
+    id = sql.Column(sql.Integer, primary=True)
+    well = sql.Column(sql.String(45), nullable=False)
+    param_a = sql.Column(sql.DECIMAL(20, 15))
+    param_b = sql.Column(sql.DECIMAL(20, 15))
+    param_c = sql.Column(sql.DECIMAL(20, 15))
     workflow_id = sql.Column(
         sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
     )
