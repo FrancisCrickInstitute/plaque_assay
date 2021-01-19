@@ -156,7 +156,7 @@ def upload_indexfiles(session, indexfiles_dataset):
     # filter to only desired columns
     indexfiles_dataset = indexfiles_dataset[list(rename_dict.values())]
     # get workflow ID
-    workflow_id = [int(i[3:] for i in indexfiles_dataset["plate_barcode"]]
+    workflow_id = [int(i[3:]) for i in indexfiles_dataset["plate_barcode"]]
     indexfiles_dataset["workflow_id"] = workflow_id
     for i in range(0, len(indexfiles_dataset), 1000):
         df_slice = indexfiles_dataset.iloc[i : i + 1000]
@@ -218,7 +218,10 @@ def upload_failures(session, failures):
     session.commit()
 
 
-def upload_model_parameters(session):
+def upload_model_parameters(session, model_parameters):
     """docstring"""
-    # FIXME: this table doesn't exist
-    pass
+    model_parameters.rename(columns={"experiment": "workflow_id"}, inplace=True)
+    session.bulk_insert_mappings(
+        db_models.NE_model_parameters, model_parameters.to_dict(orient="records")
+    )
+    session.commit()
