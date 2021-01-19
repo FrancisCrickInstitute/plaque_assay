@@ -3,6 +3,7 @@ import os
 import time
 
 import pandas as pd
+import numpy as np
 
 from . import utils
 from . import consts
@@ -81,72 +82,138 @@ def read_indexfiles_from_directory(data_dir):
     return read_indexfiles_from_list(plate_list)
 
 
-
 def get_awaiting_raw(session, master_plate):
+    """
+    docstring
+    """
+    # FIXME: this table doesn't actually exist
     awaiting_raw = (
         session.query(db_models.NE_workflow_tracking)
-            .filter(db_models.NE_workflow_tracking.master_plate == master_plate)
-            .filter(db_models.NE_workflow_tracking.status == "raw_results")
-            .first()
+        .filter(db_models.NE_workflow_tracking.master_plate == master_plate)
+        .filter(db_models.NE_workflow_tracking.status == "raw_results")
+        .first()
     )
     return awaiting_raw
 
 
-def upload_plate_results(session, awaiting_raw, plate_results_dataset):
-    """docstring"""
-    # check csv matches master plate selected
-    workflow_id = awaiting_raw.workflow_id
-    # TODO: filter and rename columns of raw_dataset
-    plate_results_dataset["workflow_id"] = workflow_id
-    # TODO: build insert into db_models.NE_raw_results
-    awaiting_raw.status = "index_files"
-
-
-def upload_indexfiles(session, awaiting_raw, indexfiles_dataset):
-    """docstring"""
-    # TODO: filter and rename columns
-    indexfiles_dataset["workflow_id"] = awaiting_raw.workflow_id
-    # TODO build insert into db_models.NE_raw_index
-    awaiting_raw.status = "norm_results"
-
-
-def upload_raw_results(session, master_plate, plate_results_dataset, indexfiles_dataset):
-    """docstring"""
-    awaiting_raw = get_awaiting_raw(master_plate)
-    upload_plate_results(awaiting_raw, plate_results_dataset)
-    upload_indexfiles(awaiting_raw, indexfiles_dataset)
-    awaiting_raw.status = "norm_results"
-    awaiting_raw.raw_results_upload = time.strftime("%Y-%m-%d %H:%M%:S")
-    session.commit()
-
-
-def upload_normalised_results(session, master_plate, norm_results):
-    """docstring"""
-    awaiting_norm = (
-        session.query(db_models.NE_workflow_tracking)
-            .filter(db_models.NE_workflow_tracking.master_plate == master_plate)
-            .filter(db_models.NE_workflow_tracking.status == "norm_results")
-            .first()
+def upload_plate_results(session, plate_results_dataset):
+    """upload raw concatenated data into database"""
+    # TODO: check csv matches master plate selected in NE_workflow_tracking
+    rename_dict = {
+        "Row": "row",
+        "Column": "column",
+        "Viral Plaques (global) - Area of Viral Plaques Area [µm²] - Mean per Well": "VPG_area_mean",
+        "Viral Plaques (global) - Intensity Viral Plaques Alexa 488 (global) Mean - Mean per Well": " VPG_intensity_mean_per_well",
+        "Viral Plaques (global) - Intensity Viral Plaques Alexa 488 (global) StdDev - Mean per Well": "VPG_intensity_stddev_per_well",
+        "Viral Plaques (global) - Intensity Viral Plaques Alexa 488 (global) Median - Mean per Well": "VPG_intensity_median_per_well",
+        "Viral Plaques (global) - Intensity Viral Plaques Alexa 488 (global) Sum - Mean per Well": "VPG_intensity_sum_per_well",
+        "Cells - Intensity Image Region DAPI (global) Mean - Mean per Well": "cells_intensity_mean_per_well",
+        "Cells - Intensity Image Region DAPI (global) StdDev - Mean per Well": "cells_intensity_stddev_mean_per_well",
+        "Cells - Intensity Image Region DAPI (global) Median - Mean per Well": "cells_intensity_median_mean_per_well",
+        "Cells - Intensity Image Region DAPI (global) Sum - Mean per Well": "cells_intensity_sum_mean_per_well",
+        "Cells - Image Region Area [µm²] - Mean per Well": "cells_image_region_area_mean_per_well",
+        "Normalised Plaque area": "normalised_plaque_area",
+        "Normalised Plaque intensity": "normalised_plaque_intensity",
+        "Number of Analyzed Fields": "number_analyzed_fields",
+        "Dilution": "dilution",
+        "Well": "well",
+        "PlateNum": "plate_num",
+        "Plate_barcode": "plate_barcode",
+        # "Background Subtracted Plaque Area": "background_subtracted_plaque_area",
+    }
+    plate_results_dataset.rename(columns=rename_dict, inplace=True)
+    # filter to only desired columns
+    plate_results_dataset = plate_results_dataset[list(rename_dict.values())]
+    # FIXME: get this from NE_workflow_tracking when it exists
+    plate_results_dataset["workflow_id"] = 0
+    session.bulk_insert_mappings(
+        db_models.NE_raw_results, plate_results_dataset.to_dict(orient="records")
     )
-    # TODO: filter and rename columns
-    norm_results["workflow_id"] = awaiting_norm.workflow_id
-    # TODO: bulk insert into db_models.NE_normalized results
-    awaiting_norm.status = "final_results"
-    awaiting_norm.normalized_results_upload = time.strftime("%Y-%m-%d %H:%M%:S")
+    # FIXME: update status and result_upload_time for NE_workflow_tracking
     session.commit()
 
 
-def upload_final_results(session):
+def upload_indexfiles(session, indexfiles_dataset):
     """docstring"""
-    pass
+    rename_dict = {
+        "Row": "row",
+        "Column": "column",
+        "Field": "field",
+        "Channel ID": "channel_id",
+        "Channel Name": "channel_name",
+        "Channel Type": "channel_type",
+        "URL": "url",
+        "ImageResolutionX [m]": "image_resolutionx",
+        "ImageResolutionY [m]": "image_resolutiony",
+        "ImageSizeX": "image_sizex",
+        "ImageSizeY": "image_sizey",
+        "PositionX [m]": "positionx",
+        "PositionY [m]": "positiony",
+        "Time Stamp": "time_stamp",
+        "Plate_barcode": "plate_barcode",
+    }
+    indexfiles_dataset.rename(columns=rename_dict, inplace=True)
+    # filter to only desired columns
+    indexfiles_dataset = indexfiles_dataset[list(rename_dict.values())]
+    # FIXME: get workflow ID
+    indexfiles_dataset["workflow_id"] = 0
+    for i in range(0, len(indexfiles_dataset), 1000):
+        df_slice = indexfiles_dataset.iloc[i : i + 1000]
+        session.bulk_insert_mappings(
+            db_models.NE_raw_index, df_slice.to_dict(orient="records")
+        )
+    # FIXME: update status and result_upload_time for NE_workflow_tracking
+    session.commit()
 
 
-def upload_percentage_infected(session):
+def upload_normalised_results(session, norm_results):
     """docstring"""
-    pass
+    rename_dict = {
+        "Well": "well",
+        "Row": "row",
+        "Column": "column",
+        "Dilution": "dilution",
+        "Plate_barcode": "plate_barcode",
+        "Background_subtracted_plaque_area": "background_subtracted_plaque_area",
+        "Percentage_infected": "percentage_infected",
+    }
+    norm_results.rename(columns=rename_dict, inplace=True)
+    norm_results = norm_results[list(rename_dict.values())]
+    # FIXME: get workflow ID
+    norm_results["workflow_id"] = 0
+    session.bulk_insert_mappings(
+        db_models.NE_normalized_results, norm_results.to_dict(orient="records")
+    )
+    # FIXME: update status and result_upload time for NE_workflow_tracking
+    session.commit()
+
+
+def upload_final_results(session, results):
+    """docstring"""
+    # TODO: double-check what master_plate is??
+    results["master_plate"] = results["experiment"]
+    # FIXME: get workflow_id
+    results["workflow_id"] = 0
+    # can't store NaN in mysql, to convert to None which are stored as null
+    results = results.replace({np.nan: None})
+    session.bulk_insert_mappings(
+        db_models.NE_final_results, results.to_dict(orient="records")
+    )
+    # FIXME: update status and results upload time for NE_workflow tracking
+    session.commit()
+
+
+def upload_failures(session, failures):
+    """docsring"""
+    # FIXME: get workflow_id
+    failures["workflow_id"] = 0
+    session.bulk_insert_mappings(
+        db_models.NE_failed_results, failures.to_dict(orient="records")
+    )
+    session.commit()
 
 
 def upload_model_parameters(session):
     """docstring"""
+    # FIXME: this table doesn't exist
     pass
-
