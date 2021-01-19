@@ -99,6 +99,7 @@ def get_awaiting_raw(session, master_plate):
 def upload_plate_results(session, plate_results_dataset):
     """upload raw concatenated data into database"""
     # TODO: check csv matches master plate selected in NE_workflow_tracking
+    plate_results_dataset = plate_results_dataset.copy()
     rename_dict = {
         "Row": "row",
         "Column": "column",
@@ -135,6 +136,7 @@ def upload_plate_results(session, plate_results_dataset):
 
 def upload_indexfiles(session, indexfiles_dataset):
     """docstring"""
+    indexfiles_dataset = indexfiles_dataset.copy()
     rename_dict = {
         "Row": "row",
         "Column": "column",
@@ -169,6 +171,7 @@ def upload_indexfiles(session, indexfiles_dataset):
 
 def upload_normalised_results(session, norm_results):
     """docstring"""
+    norm_results = norm_results.copy()
     rename_dict = {
         "Well": "well",
         "Row": "row",
@@ -180,7 +183,6 @@ def upload_normalised_results(session, norm_results):
     }
     norm_results.rename(columns=rename_dict, inplace=True)
     norm_results = norm_results[list(rename_dict.values())]
-    # FIXME: get workflow ID
     workflow_id = [int(i[3:]) for i in norm_results["plate_barcode"]]
     assert len(set(workflow_id)) == 1
     norm_results["workflow_id"] = workflow_id
@@ -193,6 +195,7 @@ def upload_normalised_results(session, norm_results):
 
 def upload_final_results(session, results):
     """docstring"""
+    results = results.copy()
     # TODO: double-check what master_plate is??
     results["master_plate"] = None
     # get workflow_id
@@ -209,6 +212,7 @@ def upload_final_results(session, results):
 
 def upload_failures(session, failures):
     """docsring"""
+    failures = failures.copy()
     # FIXME: get workflow_id
     assert failures["experiment"].nunique() == 1
     failures["workflow_id"] = failures["experiment"].astype(int)
@@ -220,6 +224,7 @@ def upload_failures(session, failures):
 
 def upload_model_parameters(session, model_parameters):
     """docstring"""
+    model_parameters = model_parameters.copy()
     model_parameters.rename(columns={"experiment": "workflow_id"}, inplace=True)
     # can't store NaNs
     model_parameters = model_parameters.replace({np.nan: None})
