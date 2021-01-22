@@ -127,6 +127,7 @@ def upload_plate_results(session, plate_results_dataset):
     plate_results_dataset = plate_results_dataset[list(rename_dict.values())]
     workflow_id = [int(i[3:]) for i in plate_results_dataset["plate_barcode"]]
     plate_results_dataset["workflow_id"] = workflow_id
+    plate_results_dataset["well"] = utils.unpad_well_col(plate_results_dataset["well"])
     session.bulk_insert_mappings(
         db_models.NE_raw_results, plate_results_dataset.to_dict(orient="records")
     )
@@ -160,6 +161,7 @@ def upload_indexfiles(session, indexfiles_dataset):
     # get workflow ID
     workflow_id = [int(i[3:]) for i in indexfiles_dataset["plate_barcode"]]
     indexfiles_dataset["workflow_id"] = workflow_id
+    indexfiles_dataset["well"] = utils.unpad_well_col(indexfiles_dataset["well"])
     for i in range(0, len(indexfiles_dataset), 1000):
         df_slice = indexfiles_dataset.iloc[i : i + 1000]
         session.bulk_insert_mappings(
@@ -186,6 +188,7 @@ def upload_normalised_results(session, norm_results):
     workflow_id = [int(i[3:]) for i in norm_results["plate_barcode"]]
     assert len(set(workflow_id)) == 1
     norm_results["workflow_id"] = workflow_id
+    norm_results["well"] = utils.unpad_well_col(norm_results["well"])
     session.bulk_insert_mappings(
         db_models.NE_normalized_results, norm_results.to_dict(orient="records")
     )
@@ -203,6 +206,7 @@ def upload_final_results(session, results):
     results["workflow_id"] = results["experiment"].astype(int)
     # can't store NaN in mysql, to convert to None which are stored as null
     results = results.replace({np.nan: None})
+    results["well"] = utils.unpad_well_col(results["well"])
     session.bulk_insert_mappings(
         db_models.NE_final_results, results.to_dict(orient="records")
     )
@@ -216,6 +220,7 @@ def upload_failures(session, failures):
     # FIXME: get workflow_id
     assert failures["experiment"].nunique() == 1
     failures["workflow_id"] = failures["experiment"].astype(int)
+    failures["well"] = utils.unpad_well_col(failures["well"])
     session.bulk_insert_mappings(
         db_models.NE_failed_results, failures.to_dict(orient="records")
     )
@@ -228,6 +233,7 @@ def upload_model_parameters(session, model_parameters):
     model_parameters.rename(columns={"experiment": "workflow_id"}, inplace=True)
     # can't store NaNs
     model_parameters = model_parameters.replace({np.nan: None})
+    model_parameters["well"] = utils.unpad_well_col(model_parameters["well"])
     session.bulk_insert_mappings(
         db_models.NE_model_parameters, model_parameters.to_dict(orient="records")
     )
