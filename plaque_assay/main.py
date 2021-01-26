@@ -23,10 +23,10 @@ def create_engine(test=True):
     return engine
 
 
-def run(plate_list):
+def run(plate_list, plate=96):
     Session = sqlalchemy.orm.sessionmaker(bind=create_engine())
     session = Session()
-    dataset = data.read_data_from_list(plate_list)
+    dataset = data.read_data_from_list(plate_list, plate)
     indexfiles = data.read_indexfiles_from_list(plate_list)
     experiment = Experiment(dataset)
     normalised_data = experiment.get_normalised_data()

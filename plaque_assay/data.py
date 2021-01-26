@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 
 import pandas as pd
 import numpy as np
@@ -10,7 +9,19 @@ from . import consts
 from . import db_models
 
 
-def read_data_from_list(plate_list):
+def read_data_from_list(plate_list, plate=96):
+    if plate == 96:
+        return read_data_from_list_96(plate_list)
+    elif plate_list == 384:
+        return read_data_from_list_384(plate_list)
+    else:
+        raise ValueError("invalid value for plate")
+
+
+def read_data_from_list_96(plate_list):
+    """
+    read in data from plate list and assign dilution values by plate barcode
+    """
     plate_name_dict = {
         os.path.abspath(i): utils.get_dilution_from_barcode(i) for i in plate_list
     }
@@ -38,13 +49,54 @@ def read_data_from_list(plate_list):
     return df_concat
 
 
-def get_plate_list(data_dir):
+def read_data_from_list_384(plate_list):
+    """
+    Read in data from plate list and assign dilution values by well position.
+    NOTE: this will mock the data so the 4 dilutions on a single 384-well plate
+          are re-labelled to appear from 4 different 96 well plates.
+    """
+    dataframes = []
+    for path in plate_list:
+        df = pd.read_csv(
+            # NOTE: might not always be Evaluation1
+            os.path.join(path, "Evaluation1/PlateResults.txt"),
+            skiprows=8,
+            sep="\t",
+        )
+        plate_barcode = path.split(os.sep)[-1].split("__")[0]
+        logging.info("plate barcode detected as %s", plate_barcode)
+        well_labels = []
+        for row, col in df[["Row", "Column"]].itertuples(index=False):
+            well_labels.append(utils.row_col_to_well(row, col))
+        df["Well"] = well_labels
+        df["Plate_barcode"] = plate_barcode
+        dataframes.append(df)
+    df_concat = pd.concat(dataframes)
+    # mock barcodes NOTE: before changing wells
+    df_concat["Plate_barcode"] = utils.mock_384_barcode(
+        existing_barcodes=df_concat["Plate_barcode"], wells=df_concat["Well"]
+    )
+    # mock wells
+    df_concat["Well"] = [utils.well_384_to_96(i) for i in df_concat["Well"]]
+    logging.debug("input data shape: %s", df_concat.shape)
+    return df_concat
+
+
+def get_plate_list(data_dir, plate=96):
+    if plate == 96:
+        n_expected_plates = 8
+    elif plate == 384:
+        n_expected_plates = 2
+    else:
+        raise ValueError("invalid value for 'plate'")
     plate_list = [os.path.join(data_dir, i) for i in os.listdir(data_dir)]
-    if len(plate_list) == 8:
+    if len(plate_list) == n_expected_plates:
         logging.debug("plate list detected: %s", plate_list)
     else:
         logging.error(
-            "Did not detect 8 plates, detected %s :", len(plate_list), plate_list
+            "Did not detect %s plates, detected %s :",
+            n_expected_plates,
+            len(plate_list),
         )
     return plate_list
 
