@@ -34,16 +34,16 @@ def test_well_384_to_96():
 
 
 def test_get_dilution_from_384_well_label():
-    assert utils.get_dilution_from_384_well_label("A01") == 1
+    assert utils.get_dilution_from_384_well_label("A01") == 4
     assert utils.get_dilution_from_384_well_label("A02") == 2
     assert utils.get_dilution_from_384_well_label("B01") == 3
-    assert utils.get_dilution_from_384_well_label("B02") == 4
-    assert utils.get_dilution_from_384_well_label("P24") == 4
-    assert utils.get_dilution_from_384_well_label("A03") == 1
+    assert utils.get_dilution_from_384_well_label("B02") == 1
+    assert utils.get_dilution_from_384_well_label("P24") == 1
+    assert utils.get_dilution_from_384_well_label("A03") == 4
 
 
 def test_mock_384_barcode():
     existing_barcodes = ["AA1000001", "AA2000001", "AA2000001"]
     wells = ["A01", "A02", "A03"]
     output = utils.mock_384_barcode(existing_barcodes, wells)
-    assert output == ["A11000001", "A22000001", "A12000001"]
+    assert output == ["A41000001", "A22000001", "A42000001"]

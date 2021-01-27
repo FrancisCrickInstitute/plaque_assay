@@ -100,13 +100,13 @@ def get_dilution_from_384_well_label(well):
     row_int = ord(well[0].upper()) - 64
     col_int = int(well[1:])
     if is_odd(row_int) and is_odd(col_int):
-        dilution = 1
+        dilution = 4
     elif is_odd(row_int) and is_even(col_int):
         dilution = 2
     elif is_even(row_int) and is_odd(col_int):
         dilution = 3
     elif is_even(row_int) and is_even(col_int):
-        dilution = 4
+        dilution = 1
     else:
         raise RuntimeError()
     return dilution
