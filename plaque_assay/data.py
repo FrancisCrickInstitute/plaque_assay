@@ -290,3 +290,42 @@ def upload_model_parameters(session, model_parameters):
         db_models.NE_model_parameters, model_parameters.to_dict(orient="records")
     )
     session.commit()
+
+
+def create_barcode_change_384_df(workflow_id):
+    replicates = [1, 2]
+    # NOTE: dilution numbers match the LIMS values rather than assay values
+    assay_plates = []
+    ap_10 = []
+    ap_40 = []
+    ap_160 = []
+    ap_640 = []
+    workflow_ids = []
+    for replicate in replicates:
+        assay_plate = f"AA{replicate}{workflow_id}"
+        assay_plates.append(assay_plate)
+        ap_10.append(f"A1{replicate}{workflow_id}")
+        ap_40.append(f"A2{replicate}{workflow_id}")
+        ap_160.append(f"A3{replicate}{workflow_id}")
+        ap_640.append(f"A4{replicate}{workflow_id}")
+        workflow_ids.append(workflow_id)
+    df = pd.DataFrame(
+        {
+            "assay_plate_384": assay_plates,
+            "ap_10": ap_10,
+            "ap_40": ap_40,
+            "ap_160": ap_160,
+            "ap_640": ap_640,
+            "workflow_id": workflow_ids,
+        }
+    )
+    return df
+
+
+def upload_barcode_changes_384(session, workflow_id):
+    """docstring"""
+    df = create_barcode_change_384_df(workflow_id)
+    session.builk_insert_mappings(
+        db_models.NE_assay_plate_tracker_384, df.to_dict(orient="records")
+    )
+    session.commit()

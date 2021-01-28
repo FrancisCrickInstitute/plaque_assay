@@ -132,6 +132,7 @@ class NE_failed_results(Base):
         sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
     )
 
+
 class NE_model_parameters(Base):
     __tablename__ = "NE_model_parameters"
     id = sql.Column(sql.Integer, primary_key=True)
@@ -139,6 +140,19 @@ class NE_model_parameters(Base):
     param_a = sql.Column(sql.DECIMAL(20, 15))
     param_b = sql.Column(sql.DECIMAL(20, 15))
     param_c = sql.Column(sql.DECIMAL(20, 15))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
+    )
+
+
+class NE_assay_plate_tracker_384(Base):
+    __tablename__ = "NE_assay_plate_tracker_384"
+    id = sql.Column(sql.Integer, primary_key=True)
+    assay_plate_384 = sql.Column(sql.String(45))
+    ap_10 = sql.Column(sql.String(45))
+    ap_40 = sql.Column(sql.String(45))
+    ap_160 = sql.Column(sql.String(45))
+    ap_640 = sql.Column(sql.String(45))
     workflow_id = sql.Column(
         sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
     )

@@ -39,3 +39,5 @@ def run(plate_list, plate=96):
     data.upload_final_results(session, final_results)
     data.upload_failures(session, failures)
     data.upload_model_parameters(session, model_parameters)
+    if plate == 384:
+        data.upload_barcode_changes_384(session, experiment.experiment_name)
