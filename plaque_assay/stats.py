@@ -49,6 +49,8 @@ def calc_heuristics_dilutions(group, threshold, weak_threshold):
     # convert dilutions into 40 -> 2560
     avg.index = 1 / avg.index
     avg.index = avg.index.astype(int)
+    # round to nearest 10
+    avg.index = [round(i, -1) for i in avg.index]
     # for complete inhibition
     if all(avg.values <= threshold):
         result = "complete inhibition"
@@ -83,6 +85,7 @@ def calc_heuristics_dilutions(group, threshold, weak_threshold):
     if all(avg.values > weak_threshold):
         result = "no inhibition"
     if result:
+        if result == "failed to fit model":
         return utils.result_to_int(result)
 
 
