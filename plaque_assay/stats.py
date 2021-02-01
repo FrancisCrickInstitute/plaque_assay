@@ -122,7 +122,8 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
     """
     df = df.sort_values("Dilution")
     x = df["Dilution"].values
-    x_min, x_max = x.min(), x.max()
+    x_min = 0.0000390625
+    x_max = 0.25
     x_interpolated = np.linspace(x_min, x_max, 1000)
     y = df["Percentage Infected"].values
     model_params = None
@@ -159,7 +160,8 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
                             result,
                         )
                         result = utils.result_to_int("weak inhibition")
-                except (IndexError, RuntimeError):
+                except (IndexError, RuntimeError) as e:
+                    logging.error("during model fitting: %s", e)
                     result = utils.result_to_int("failed to fit model")
     logging.debug("well %s fitted with method %s", name, fit_method)
     return fit_method, result, model_params

@@ -1,8 +1,8 @@
 from plaque_assay import stats
 from plaque_assay import utils
 
-
 import pandas as pd
+
 
 THRESHOLD = 50
 WEAK_THRESHOLD = 60
@@ -81,3 +81,14 @@ def test_calc_heuristics_dilutions():
         df_good_inhibition, THRESHOLD, WEAK_THRESHOLD
     )
     assert good_inhib_out is None
+
+
+def test_calc_results_model():
+    fit_method, result, model_params = stats.calc_results_model(
+        name="test",
+        df=df_good_inhibition,
+        threshold=THRESHOLD,
+        weak_threshold=WEAK_THRESHOLD,
+    )
+    assert fit_method == "model fit"
+    assert result == utils.RESULT_TO_INT["weak inhibition"]
