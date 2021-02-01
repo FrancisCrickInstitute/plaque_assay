@@ -108,8 +108,6 @@ def calc_heuristics_curve(name, x, y, threshold, weak_threshold):
             result = "weak inhibition"
         else:
             result = "failed to fit model"
-    if min(y) > weak_threshold:
-        result = "no inhibition"
     if result:
         return utils.result_to_int(result)
 
@@ -152,6 +150,9 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
                         x_min, x_max, dr_curve
                     )
                     result = 1 / intersect_x[0]
+                    if result < 1 / x.max():
+                        logging.info("%s IC50 of %s less than lowest dilution, weak inhibition", name, result)
+                        result = utils.result_to_int("weak inhibition")
                 except (IndexError, RuntimeError):
                     result = utils.result_to_int("failed to fit model")
     logging.debug("well %s fitted with method %s", name, fit_method)
