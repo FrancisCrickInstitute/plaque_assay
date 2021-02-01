@@ -85,7 +85,6 @@ def calc_heuristics_dilutions(group, threshold, weak_threshold):
     if all(avg.values > weak_threshold):
         result = "no inhibition"
     if result:
-        if result == "failed to fit model":
         return utils.result_to_int(result)
 
 
@@ -154,7 +153,11 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
                     )
                     result = 1 / intersect_x[0]
                     if result < 1 / x.max():
-                        logging.info("%s IC50 of %s less than lowest dilution, weak inhibition", name, result)
+                        logging.info(
+                            "%s IC50 of %s less than lowest dilution, weak inhibition",
+                            name,
+                            result,
+                        )
                         result = utils.result_to_int("weak inhibition")
                 except (IndexError, RuntimeError):
                     result = utils.result_to_int("failed to fit model")
