@@ -284,114 +284,35 @@ class DatabaseUploader:
         self.session.bulk_insert_mappings(
             db_models.NE_model_parameters, model_parameters.to_dict(orient="records")
         )
-<<<<<<< HEAD
-    # FIXME: update status and result_upload_time for NE_workflow_tracking
-    session.commit()
 
-
-def upload_normalised_results(session, norm_results):
-    """docstring"""
-    norm_results = norm_results.copy()
-    rename_dict = {
-        "Well": "well",
-        "Row": "row",
-        "Column": "column",
-        "Dilution": "dilution",
-        "Plate_barcode": "plate_barcode",
-        "Background_subtracted_plaque_area": "background_subtracted_plaque_area",
-        "Percentage_infected": "percentage_infected",
-    }
-    norm_results.rename(columns=rename_dict, inplace=True)
-    norm_results = norm_results[list(rename_dict.values())]
-    workflow_id = [int(i[3:]) for i in norm_results["plate_barcode"]]
-    assert len(set(workflow_id)) == 1
-    norm_results["workflow_id"] = workflow_id
-    norm_results["well"] = utils.unpad_well_col(norm_results["well"])
-    session.bulk_insert_mappings(
-        db_models.NE_normalized_results, norm_results.to_dict(orient="records")
-    )
-    # FIXME: update status and result_upload time for NE_workflow_tracking
-    session.commit()
-
-
-def upload_final_results(session, results):
-    """docstring"""
-    results = results.copy()
-    # TODO: double-check what master_plate is??
-    results["master_plate"] = None
-    # get workflow_id
-    assert results["experiment"].nunique() == 1
-    results["workflow_id"] = results["experiment"].astype(int)
-    # can't store NaN in mysql, to convert to None which are stored as null
-    results = results.replace({np.nan: None})
-    results["well"] = utils.unpad_well_col(results["well"])
-    session.bulk_insert_mappings(
-        db_models.NE_final_results, results.to_dict(orient="records")
-    )
-    # FIXME: update status and results upload time for NE_workflow tracking
-    session.commit()
-
-
-def upload_failures(session, failures):
-    """docsring"""
-    failures = failures.copy()
-    # FIXME: get workflow_id
-    assert failures["experiment"].nunique() == 1
-    failures["workflow_id"] = failures["experiment"].astype(int)
-    failures["well"] = utils.unpad_well_col(failures["well"])
-    session.bulk_insert_mappings(
-        db_models.NE_failed_results, failures.to_dict(orient="records")
-    )
-    session.commit()
-
-
-def upload_model_parameters(session, model_parameters):
-    """docstring"""
-    model_parameters = model_parameters.copy()
-    model_parameters.rename(columns={"experiment": "workflow_id"}, inplace=True)
-    # can't store NaNs
-    model_parameters = model_parameters.replace({np.nan: None})
-    model_parameters["well"] = utils.unpad_well_col(model_parameters["well"])
-    session.bulk_insert_mappings(
-        db_models.NE_model_parameters, model_parameters.to_dict(orient="records")
-    )
-    session.commit()
-
-
-def create_barcode_change_384_df(workflow_id):
-    replicates = [1, 2]
-    # NOTE: dilution numbers match the LIMS values rather than assay values
-    assay_plates = []
-    ap_10 = []
-    ap_40 = []
-    ap_160 = []
-    ap_640 = []
-    workflow_ids = []
-    for replicate in replicates:
-        assay_plate = f"AA{replicate}{workflow_id}"
-        assay_plates.append(assay_plate)
-        ap_10.append(f"A1{replicate}{workflow_id}")
-        ap_40.append(f"A2{replicate}{workflow_id}")
-        ap_160.append(f"A3{replicate}{workflow_id}")
-        ap_640.append(f"A4{replicate}{workflow_id}")
-        workflow_ids.append(workflow_id)
-    df = pd.DataFrame(
-        {
-            "assay_plate_384": assay_plates,
-            "ap_10": ap_10,
-            "ap_40": ap_40,
-            "ap_160": ap_160,
-            "ap_640": ap_640,
-            "workflow_id": workflow_ids,
-        }
-    )
-    return df
-
-
-def upload_barcode_changes_384(session, workflow_id):
-    """docstring"""
-    df = create_barcode_change_384_df(workflow_id)
-    session.builk_insert_mappings(
-        db_models.NE_assay_plate_tracker_384, df.to_dict(orient="records")
-    )
-    session.commit()
+    def upload_barcode_changes_384(self, workflow_id):
+        """docstring"""
+        replicates = [1, 2]
+        # NOTE: dilution numbers match the LIMS values rather than assay values
+        assay_plates = []
+        ap_10 = []
+        ap_40 = []
+        ap_160 = []
+        ap_640 = []
+        workflow_ids = []
+        for replicate in replicates:
+            assay_plate = f"AA{replicate}{workflow_id}"
+            assay_plates.append(assay_plate)
+            ap_10.append(f"A1{replicate}{workflow_id}")
+            ap_40.append(f"A2{replicate}{workflow_id}")
+            ap_160.append(f"A3{replicate}{workflow_id}")
+            ap_640.append(f"A4{replicate}{workflow_id}")
+            workflow_ids.append(workflow_id)
+        df = pd.DataFrame(
+            {
+                "assay_plate_384": assay_plates,
+                "ap_10": ap_10,
+                "ap_40": ap_40,
+                "ap_160": ap_160,
+                "ap_640": ap_640,
+                "workflow_id": workflow_ids,
+            }
+        )
+        self.session.bulk_insert_mappings(
+            db_models.NE_assay_plate_tracker_384, df.to_dict(orient="records")
+        )
