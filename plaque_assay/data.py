@@ -189,10 +189,11 @@ class DatabaseUploader:
         plate_results_dataset["well"] = utils.unpad_well_col(
             plate_results_dataset["well"]
         )
+        # can't store NaN in mysql, to convert to None which are stored as null
+        plate_results_dataset = plate_results_dataset.replace({np.nan: None})
         self.session.bulk_insert_mappings(
             db_models.NE_raw_results, plate_results_dataset.to_dict(orient="records")
         )
-        # FIXME: update status and result_upload_time for NE_workflow_tracking
 
     def upload_indexfiles(self, indexfiles_dataset):
         """docstring"""
@@ -220,12 +221,13 @@ class DatabaseUploader:
         # get workflow ID
         workflow_id = [int(i[3:]) for i in indexfiles_dataset["plate_barcode"]]
         indexfiles_dataset["workflow_id"] = workflow_id
+        # can't store NaN in mysql, to convert to None which are stored as null
+        indexfiles_dataset = indexfiles_dataset.replace({np.nan: None})
         for i in range(0, len(indexfiles_dataset), 1000):
             df_slice = indexfiles_dataset.iloc[i : i + 1000]
             self.session.bulk_insert_mappings(
                 db_models.NE_raw_index, df_slice.to_dict(orient="records")
             )
-        # FIXME: update status and result_upload_time for NE_workflow_tracking
 
     def upload_normalised_results(self, norm_results):
         """docstring"""
@@ -245,10 +247,11 @@ class DatabaseUploader:
         assert len(set(workflow_id)) == 1
         norm_results["workflow_id"] = workflow_id
         norm_results["well"] = utils.unpad_well_col(norm_results["well"])
+        # can't store NaN in mysql, to convert to None which are stored as null
+        norm_results = norm_results.replace({np.nan: None})
         self.session.bulk_insert_mappings(
             db_models.NE_normalized_results, norm_results.to_dict(orient="records")
         )
-        # FIXME: update status and result_upload time for NE_workflow_tracking
 
     def upload_final_results(self, results):
         """docstring"""
@@ -271,7 +274,8 @@ class DatabaseUploader:
         # FIXME: get workflow_id
         assert failures["experiment"].nunique() == 1
         failures["workflow_id"] = failures["experiment"].astype(int)
-        failures["well"] = utils.unpad_well_col(failures["well"])
+        # FIXME: doesn't work with multiple well in plate failures
+        #failures["well"] = utils.unpad_well_col(failures["well"])
         self.session.bulk_insert_mappings(
             db_models.NE_failed_results, failures.to_dict(orient="records")
         )
@@ -318,3 +322,16 @@ class DatabaseUploader:
         self.session.bulk_insert_mappings(
             db_models.NE_assay_plate_tracker_384, df.to_dict(orient="records")
         )
+
+    def is_awaiting_results(self, workflow_id):
+        """
+        docstring
+        """
+        raise NotImplementedError()
+
+    def update_workflow_tracking(self, workflow_id):
+        """
+        Update the status in NE_workflow_tracking
+        """
+        # set status to "complete"
+        raise NotImplementedError()
