@@ -115,7 +115,7 @@ def read_indexfiles_from_list(plate_list):
         os.path.abspath(i): utils.get_dilution_from_barcode(i) for i in plate_list
     }
     dataframes = []
-    for path, plate_num in plate_name_dict.items():
+    for path in plate_list:
         df = pd.read_csv(os.path.join(path, "indexfile.txt"), sep="\t")
         plate_barcode = path.split(os.sep)[-1].split("__")[0]
         df["Plate_barcode"] = plate_barcode
