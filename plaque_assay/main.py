@@ -3,7 +3,6 @@ import os
 import sqlalchemy
 
 from plaque_assay.experiment import Experiment
-from plaque_assay.consts import UNWANTED_METADATA
 from plaque_assay import data
 
 

@@ -272,13 +272,14 @@ class DatabaseUploader:
         """docsring"""
         failures = failures.copy()
         # FIXME: get workflow_id
-        assert failures["experiment"].nunique() == 1
-        failures["workflow_id"] = failures["experiment"].astype(int)
-        # FIXME: doesn't work with multiple well in plate failures
-        #failures["well"] = utils.unpad_well_col(failures["well"])
-        self.session.bulk_insert_mappings(
-            db_models.NE_failed_results, failures.to_dict(orient="records")
-        )
+        if failures.shape[0] > 0:
+            assert failures["experiment"].nunique() == 1
+            failures["workflow_id"] = failures["experiment"].astype(int)
+            # FIXME: doesn't work with multiple well in plate failures
+            #failures["well"] = utils.unpad_well_col(failures["well"])
+            self.session.bulk_insert_mappings(
+                db_models.NE_failed_results, failures.to_dict(orient="records")
+            )
 
     def upload_model_parameters(self, model_parameters):
         """docstring"""
