@@ -10,9 +10,10 @@ from . import db_models
 
 
 def read_data_from_list(plate_list, plate=96):
+    plate = int(plate)
     if plate == 96:
         return read_data_from_list_96(plate_list)
-    elif plate_list == 384:
+    elif plate == 384:
         return read_data_from_list_384(plate_list)
     else:
         raise ValueError("invalid value for plate")
