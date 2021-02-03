@@ -40,4 +40,6 @@ def run(plate_list, plate=96):
     lims_db.upload_final_results(session, final_results)
     lims_db.upload_failures(session, failures)
     lims_db.upload_model_parameters(session, model_parameters)
+    if plate == 384:
+        lims_db.upload_barcode_changes_384(experiment.experiment_name)
     lims_db.commit()
