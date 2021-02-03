@@ -79,6 +79,8 @@ def read_data_from_list_384(plate_list):
     )
     # mock wells
     df_concat["Well"] = [utils.well_384_to_96(i) for i in df_concat["Well"]]
+    df_concat["PlateNum"] = [int(i[2]) for i in df_concat["Plate_barcode"]]
+    df_concat["Dilution"] = [consts.plate_mapping[i] for i in df_concat["PlateNum"]]
     logging.debug("input data shape: %s", df_concat.shape)
     return df_concat
 
@@ -111,9 +113,6 @@ def read_data_from_directory(data_dir):
 
 
 def read_indexfiles_from_list(plate_list):
-    plate_name_dict = {
-        os.path.abspath(i): utils.get_dilution_from_barcode(i) for i in plate_list
-    }
     dataframes = []
     for path in plate_list:
         df = pd.read_csv(os.path.join(path, "indexfile.txt"), sep="\t")
