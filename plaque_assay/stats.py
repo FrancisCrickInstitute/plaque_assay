@@ -32,19 +32,21 @@ def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
     return x[idx], curve[idx]
 
 
-def non_linear_model(x, y, func=dr_3):
+def non_linear_model(x, y, n_params=3):
     """
     fit non-linear least squares to the data
     """
     # initial guess at sensible parameters
-    if func == dr_3:
+    if n_params == 3:
         p0 = [0, 100, 0.015]
         bounds = ((-0.01, 0, -10), (100, 120, 10))
-    elif func == dr_4:
+        func = dr_3
+    elif n_params == 4:
         p0 = [0, 100, 0.015, 1]
         bounds = ((-0.01, 0, -10, -10), (100, 120, 10, 10))
+        func = dr_4
     else:
-        raise ValueError("invalid curve fitting function")
+        raise ValueError("invalid n_params, choose either 3 or 4")
     popt, pcov = scipy.optimize.curve_fit(
         func, x, y, p0=p0, method="trf", bounds=bounds, maxfev=500
     )
