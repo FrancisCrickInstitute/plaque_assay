@@ -11,6 +11,11 @@ def dr_3(x, top, bottom, ec50):
     return bottom + x * (top - bottom) / (ec50 + x)
 
 
+def dr_4(x, top, bottom, ec50, hill_slope):
+    """4 parameter dose response curve"""
+    return (bottom - top) / (1 + (x / ec50)**hill_slope)
+
+
 def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
     """
     Really hacky way of finding intersect of two curves,
@@ -32,8 +37,14 @@ def non_linear_model(x, y, func=dr_3):
     fit non-linear least squares to the data
     """
     # initial guess at sensible parameters
-    p0 = [0, 100, 0.015]
-    bounds = ((-0.01, 0, -10), (100, 120, 10))
+    if func == dr_3:
+        p0 = [0, 100, 0.015]
+        bounds = ((-0.01, 0, -10), (100, 120, 10))
+    elif func == dr_4:
+        p0 = [0, 100, 0.015, 1]
+        bounds = ((-0.01, 0, -10, -10), (100, 120, 10, 10))
+    else:
+        raise ValueError("invalid curve fitting function")
     popt, pcov = scipy.optimize.curve_fit(
         func, x, y, p0=p0, method="trf", bounds=bounds, maxfev=500
     )
