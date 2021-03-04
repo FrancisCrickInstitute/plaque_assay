@@ -32,21 +32,13 @@ def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
     return x[idx], curve[idx]
 
 
-def non_linear_model(x, y, n_params=3):
+def non_linear_model(x, y, func=dr_4):
     """
     fit non-linear least squares to the data
     """
     # initial guess at sensible parameters
-    if n_params == 3:
-        p0 = [0, 100, 0.015]
-        bounds = ((-0.01, 0, -10), (100, 120, 10))
-        func = dr_3
-    elif n_params == 4:
-        p0 = [0, 100, 0.015, 1]
-        bounds = ((-0.01, 0, -10, -10), (100, 120, 10, 10))
-        func = dr_4
-    else:
-        raise ValueError("invalid n_params, choose either 3 or 4")
+    p0 = [0, 100, 0.015, 1]
+    bounds = ((-0.01, 0, -10, -10), (100, 120, 10, 10))
     popt, pcov = scipy.optimize.curve_fit(
         func, x, y, p0=p0, method="trf", bounds=bounds, maxfev=500
     )
@@ -153,8 +145,7 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
             result = utils.result_to_int("failed to fit model")
         fit_method = "model fit"
         if model_params is not None:
-            # model successfully fit
-            dr_curve = dr_3(x_interpolated, *model_params)
+            dr_curve = dr_4(x_interpolated, *model_params)
             curve_heuristics = calc_heuristics_curve(
                 name, x_interpolated, dr_curve, threshold, weak_threshold
             )
