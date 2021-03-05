@@ -8,17 +8,17 @@ from . import consts
    for all wells of all plates
 
 2. Identify wells where “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
-   is < 70% or > 125% of the median calculated in step 1.
+   is < 65% or > 150% of the median calculated in step 1.
        a. Flag these wells as a list for ‘well fail’
        b. If any of these wells are A6:H6 and A12:H12, flag ‘control well fail’
        c. If >8 wells fail, flag ‘possible plate fail – check DAPI plate image’
 """
 # Identify wells where "Cells - Image Region Area [µm²] - Mean per Well"
-# is < 70% or > 125% of the median calculated in "calc_median_all_plates()"
+# is < 65% or > 150% of the median calculated in "calc_median_all_plates()"
 # - return these wells as a list
 # - if any are A-H12, fail entire plate
-low_cells_image_region_area_low = 0.7
-low_cells_image_region_area_high = 1.25
+low_cells_image_region_area_low = 0.6
+low_cells_image_region_area_high = 1.5
 
 """
 3. Calculate median of “Normalised Plaque Area” for no virus wells which are

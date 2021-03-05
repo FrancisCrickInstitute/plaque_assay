@@ -97,10 +97,12 @@ class Plate:
         virus_only_bool = self.df.Well.isin(VIRUS_ONLY_WELLS)
         infection = self.df[virus_only_bool][feature].median()
         if infection < lower_limit or infection > upper_limit:
+            reason = f"virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})"
             self.plate_failed = True
             self.plate_failures.append(
                 failure.InfectionPlateFailure(
-                    plate=self.barcode, wells=VIRUS_ONLY_WELLS
+                    plate=self.barcode, wells=VIRUS_ONLY_WELLS,
+                    reason=reason
                 )
             )
         self.df["Percentage Infected"] = self.df[feature] / infection * 100

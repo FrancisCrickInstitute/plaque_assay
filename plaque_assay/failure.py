@@ -4,9 +4,10 @@
 class PlateFailure:
     """abstract plate class"""
 
-    def __init__(self, plate, wells):
+    def __init__(self, plate, wells, reason=""):
         self.plate = plate
         self.wells = wells
+        self.reason = reason
 
     def __str__(self):
         return str(self.to_dict())
@@ -26,7 +27,10 @@ class PlateFailure:
 class InfectionPlateFailure(PlateFailure):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.reason = "plate fail due to infection outside optimal range"
+        if reason is None:
+            self.reason = "plate fail due to infection outside optimal range"
+        else:
+            self.reason = reason
 
 
 class CellAreaPlateFailure(PlateFailure):
