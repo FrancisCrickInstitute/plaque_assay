@@ -35,6 +35,12 @@ class CellAreaPlateFailure(PlateFailure):
         self.reason = "cell-image-region-area outside expected limits"
 
 
+class DAPIPlateFailure(PlateFailure):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.reason = "possible plate fail - check DAPI plate image"
+
+
 class WellFailure:
     def __init__(self, well, plate, reason):
         self.well = well

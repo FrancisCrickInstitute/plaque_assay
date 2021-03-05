@@ -25,7 +25,6 @@ class Plate:
         self.plate_failures = []
         self.calc_percentage_infected()
         self.outside_image_area()
-        self.high_background_wells()
 
     def __len__(self):
         return self.df.shape[0]
@@ -62,6 +61,16 @@ class Plate:
                         reason="cell region area outside expected range",
                     )
                 )
+            # if there's more than 8 failures for DAPI wells, then flag
+            # as a possible plate failure
+            if outliers.shape[0] > 8:
+                # flag possible plate fail
+                self.plate_failures.append(
+                    failure.DAPIPlateFailure(
+                        plate=self.barcode,
+                        wells=outliers["Well"].tolist()
+                    )
+                )
 
     def subtract_plaque_area_background(self, df):
         """
@@ -95,25 +104,6 @@ class Plate:
                 )
             )
         self.df["Percentage Infected"] = self.df[feature] / infection * 100
-
-    def high_background_wells(self):
-        """
-        Identify wells with high fluorescent background.
-        This is detected by wells with over 110% of the plate median
-        in the DAPI channel.
-        """
-        colname = "Cells - Intensity Image Region DAPI (global) Mean - Mean per Well"
-        experiment_median = self.df[colname].median()
-        threshold = experiment_median * qc_criteria.high_background_proportion
-        columns = ["Well", "Plate_barcode", colname]
-        for _, well, plate, val in self.df[columns].itertuples():
-            if val > threshold:
-                failed_well = failure.WellFailure(
-                    well=well,
-                    plate=plate,
-                    reason="high fluorescent background in DAPI channel",
-                )
-                self.well_failures.append(failed_well)
 
     def get_normalised_data(self):
         """
