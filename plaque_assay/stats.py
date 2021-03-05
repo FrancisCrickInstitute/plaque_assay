@@ -23,7 +23,7 @@ def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
     In this case one of the curves is just a horizontal line where y = 50.
     TODO: solve this mathematically
     """
-    x = np.linspace(x_min, x_max, 1000)
+    x = np.linspace(x_min, x_max, 10000)
     line = np.full(x.shape, intersect)
     idx = np.argwhere(np.diff(np.sign(line - curve))).flatten()
     if len(idx) > 1:
@@ -125,6 +125,9 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
     Once a model is fitted try heuristics based on the fitted curve.
     Then calculate the value based on the intercept where the curve = threshold.
     """
+    # FIXME: drop missing values
+    df = df.dropna()
+    #
     df = df.sort_values("Dilution")
     x = df["Dilution"].values
     x_min = 0.0000390625
