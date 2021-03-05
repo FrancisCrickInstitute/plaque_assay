@@ -132,7 +132,7 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
     x = df["Dilution"].values
     x_min = 0.0000390625
     x_max = 0.25
-    x_interpolated = np.linspace(x_min, x_max, 1000)
+    x_interpolated = np.linspace(x_min, x_max, 10000)
     y = df["Percentage Infected"].values
     model_params = None
     heuristic = calc_heuristics_dilutions(df, threshold, weak_threshold)
