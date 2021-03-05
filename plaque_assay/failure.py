@@ -27,10 +27,6 @@ class PlateFailure:
 class InfectionPlateFailure(PlateFailure):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if reason is None:
-            self.reason = "plate fail due to infection outside optimal range"
-        else:
-            self.reason = reason
 
 
 class CellAreaPlateFailure(PlateFailure):

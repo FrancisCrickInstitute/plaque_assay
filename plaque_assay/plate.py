@@ -67,8 +67,7 @@ class Plate:
                 # flag possible plate fail
                 self.plate_failures.append(
                     failure.DAPIPlateFailure(
-                        plate=self.barcode,
-                        wells=outliers["Well"].tolist()
+                        plate=self.barcode, wells=outliers["Well"].tolist()
                     )
                 )
 
@@ -101,8 +100,7 @@ class Plate:
             self.plate_failed = True
             self.plate_failures.append(
                 failure.InfectionPlateFailure(
-                    plate=self.barcode, wells=VIRUS_ONLY_WELLS,
-                    reason=reason
+                    plate=self.barcode, wells=VIRUS_ONLY_WELLS, reason=reason
                 )
             )
         self.df["Percentage Infected"] = self.df[feature] / infection * 100
