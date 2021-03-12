@@ -11,7 +11,6 @@ import pandas as pd
 from . import utils
 from .plate import Plate
 from .sample import Sample
-from .variant import Variant
 
 
 class Experiment:
@@ -20,8 +19,7 @@ class Experiment:
     def __init__(self, df):
         self.df = df
         self.experiment_name = df["Plate_barcode"].values[0][3:]
-        self.variant = Variant().get_variant_from_experiment_df(self.df)
-        self.df["variant"] = self.variant
+        self.variant = df["variant"].values[0]
         self.plate_store = {name: Plate(df) for name, df in df.groupby("Plate_barcode")}
         self.df = pd.concat([plate.df for plate in self.plate_store.values()])
         self.sample_store = self.make_samples()

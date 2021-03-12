@@ -74,7 +74,10 @@ def read_data_from_list_384(plate_list):
         df["Plate_barcode"] = plate_barcode
         dataframes.append(df)
     df_concat = pd.concat(dataframes)
-    # mock barcodes NOTE: before changing wells
+    # NOTE: get variant from barcode **before** changing plate barcodes to 96-well versions
+    variant = Variant().get_variant_from_barcode(plate_barcode)
+    df_concat["variant"] = variant
+    # NOTE: mock barcodes before changing wells
     df_concat["Plate_barcode"] = utils.mock_384_barcode(
         existing_barcodes=df_concat["Plate_barcode"], wells=df_concat["Well"]
     )
