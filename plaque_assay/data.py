@@ -74,6 +74,8 @@ def read_data_from_list_384(plate_list):
         df["Plate_barcode"] = plate_barcode
         dataframes.append(df)
     df_concat = pd.concat(dataframes)
+    variant = Variant().get_variant_from_barcode(plate_barcode)
+    df_concat["variant"] = variant
     # mock barcodes NOTE: before changing wells
     df_concat["Plate_barcode"] = utils.mock_384_barcode(
         existing_barcodes=df_concat["Plate_barcode"], wells=df_concat["Well"]
@@ -182,6 +184,7 @@ class DatabaseUploader:
             "Well": "well",
             "PlateNum": "plate_num",
             "Plate_barcode": "plate_barcode",
+            "variant": "variant",
             # "Background Subtracted Plaque Area": "background_subtracted_plaque_area",
         }
         plate_results_dataset.rename(columns=rename_dict, inplace=True)

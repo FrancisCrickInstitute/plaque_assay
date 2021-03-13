@@ -42,7 +42,8 @@ class Variant:
     def get_variant_from_experiment_df(self, experiment_df):
         """docstring"""
         barcodes = experiment_df["Plate_barcode"].values
-        return self.get_variant_from_barcodes(barcodes)
+        variant = self.get_variant_from_barcodes(barcodes)
+        return variant
 
     def get_variant_from_plate_path_list(self, plate_list):
         """docstring"""

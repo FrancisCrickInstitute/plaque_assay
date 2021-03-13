@@ -108,6 +108,7 @@ class NE_normalized_results(Base):
     workflow_id = sql.Column(
         sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
     )
+    variant = sql.Column(sql.String(45))
 
 
 class NE_final_results(Base):
@@ -163,4 +164,3 @@ class NE_assay_plate_tracker_384(Base):
     workflow_id = sql.Column(
         sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
     )
-    variant = sql.Column(sql.String(45))

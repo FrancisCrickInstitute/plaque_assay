@@ -22,8 +22,12 @@ def create_engine(test=True):
     return engine
 
 
+def create_local_engine():
+    engine = sqlalchemy.create_engine("sqlite:////home/warchas/test_variant_plaque_assay_db.sqlite")
+    return engine
+
 def run(plate_list, plate=96):
-    Session = sqlalchemy.orm.sessionmaker(bind=create_engine())
+    Session = sqlalchemy.orm.sessionmaker(bind=create_local_engine())
     session = Session()
     dataset = data.read_data_from_list(plate_list, plate)
     indexfiles = data.read_indexfiles_from_list(plate_list)
