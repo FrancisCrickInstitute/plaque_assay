@@ -28,6 +28,7 @@ class Sample:
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
         self.check_positive_control()
+        self.check_duplicate_differences()
 
     def calc_ic50(self):
         """calculate IC50 value"""
@@ -55,6 +56,30 @@ class Sample:
                     reason=f"positive control failure. IC50 = {self.ic50_pretty}",
                 )
                 self.failures.append(positive_control_failure)
+
+    def check_duplicate_differences(self):
+        """
+        Want to calculate the differences between duplicates and determine
+        if the difference is larger than some threshold. If this is the case
+        for more than 2 duplicates in a sample then this should be flagged as
+        a QC well failure.
+        """
+        failed_count = 0
+        difference_threshold = 25
+        for _, group in self.data.groupby("Dilution"):
+            assert group.shape[0] == 2
+            x, y = group["Percentage Infected"].values
+            difference = abs(x - y)
+            if difference >= difference_threshold:
+                failed_count += 1
+        if failed_count >= 2:
+            # is a well failure
+            duplicate_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate="DILUTION SERIES",
+                reason=f"2 or more duplicates differ by >= {difference_threshold} % infected"
+            )
+            self.failures.append(duplicate_failure)
 
     def plot(self):
         """plot dilution with points and curve"""
