@@ -29,6 +29,7 @@ class Sample:
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
         self.check_positive_control()
         self.check_duplicate_differences()
+        self.check_for_model_fit_failure()
 
     def calc_ic50(self):
         """calculate IC50 value"""
@@ -80,6 +81,18 @@ class Sample:
                 reason=f"2 or more duplicates differ by >= {difference_threshold} % infected"
             )
             self.failures.append(duplicate_failure)
+
+    def check_for_model_fit_failure(self):
+        """
+        If the model has failed to fit this should also be flagged as a QC failure
+        """
+        if self.ic50_pretty == "failed to fit model" or self.ic50 == -999:
+            model_fit_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate="DILUTION SERIES",
+                reason="failed to fit model to data points"
+            )
+            self.failures.append(model_fit_failure)
 
     def plot(self):
         """plot dilution with points and curve"""

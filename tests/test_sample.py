@@ -42,6 +42,17 @@ perc_bad_replicates = [
     13.988952,
 ]
 
+# some bad data which still triggers a model fit, but fails
+perc_model_fail = [
+    90,
+    79,
+    67,
+    57,
+    55,
+    41,
+    48,
+    134
+]
 
 good_test_data = pd.DataFrame(
     {"Dilution": dilutions, "Percentage Infected": perc_good}
@@ -50,6 +61,10 @@ good_test_data = pd.DataFrame(
 
 bad_replicate_test_data = pd.DataFrame(
     {"Dilution": dilutions, "Percentage Infected": perc_bad_replicates}
+)
+
+model_failure_data = pd.DataFrame(
+    {"Dilution": dilutions, "Percentage Infected": perc_model_fail}
 )
 
 
@@ -64,3 +79,9 @@ def test_check_duplicate_differences():
     assert len(sample_bad_rep.failures) > 0
     # check that the failure is actually due to duplicate difference
     assert any(i.reason.startswith("2 or more duplicates differ") for i in sample_bad_rep.failures)
+
+
+def test_check_for_model_fit_failure():
+    sample = Sample(sample_name="A01", data=model_failure_data)
+    assert len(sample.failures) > 0
+    assert any(i.reason == "failed to fit model to data points" for i in sample.failures)
