@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>plaque_assay.qc_criteria API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>plaque_assay.qc_criteria</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import os
+import textwrap
+
+from . import consts
+
+&#34;&#34;&#34;
+1. Calculate median of “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
+   for all wells of all plates
+
+2. Identify wells where “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
+   is &lt; 65% or &gt; 150% of the median calculated in step 1.
+       a. Flag these wells as a list for ‘well fail’
+       b. If any of these wells are A6:H6 and A12:H12, flag ‘control well fail’
+       c. If &gt;8 wells fail, flag ‘possible plate fail – check DAPI plate image’
+&#34;&#34;&#34;
+# Identify wells where &#34;Cells - Image Region Area [µm²] - Mean per Well&#34;
+# is &lt; 65% or &gt; 150% of the median calculated in &#34;calc_median_all_plates()&#34;
+# - return these wells as a list
+# - if any are A-H12, fail entire plate
+low_cells_image_region_area_low = 0.6
+low_cells_image_region_area_high = 1.5
+
+&#34;&#34;&#34;
+3. Calculate median of “Normalised Plaque Area” for no virus wells which are
+   F12, G12, H12.
+
+4. Subtract median calculated in step 3 from the “Normalised Plaque Area” for
+   each well and save as “Background Subtracted Plaque Area”
+
+5. Calculate median of “Background Subtracted Plaque Area” for virus only wells
+   which are B6:G6 and A12:C12.
+       a. If median calculated is &lt; 0.4 or &gt;0.8 then display this value and
+          flag ‘plate fail due to infection outside optimal range’.
+&#34;&#34;&#34;
+# Accetable infection rate, which is calculated as the median
+# &#34;Background Subtracted Plaque Area&#34; of the virus-only-wells
+# The plate get&#39;s flagged is this is out of the expected limits.
+infection_rate_low = 0.4
+infection_rate_high = 0.8
+
+&#34;&#34;&#34;
+6. Divide each well’s “Background Subtracted Plaque Area” by the median calculated
+   in step 5 to get “Percentage Infected”.
+
+7. Calculated dilution where “Percentage Infected” for a particular well would be 0.5 or 50% (IC50).
+    a. If no inhibition at any dilution, then return ‘no inhibition’
+    b. If &gt; 50% inhibition at 1:2560 dilution, return ‘complete inhibition’
+    c. If between 40-50% inhibition at 1:40, return ‘weak inhibition’
+
+8. Check IC50 for control wells A6, H6, D12, and E12.
+    a. If IC50 is not between 300-800, then flag “positive control IC50 outside expected range”.
+&#34;&#34;&#34;
+# If this sample is a postitive control, then determine
+# if the IC50 value is between specified values. Otherwise it&#39;s an
+# failure.
+positive_control_low = 300
+positive_control_high = 800
+
+
+# the difference between replicates in &#34;percentage infected&#34;
+# over which, the duplicates will be considered too far apart
+duplicate_difference = 37
+
+
+def print_criteria():
+    output = textwrap.dedent(
+        f&#34;&#34;&#34;
+        Quality control criteria used in this analysis
+        ===============================================
+
+        Wells identified where &#34;Cells - Image Region Area [µm²] - Mean per Well&#34;
+        is &lt; {low_cells_image_region_area_low*100:.1f}% or &gt; {low_cells_image_region_area_high*100:.1f} % of the plate median.
+        If any of these wells are in column 12 then flag the entire plate for failure.
+
+        The IC50 values of the positive control wells have to be between {positive_control_low:.1f} and {positive_control_high:.1f}.
+
+        The infection rate of the virus only wells has to be between {infection_rate_low*100:.1f}% and {infection_rate_high*100:.1f}%.
+        This is calculated from &#34;Background Subtracted Plaque Area&#34;, and the entire plate is failed if the median
+        of the virus-only-wells is outside of these limits.
+
+        virus only wells: {consts.VIRUS_ONLY_WELLS}
+
+        no virus wells: {consts.NO_VIRUS_WELLS}
+
+        positive control wells: {consts.POSITIVE_CONTROL_WELLS}
+        &#34;&#34;&#34;
+    )
+    return output
+
+
+def save_qc_criteria(output_dir, experiment):
+    text = print_criteria()
+    save_path = os.path.join(output_dir, f&#34;qc_criteria_{experiment}.txt&#34;)
+    with open(save_path, &#34;w&#34;) as f:
+        f.write(text)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-variables">Global variables</h2>
+<dl>
+<dt id="plaque_assay.qc_criteria.infection_rate_high"><code class="name">var <span class="ident">infection_rate_high</span></code></dt>
+<dd>
+<div class="desc"><ol>
+<li>
+<p>Divide each well’s “Background Subtracted Plaque Area” by the median calculated
+in step 5 to get “Percentage Infected”.</p>
+</li>
+<li>
+<p>Calculated dilution where “Percentage Infected” for a particular well would be 0.5 or 50% (IC50).
+a. If no inhibition at any dilution, then return ‘no inhibition’
+b. If &gt; 50% inhibition at 1:2560 dilution, return ‘complete inhibition’
+c. If between 40-50% inhibition at 1:40, return ‘weak inhibition’</p>
+</li>
+<li>
+<p>Check IC50 for control wells A6, H6, D12, and E12.
+a. If IC50 is not between 300-800, then flag “positive control IC50 outside expected range”.</p>
+</li>
+</ol></div>
+</dd>
+<dt id="plaque_assay.qc_criteria.low_cells_image_region_area_high"><code class="name">var <span class="ident">low_cells_image_region_area_high</span></code></dt>
+<dd>
+<div class="desc"><ol>
+<li>
+<p>Calculate median of “Normalised Plaque Area” for no virus wells which are
+F12, G12, H12.</p>
+</li>
+<li>
+<p>Subtract median calculated in step 3 from the “Normalised Plaque Area” for
+each well and save as “Background Subtracted Plaque Area”</p>
+</li>
+<li>
+<p>Calculate median of “Background Subtracted Plaque Area” for virus only wells
+which are B6:G6 and A12:C12.
+a. If median calculated is &lt; 0.4 or &gt;0.8 then display this value and
+flag ‘plate fail due to infection outside optimal range’.</p>
+</li>
+</ol></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="plaque_assay.qc_criteria.print_criteria"><code class="name flex">
+<span>def <span class="ident">print_criteria</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_criteria():
+    output = textwrap.dedent(
+        f&#34;&#34;&#34;
+        Quality control criteria used in this analysis
+        ===============================================
+
+        Wells identified where &#34;Cells - Image Region Area [µm²] - Mean per Well&#34;
+        is &lt; {low_cells_image_region_area_low*100:.1f}% or &gt; {low_cells_image_region_area_high*100:.1f} % of the plate median.
+        If any of these wells are in column 12 then flag the entire plate for failure.
+
+        The IC50 values of the positive control wells have to be between {positive_control_low:.1f} and {positive_control_high:.1f}.
+
+        The infection rate of the virus only wells has to be between {infection_rate_low*100:.1f}% and {infection_rate_high*100:.1f}%.
+        This is calculated from &#34;Background Subtracted Plaque Area&#34;, and the entire plate is failed if the median
+        of the virus-only-wells is outside of these limits.
+
+        virus only wells: {consts.VIRUS_ONLY_WELLS}
+
+        no virus wells: {consts.NO_VIRUS_WELLS}
+
+        positive control wells: {consts.POSITIVE_CONTROL_WELLS}
+        &#34;&#34;&#34;
+    )
+    return output</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.qc_criteria.save_qc_criteria"><code class="name flex">
+<span>def <span class="ident">save_qc_criteria</span></span>(<span>output_dir, experiment)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_qc_criteria(output_dir, experiment):
+    text = print_criteria()
+    save_path = os.path.join(output_dir, f&#34;qc_criteria_{experiment}.txt&#34;)
+    with open(save_path, &#34;w&#34;) as f:
+        f.write(text)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="plaque_assay" href="index.html">plaque_assay</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-variables">Global variables</a></h3>
+<ul class="">
+<li><code><a title="plaque_assay.qc_criteria.infection_rate_high" href="#plaque_assay.qc_criteria.infection_rate_high">infection_rate_high</a></code></li>
+<li><code><a title="plaque_assay.qc_criteria.low_cells_image_region_area_high" href="#plaque_assay.qc_criteria.low_cells_image_region_area_high">low_cells_image_region_area_high</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="plaque_assay.qc_criteria.print_criteria" href="#plaque_assay.qc_criteria.print_criteria">print_criteria</a></code></li>
+<li><code><a title="plaque_assay.qc_criteria.save_qc_criteria" href="#plaque_assay.qc_criteria.save_qc_criteria">save_qc_criteria</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

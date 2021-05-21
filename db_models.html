@@ -1,0 +1,2851 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>plaque_assay.db_models API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>plaque_assay.db_models</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import sqlalchemy as sql
+from sqlalchemy.ext.declarative import declarative_base
+
+
+Base = declarative_base()
+
+
+class NE_workflow_tracking(Base):
+    __tablename__ = &#34;NE_workflow_tracking&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    master_plate = sql.Column(sql.String(45), nullable=False)
+    master_plate_id = sql.Column(sql.Integer, sql.ForeignKey(&#34;NE_master_RF_plate.id&#34;))
+    assay_plate_type = sql.Column(sql.String(45))
+    start_date = sql.Column(sql.TIMESTAMP, nullable=False)
+    dilution_plate_10 = sql.Column(sql.String(45))
+    dilution_plate_40 = sql.Column(sql.String(45))
+    dilution_plate_160 = sql.Column(sql.String(45))
+    dilution_plate_640 = sql.Column(sql.String(45))
+    dilutions_complete = sql.Column(sql.Integer, default=0)
+    no_of_variants = sql.Column(sql.Integer, default=0)
+    assays_complete = sql.Column(sql.Integer, default=0)
+    sent_cl3 = sql.Column(sql.Integer, default=0)
+    return_cl3 = sql.Column(sql.Integer, default=0)
+    staining = sql.Column(sql.Integer, default=0)
+    final_results_upload = sql.Column(sql.TIMESTAMP)
+    end_date = sql.Column(sql.TIMESTAMP)
+    status = sql.Column(sql.String(45))
+    workflow_id = sql.Column(sql.Integer, nullable=False)
+
+
+class NE_master_RF_plate(Base):
+    __tablename__ = &#34;NE_master_RF_plate&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    master_plate = sql.Column(sql.String(45), nullable=False, unique=True)
+    left_rf_barcode = sql.Column(sql.String(45), nullable=False)
+    right_rf_barcode = sql.Column(sql.String(45), nullable=False)
+    date_uploaded = sql.Column(sql.TIMESTAMP, nullable=False)
+    heat_inactivation = sql.Column(sql.Boolean, default=False)
+    heat_inact_operator = sql.Column(sql.String(45))
+    heat_inact_date = sql.Column(sql.TIMESTAMP, nullable=False)
+
+
+class NE_raw_index(Base):
+    __tablename__ = &#34;NE_raw_index&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    row = sql.Column(sql.Integer, nullable=False)
+    column = sql.Column(sql.Integer, nullable=False)
+    field = sql.Column(sql.Integer, nullable=False)
+    channel_id = sql.Column(sql.Integer, nullable=False)
+    channel_name = sql.Column(sql.String(45), nullable=False)
+    channel_type = sql.Column(sql.String(45), nullable=False)
+    url = sql.Column(sql.String(240), nullable=False)
+    image_resolutionx = sql.Column(sql.String(45), nullable=False)
+    image_resolutiony = sql.Column(sql.String(45), nullable=False)
+    image_sizex = sql.Column(sql.Integer, nullable=False)
+    image_sizey = sql.Column(sql.Integer, nullable=False)
+    positionx = sql.Column(sql.DECIMAL(30, 30))
+    positiony = sql.Column(sql.DECIMAL(30, 30))
+    time_stamp = sql.Column(sql.String(45), nullable=False)
+    plate_barcode = sql.Column(sql.String(45), nullable=False)
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))
+
+
+class NE_raw_results(Base):
+    __tablename__ = &#34;NE_raw_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    row = sql.Column(sql.Integer, nullable=False)
+    column = sql.Column(sql.Integer, nullable=False)
+    VPG_area_mean = sql.Column(sql.DECIMAL(30, 10))
+    VPG_intensity_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    VPG_intensity_stddev_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    VPG_intensity_median_per_well = sql.Column(sql.Integer)
+    VPG_intensity_sum_per_well = sql.Column(sql.BIGINT)
+    cells_intensity_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    cells_intensity_stddev_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    cells_intensity_median_mean_per_well = sql.Column(sql.Integer)
+    cells_intensity_sum_mean_per_well = sql.Column(sql.Integer)
+    cells_image_region_area_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    normalised_plaque_area = sql.Column(sql.DECIMAL(30, 20))
+    normalised_plaque_intensity = sql.Column(sql.DECIMAL(30, 20))
+    number_analyzed_fields = sql.Column(sql.Integer)
+    dilution = sql.Column(sql.DECIMAL(30, 20))
+    well = sql.Column(sql.String(45), nullable=False)
+    plate_num = sql.Column(sql.Integer)
+    plate_barcode = sql.Column(sql.String(45), nullable=False)
+    background_subtracted_plaque_area = sql.Column(sql.DECIMAL(30, 30))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))
+
+
+class NE_normalized_results(Base):
+    __tablename__ = &#34;NE_normalized_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    well = sql.Column(sql.String(45), nullable=False)
+    row = sql.Column(sql.String(45), nullable=False)
+    column = sql.Column(sql.String(45), nullable=False)
+    dilution = sql.Column(sql.DECIMAL(30, 15))
+    plate_barcode = sql.Column(sql.String(45), nullable=False)
+    background_subtracted_plaque_area = sql.Column(sql.DECIMAL(30, 25))
+    percentage_infected = sql.Column(sql.DECIMAL(30, 15))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))
+
+
+class NE_final_results(Base):
+    __tablename__ = &#34;NE_final_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    master_plate = sql.Column(sql.String(45))
+    well = sql.Column(sql.String(45), nullable=False)
+    ic50 = sql.Column(sql.DECIMAL(30, 15))
+    status = sql.Column(sql.String(45))
+    experiment = sql.Column(sql.String(45))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))
+
+
+class NE_failed_results(Base):
+    __tablename__ = &#34;NE_failed_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    failure_type = sql.Column(sql.String(45), nullable=False)
+    plate = sql.Column(sql.String(45), nullable=False)
+    well = sql.Column(sql.String(45), nullable=False)
+    failure_reason = sql.Column(sql.Text, nullable=False)
+    experiment = sql.Column(sql.String(45))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))
+
+
+class NE_model_parameters(Base):
+    __tablename__ = &#34;NE_model_parameters&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    well = sql.Column(sql.String(45), nullable=False)
+    param_top = sql.Column(sql.DECIMAL(20, 15))
+    param_bottom = sql.Column(sql.DECIMAL(20, 15))
+    param_ec50 = sql.Column(sql.DECIMAL(20, 15))
+    param_hillslope = sql.Column(sql.DECIMAL(20, 15))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))
+
+
+class NE_assay_plate_tracker_384(Base):
+    __tablename__ = &#34;NE_assay_plate_tracker_384&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    assay_plate_384 = sql.Column(sql.String(45))
+    ap_10 = sql.Column(sql.String(45))
+    ap_40 = sql.Column(sql.String(45))
+    ap_160 = sql.Column(sql.String(45))
+    ap_640 = sql.Column(sql.String(45))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+
+
+class NE_available_strains(Base):
+    __tablename__ = &#34;NE_available_strains&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    mutant_strain = sql.Column(sql.String(45))
+    plate_id_1 = sql.Column(sql.String(5))
+    plate_id_2 = sql.Column(sql.String(5))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384"><code class="flex name class">
+<span>class <span class="ident">NE_assay_plate_tracker_384</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_assay_plate_tracker_384(Base):
+    __tablename__ = &#34;NE_assay_plate_tracker_384&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    assay_plate_384 = sql.Column(sql.String(45))
+    ap_10 = sql.Column(sql.String(45))
+    ap_40 = sql.Column(sql.String(45))
+    ap_160 = sql.Column(sql.String(45))
+    ap_640 = sql.Column(sql.String(45))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_10"><code class="name">var <span class="ident">ap_10</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_160"><code class="name">var <span class="ident">ap_160</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_40"><code class="name">var <span class="ident">ap_40</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_640"><code class="name">var <span class="ident">ap_640</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384.assay_plate_384"><code class="name">var <span class="ident">assay_plate_384</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_assay_plate_tracker_384.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_available_strains"><code class="flex name class">
+<span>class <span class="ident">NE_available_strains</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_available_strains(Base):
+    __tablename__ = &#34;NE_available_strains&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    mutant_strain = sql.Column(sql.String(45))
+    plate_id_1 = sql.Column(sql.String(5))
+    plate_id_2 = sql.Column(sql.String(5))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_available_strains.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_available_strains.mutant_strain"><code class="name">var <span class="ident">mutant_strain</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_available_strains.plate_id_1"><code class="name">var <span class="ident">plate_id_1</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_available_strains.plate_id_2"><code class="name">var <span class="ident">plate_id_2</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results"><code class="flex name class">
+<span>class <span class="ident">NE_failed_results</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_failed_results(Base):
+    __tablename__ = &#34;NE_failed_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    failure_type = sql.Column(sql.String(45), nullable=False)
+    plate = sql.Column(sql.String(45), nullable=False)
+    well = sql.Column(sql.String(45), nullable=False)
+    failure_reason = sql.Column(sql.Text, nullable=False)
+    experiment = sql.Column(sql.String(45))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_failed_results.experiment"><code class="name">var <span class="ident">experiment</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results.failure_reason"><code class="name">var <span class="ident">failure_reason</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results.failure_type"><code class="name">var <span class="ident">failure_type</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results.plate"><code class="name">var <span class="ident">plate</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results.well"><code class="name">var <span class="ident">well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_failed_results.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results"><code class="flex name class">
+<span>class <span class="ident">NE_final_results</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_final_results(Base):
+    __tablename__ = &#34;NE_final_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    master_plate = sql.Column(sql.String(45))
+    well = sql.Column(sql.String(45), nullable=False)
+    ic50 = sql.Column(sql.DECIMAL(30, 15))
+    status = sql.Column(sql.String(45))
+    experiment = sql.Column(sql.String(45))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_final_results.experiment"><code class="name">var <span class="ident">experiment</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results.ic50"><code class="name">var <span class="ident">ic50</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results.master_plate"><code class="name">var <span class="ident">master_plate</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results.status"><code class="name">var <span class="ident">status</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results.well"><code class="name">var <span class="ident">well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_final_results.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate"><code class="flex name class">
+<span>class <span class="ident">NE_master_RF_plate</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_master_RF_plate(Base):
+    __tablename__ = &#34;NE_master_RF_plate&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    master_plate = sql.Column(sql.String(45), nullable=False, unique=True)
+    left_rf_barcode = sql.Column(sql.String(45), nullable=False)
+    right_rf_barcode = sql.Column(sql.String(45), nullable=False)
+    date_uploaded = sql.Column(sql.TIMESTAMP, nullable=False)
+    heat_inactivation = sql.Column(sql.Boolean, default=False)
+    heat_inact_operator = sql.Column(sql.String(45))
+    heat_inact_date = sql.Column(sql.TIMESTAMP, nullable=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.date_uploaded"><code class="name">var <span class="ident">date_uploaded</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.heat_inact_date"><code class="name">var <span class="ident">heat_inact_date</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.heat_inact_operator"><code class="name">var <span class="ident">heat_inact_operator</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.heat_inactivation"><code class="name">var <span class="ident">heat_inactivation</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.left_rf_barcode"><code class="name">var <span class="ident">left_rf_barcode</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.master_plate"><code class="name">var <span class="ident">master_plate</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_master_RF_plate.right_rf_barcode"><code class="name">var <span class="ident">right_rf_barcode</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters"><code class="flex name class">
+<span>class <span class="ident">NE_model_parameters</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_model_parameters(Base):
+    __tablename__ = &#34;NE_model_parameters&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    well = sql.Column(sql.String(45), nullable=False)
+    param_top = sql.Column(sql.DECIMAL(20, 15))
+    param_bottom = sql.Column(sql.DECIMAL(20, 15))
+    param_ec50 = sql.Column(sql.DECIMAL(20, 15))
+    param_hillslope = sql.Column(sql.DECIMAL(20, 15))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_model_parameters.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.param_bottom"><code class="name">var <span class="ident">param_bottom</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.param_ec50"><code class="name">var <span class="ident">param_ec50</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.param_hillslope"><code class="name">var <span class="ident">param_hillslope</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.param_top"><code class="name">var <span class="ident">param_top</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.well"><code class="name">var <span class="ident">well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results"><code class="flex name class">
+<span>class <span class="ident">NE_normalized_results</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_normalized_results(Base):
+    __tablename__ = &#34;NE_normalized_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    well = sql.Column(sql.String(45), nullable=False)
+    row = sql.Column(sql.String(45), nullable=False)
+    column = sql.Column(sql.String(45), nullable=False)
+    dilution = sql.Column(sql.DECIMAL(30, 15))
+    plate_barcode = sql.Column(sql.String(45), nullable=False)
+    background_subtracted_plaque_area = sql.Column(sql.DECIMAL(30, 25))
+    percentage_infected = sql.Column(sql.DECIMAL(30, 15))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_normalized_results.background_subtracted_plaque_area"><code class="name">var <span class="ident">background_subtracted_plaque_area</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.column"><code class="name">var <span class="ident">column</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.dilution"><code class="name">var <span class="ident">dilution</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.percentage_infected"><code class="name">var <span class="ident">percentage_infected</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.plate_barcode"><code class="name">var <span class="ident">plate_barcode</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.row"><code class="name">var <span class="ident">row</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.well"><code class="name">var <span class="ident">well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_normalized_results.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index"><code class="flex name class">
+<span>class <span class="ident">NE_raw_index</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_raw_index(Base):
+    __tablename__ = &#34;NE_raw_index&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    row = sql.Column(sql.Integer, nullable=False)
+    column = sql.Column(sql.Integer, nullable=False)
+    field = sql.Column(sql.Integer, nullable=False)
+    channel_id = sql.Column(sql.Integer, nullable=False)
+    channel_name = sql.Column(sql.String(45), nullable=False)
+    channel_type = sql.Column(sql.String(45), nullable=False)
+    url = sql.Column(sql.String(240), nullable=False)
+    image_resolutionx = sql.Column(sql.String(45), nullable=False)
+    image_resolutiony = sql.Column(sql.String(45), nullable=False)
+    image_sizex = sql.Column(sql.Integer, nullable=False)
+    image_sizey = sql.Column(sql.Integer, nullable=False)
+    positionx = sql.Column(sql.DECIMAL(30, 30))
+    positiony = sql.Column(sql.DECIMAL(30, 30))
+    time_stamp = sql.Column(sql.String(45), nullable=False)
+    plate_barcode = sql.Column(sql.String(45), nullable=False)
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_raw_index.channel_id"><code class="name">var <span class="ident">channel_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.channel_name"><code class="name">var <span class="ident">channel_name</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.channel_type"><code class="name">var <span class="ident">channel_type</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.column"><code class="name">var <span class="ident">column</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.field"><code class="name">var <span class="ident">field</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.image_resolutionx"><code class="name">var <span class="ident">image_resolutionx</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.image_resolutiony"><code class="name">var <span class="ident">image_resolutiony</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.image_sizex"><code class="name">var <span class="ident">image_sizex</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.image_sizey"><code class="name">var <span class="ident">image_sizey</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.plate_barcode"><code class="name">var <span class="ident">plate_barcode</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.positionx"><code class="name">var <span class="ident">positionx</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.positiony"><code class="name">var <span class="ident">positiony</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.row"><code class="name">var <span class="ident">row</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.time_stamp"><code class="name">var <span class="ident">time_stamp</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.url"><code class="name">var <span class="ident">url</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_index.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results"><code class="flex name class">
+<span>class <span class="ident">NE_raw_results</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_raw_results(Base):
+    __tablename__ = &#34;NE_raw_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    row = sql.Column(sql.Integer, nullable=False)
+    column = sql.Column(sql.Integer, nullable=False)
+    VPG_area_mean = sql.Column(sql.DECIMAL(30, 10))
+    VPG_intensity_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    VPG_intensity_stddev_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    VPG_intensity_median_per_well = sql.Column(sql.Integer)
+    VPG_intensity_sum_per_well = sql.Column(sql.BIGINT)
+    cells_intensity_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    cells_intensity_stddev_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    cells_intensity_median_mean_per_well = sql.Column(sql.Integer)
+    cells_intensity_sum_mean_per_well = sql.Column(sql.Integer)
+    cells_image_region_area_mean_per_well = sql.Column(sql.DECIMAL(30, 15))
+    normalised_plaque_area = sql.Column(sql.DECIMAL(30, 20))
+    normalised_plaque_intensity = sql.Column(sql.DECIMAL(30, 20))
+    number_analyzed_fields = sql.Column(sql.Integer)
+    dilution = sql.Column(sql.DECIMAL(30, 20))
+    well = sql.Column(sql.String(45), nullable=False)
+    plate_num = sql.Column(sql.Integer)
+    plate_barcode = sql.Column(sql.String(45), nullable=False)
+    background_subtracted_plaque_area = sql.Column(sql.DECIMAL(30, 30))
+    workflow_id = sql.Column(
+        sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
+    )
+    variant = sql.Column(sql.String(45))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_raw_results.VPG_area_mean"><code class="name">var <span class="ident">VPG_area_mean</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.VPG_intensity_mean_per_well"><code class="name">var <span class="ident">VPG_intensity_mean_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.VPG_intensity_median_per_well"><code class="name">var <span class="ident">VPG_intensity_median_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.VPG_intensity_stddev_mean_per_well"><code class="name">var <span class="ident">VPG_intensity_stddev_mean_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.VPG_intensity_sum_per_well"><code class="name">var <span class="ident">VPG_intensity_sum_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.background_subtracted_plaque_area"><code class="name">var <span class="ident">background_subtracted_plaque_area</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.cells_image_region_area_mean_per_well"><code class="name">var <span class="ident">cells_image_region_area_mean_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.cells_intensity_mean_per_well"><code class="name">var <span class="ident">cells_intensity_mean_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.cells_intensity_median_mean_per_well"><code class="name">var <span class="ident">cells_intensity_median_mean_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.cells_intensity_stddev_mean_per_well"><code class="name">var <span class="ident">cells_intensity_stddev_mean_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.cells_intensity_sum_mean_per_well"><code class="name">var <span class="ident">cells_intensity_sum_mean_per_well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.column"><code class="name">var <span class="ident">column</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.dilution"><code class="name">var <span class="ident">dilution</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.normalised_plaque_area"><code class="name">var <span class="ident">normalised_plaque_area</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.normalised_plaque_intensity"><code class="name">var <span class="ident">normalised_plaque_intensity</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.number_analyzed_fields"><code class="name">var <span class="ident">number_analyzed_fields</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.plate_barcode"><code class="name">var <span class="ident">plate_barcode</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.plate_num"><code class="name">var <span class="ident">plate_num</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.row"><code class="name">var <span class="ident">row</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.well"><code class="name">var <span class="ident">well</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_raw_results.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking"><code class="flex name class">
+<span>class <span class="ident">NE_workflow_tracking</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_workflow_tracking(Base):
+    __tablename__ = &#34;NE_workflow_tracking&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    master_plate = sql.Column(sql.String(45), nullable=False)
+    master_plate_id = sql.Column(sql.Integer, sql.ForeignKey(&#34;NE_master_RF_plate.id&#34;))
+    assay_plate_type = sql.Column(sql.String(45))
+    start_date = sql.Column(sql.TIMESTAMP, nullable=False)
+    dilution_plate_10 = sql.Column(sql.String(45))
+    dilution_plate_40 = sql.Column(sql.String(45))
+    dilution_plate_160 = sql.Column(sql.String(45))
+    dilution_plate_640 = sql.Column(sql.String(45))
+    dilutions_complete = sql.Column(sql.Integer, default=0)
+    no_of_variants = sql.Column(sql.Integer, default=0)
+    assays_complete = sql.Column(sql.Integer, default=0)
+    sent_cl3 = sql.Column(sql.Integer, default=0)
+    return_cl3 = sql.Column(sql.Integer, default=0)
+    staining = sql.Column(sql.Integer, default=0)
+    final_results_upload = sql.Column(sql.TIMESTAMP)
+    end_date = sql.Column(sql.TIMESTAMP)
+    status = sql.Column(sql.String(45))
+    workflow_id = sql.Column(sql.Integer, nullable=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.assay_plate_type"><code class="name">var <span class="ident">assay_plate_type</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.assays_complete"><code class="name">var <span class="ident">assays_complete</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_10"><code class="name">var <span class="ident">dilution_plate_10</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_160"><code class="name">var <span class="ident">dilution_plate_160</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_40"><code class="name">var <span class="ident">dilution_plate_40</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_640"><code class="name">var <span class="ident">dilution_plate_640</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.dilutions_complete"><code class="name">var <span class="ident">dilutions_complete</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.end_date"><code class="name">var <span class="ident">end_date</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.final_results_upload"><code class="name">var <span class="ident">final_results_upload</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.master_plate"><code class="name">var <span class="ident">master_plate</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.master_plate_id"><code class="name">var <span class="ident">master_plate_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.no_of_variants"><code class="name">var <span class="ident">no_of_variants</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.return_cl3"><code class="name">var <span class="ident">return_cl3</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.sent_cl3"><code class="name">var <span class="ident">sent_cl3</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.staining"><code class="name">var <span class="ident">staining</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.start_date"><code class="name">var <span class="ident">start_date</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.status"><code class="name">var <span class="ident">status</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_workflow_tracking.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="plaque_assay" href="index.html">plaque_assay</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384" href="#plaque_assay.db_models.NE_assay_plate_tracker_384">NE_assay_plate_tracker_384</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_10" href="#plaque_assay.db_models.NE_assay_plate_tracker_384.ap_10">ap_10</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_160" href="#plaque_assay.db_models.NE_assay_plate_tracker_384.ap_160">ap_160</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_40" href="#plaque_assay.db_models.NE_assay_plate_tracker_384.ap_40">ap_40</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384.ap_640" href="#plaque_assay.db_models.NE_assay_plate_tracker_384.ap_640">ap_640</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384.assay_plate_384" href="#plaque_assay.db_models.NE_assay_plate_tracker_384.assay_plate_384">assay_plate_384</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384.id" href="#plaque_assay.db_models.NE_assay_plate_tracker_384.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_assay_plate_tracker_384.workflow_id" href="#plaque_assay.db_models.NE_assay_plate_tracker_384.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_available_strains" href="#plaque_assay.db_models.NE_available_strains">NE_available_strains</a></code></h4>
+<ul class="">
+<li><code><a title="plaque_assay.db_models.NE_available_strains.id" href="#plaque_assay.db_models.NE_available_strains.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_available_strains.mutant_strain" href="#plaque_assay.db_models.NE_available_strains.mutant_strain">mutant_strain</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_available_strains.plate_id_1" href="#plaque_assay.db_models.NE_available_strains.plate_id_1">plate_id_1</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_available_strains.plate_id_2" href="#plaque_assay.db_models.NE_available_strains.plate_id_2">plate_id_2</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_failed_results" href="#plaque_assay.db_models.NE_failed_results">NE_failed_results</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_failed_results.experiment" href="#plaque_assay.db_models.NE_failed_results.experiment">experiment</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_failed_results.failure_reason" href="#plaque_assay.db_models.NE_failed_results.failure_reason">failure_reason</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_failed_results.failure_type" href="#plaque_assay.db_models.NE_failed_results.failure_type">failure_type</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_failed_results.id" href="#plaque_assay.db_models.NE_failed_results.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_failed_results.plate" href="#plaque_assay.db_models.NE_failed_results.plate">plate</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_failed_results.variant" href="#plaque_assay.db_models.NE_failed_results.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_failed_results.well" href="#plaque_assay.db_models.NE_failed_results.well">well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_failed_results.workflow_id" href="#plaque_assay.db_models.NE_failed_results.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_final_results" href="#plaque_assay.db_models.NE_final_results">NE_final_results</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_final_results.experiment" href="#plaque_assay.db_models.NE_final_results.experiment">experiment</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_final_results.ic50" href="#plaque_assay.db_models.NE_final_results.ic50">ic50</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_final_results.id" href="#plaque_assay.db_models.NE_final_results.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_final_results.master_plate" href="#plaque_assay.db_models.NE_final_results.master_plate">master_plate</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_final_results.status" href="#plaque_assay.db_models.NE_final_results.status">status</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_final_results.variant" href="#plaque_assay.db_models.NE_final_results.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_final_results.well" href="#plaque_assay.db_models.NE_final_results.well">well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_final_results.workflow_id" href="#plaque_assay.db_models.NE_final_results.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_master_RF_plate" href="#plaque_assay.db_models.NE_master_RF_plate">NE_master_RF_plate</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.date_uploaded" href="#plaque_assay.db_models.NE_master_RF_plate.date_uploaded">date_uploaded</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.heat_inact_date" href="#plaque_assay.db_models.NE_master_RF_plate.heat_inact_date">heat_inact_date</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.heat_inact_operator" href="#plaque_assay.db_models.NE_master_RF_plate.heat_inact_operator">heat_inact_operator</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.heat_inactivation" href="#plaque_assay.db_models.NE_master_RF_plate.heat_inactivation">heat_inactivation</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.id" href="#plaque_assay.db_models.NE_master_RF_plate.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.left_rf_barcode" href="#plaque_assay.db_models.NE_master_RF_plate.left_rf_barcode">left_rf_barcode</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.master_plate" href="#plaque_assay.db_models.NE_master_RF_plate.master_plate">master_plate</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_master_RF_plate.right_rf_barcode" href="#plaque_assay.db_models.NE_master_RF_plate.right_rf_barcode">right_rf_barcode</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_model_parameters" href="#plaque_assay.db_models.NE_model_parameters">NE_model_parameters</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.id" href="#plaque_assay.db_models.NE_model_parameters.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.param_bottom" href="#plaque_assay.db_models.NE_model_parameters.param_bottom">param_bottom</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.param_ec50" href="#plaque_assay.db_models.NE_model_parameters.param_ec50">param_ec50</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.param_hillslope" href="#plaque_assay.db_models.NE_model_parameters.param_hillslope">param_hillslope</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.param_top" href="#plaque_assay.db_models.NE_model_parameters.param_top">param_top</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.variant" href="#plaque_assay.db_models.NE_model_parameters.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.well" href="#plaque_assay.db_models.NE_model_parameters.well">well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.workflow_id" href="#plaque_assay.db_models.NE_model_parameters.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_normalized_results" href="#plaque_assay.db_models.NE_normalized_results">NE_normalized_results</a></code></h4>
+<ul class="">
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.background_subtracted_plaque_area" href="#plaque_assay.db_models.NE_normalized_results.background_subtracted_plaque_area">background_subtracted_plaque_area</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.column" href="#plaque_assay.db_models.NE_normalized_results.column">column</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.dilution" href="#plaque_assay.db_models.NE_normalized_results.dilution">dilution</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.id" href="#plaque_assay.db_models.NE_normalized_results.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.percentage_infected" href="#plaque_assay.db_models.NE_normalized_results.percentage_infected">percentage_infected</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.plate_barcode" href="#plaque_assay.db_models.NE_normalized_results.plate_barcode">plate_barcode</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.row" href="#plaque_assay.db_models.NE_normalized_results.row">row</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.variant" href="#plaque_assay.db_models.NE_normalized_results.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.well" href="#plaque_assay.db_models.NE_normalized_results.well">well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_normalized_results.workflow_id" href="#plaque_assay.db_models.NE_normalized_results.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_raw_index" href="#plaque_assay.db_models.NE_raw_index">NE_raw_index</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_raw_index.channel_id" href="#plaque_assay.db_models.NE_raw_index.channel_id">channel_id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.channel_name" href="#plaque_assay.db_models.NE_raw_index.channel_name">channel_name</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.channel_type" href="#plaque_assay.db_models.NE_raw_index.channel_type">channel_type</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.column" href="#plaque_assay.db_models.NE_raw_index.column">column</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.field" href="#plaque_assay.db_models.NE_raw_index.field">field</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.id" href="#plaque_assay.db_models.NE_raw_index.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.image_resolutionx" href="#plaque_assay.db_models.NE_raw_index.image_resolutionx">image_resolutionx</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.image_resolutiony" href="#plaque_assay.db_models.NE_raw_index.image_resolutiony">image_resolutiony</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.image_sizex" href="#plaque_assay.db_models.NE_raw_index.image_sizex">image_sizex</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.image_sizey" href="#plaque_assay.db_models.NE_raw_index.image_sizey">image_sizey</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.plate_barcode" href="#plaque_assay.db_models.NE_raw_index.plate_barcode">plate_barcode</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.positionx" href="#plaque_assay.db_models.NE_raw_index.positionx">positionx</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.positiony" href="#plaque_assay.db_models.NE_raw_index.positiony">positiony</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.row" href="#plaque_assay.db_models.NE_raw_index.row">row</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.time_stamp" href="#plaque_assay.db_models.NE_raw_index.time_stamp">time_stamp</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.url" href="#plaque_assay.db_models.NE_raw_index.url">url</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.variant" href="#plaque_assay.db_models.NE_raw_index.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_index.workflow_id" href="#plaque_assay.db_models.NE_raw_index.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_raw_results" href="#plaque_assay.db_models.NE_raw_results">NE_raw_results</a></code></h4>
+<ul class="">
+<li><code><a title="plaque_assay.db_models.NE_raw_results.VPG_area_mean" href="#plaque_assay.db_models.NE_raw_results.VPG_area_mean">VPG_area_mean</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.VPG_intensity_mean_per_well" href="#plaque_assay.db_models.NE_raw_results.VPG_intensity_mean_per_well">VPG_intensity_mean_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.VPG_intensity_median_per_well" href="#plaque_assay.db_models.NE_raw_results.VPG_intensity_median_per_well">VPG_intensity_median_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.VPG_intensity_stddev_mean_per_well" href="#plaque_assay.db_models.NE_raw_results.VPG_intensity_stddev_mean_per_well">VPG_intensity_stddev_mean_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.VPG_intensity_sum_per_well" href="#plaque_assay.db_models.NE_raw_results.VPG_intensity_sum_per_well">VPG_intensity_sum_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.background_subtracted_plaque_area" href="#plaque_assay.db_models.NE_raw_results.background_subtracted_plaque_area">background_subtracted_plaque_area</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.cells_image_region_area_mean_per_well" href="#plaque_assay.db_models.NE_raw_results.cells_image_region_area_mean_per_well">cells_image_region_area_mean_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.cells_intensity_mean_per_well" href="#plaque_assay.db_models.NE_raw_results.cells_intensity_mean_per_well">cells_intensity_mean_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.cells_intensity_median_mean_per_well" href="#plaque_assay.db_models.NE_raw_results.cells_intensity_median_mean_per_well">cells_intensity_median_mean_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.cells_intensity_stddev_mean_per_well" href="#plaque_assay.db_models.NE_raw_results.cells_intensity_stddev_mean_per_well">cells_intensity_stddev_mean_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.cells_intensity_sum_mean_per_well" href="#plaque_assay.db_models.NE_raw_results.cells_intensity_sum_mean_per_well">cells_intensity_sum_mean_per_well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.column" href="#plaque_assay.db_models.NE_raw_results.column">column</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.dilution" href="#plaque_assay.db_models.NE_raw_results.dilution">dilution</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.id" href="#plaque_assay.db_models.NE_raw_results.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.normalised_plaque_area" href="#plaque_assay.db_models.NE_raw_results.normalised_plaque_area">normalised_plaque_area</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.normalised_plaque_intensity" href="#plaque_assay.db_models.NE_raw_results.normalised_plaque_intensity">normalised_plaque_intensity</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.number_analyzed_fields" href="#plaque_assay.db_models.NE_raw_results.number_analyzed_fields">number_analyzed_fields</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.plate_barcode" href="#plaque_assay.db_models.NE_raw_results.plate_barcode">plate_barcode</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.plate_num" href="#plaque_assay.db_models.NE_raw_results.plate_num">plate_num</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.row" href="#plaque_assay.db_models.NE_raw_results.row">row</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.variant" href="#plaque_assay.db_models.NE_raw_results.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.well" href="#plaque_assay.db_models.NE_raw_results.well">well</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_raw_results.workflow_id" href="#plaque_assay.db_models.NE_raw_results.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_workflow_tracking" href="#plaque_assay.db_models.NE_workflow_tracking">NE_workflow_tracking</a></code></h4>
+<ul class="">
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.assay_plate_type" href="#plaque_assay.db_models.NE_workflow_tracking.assay_plate_type">assay_plate_type</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.assays_complete" href="#plaque_assay.db_models.NE_workflow_tracking.assays_complete">assays_complete</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_10" href="#plaque_assay.db_models.NE_workflow_tracking.dilution_plate_10">dilution_plate_10</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_160" href="#plaque_assay.db_models.NE_workflow_tracking.dilution_plate_160">dilution_plate_160</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_40" href="#plaque_assay.db_models.NE_workflow_tracking.dilution_plate_40">dilution_plate_40</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.dilution_plate_640" href="#plaque_assay.db_models.NE_workflow_tracking.dilution_plate_640">dilution_plate_640</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.dilutions_complete" href="#plaque_assay.db_models.NE_workflow_tracking.dilutions_complete">dilutions_complete</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.end_date" href="#plaque_assay.db_models.NE_workflow_tracking.end_date">end_date</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.final_results_upload" href="#plaque_assay.db_models.NE_workflow_tracking.final_results_upload">final_results_upload</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.id" href="#plaque_assay.db_models.NE_workflow_tracking.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.master_plate" href="#plaque_assay.db_models.NE_workflow_tracking.master_plate">master_plate</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.master_plate_id" href="#plaque_assay.db_models.NE_workflow_tracking.master_plate_id">master_plate_id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.no_of_variants" href="#plaque_assay.db_models.NE_workflow_tracking.no_of_variants">no_of_variants</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.return_cl3" href="#plaque_assay.db_models.NE_workflow_tracking.return_cl3">return_cl3</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.sent_cl3" href="#plaque_assay.db_models.NE_workflow_tracking.sent_cl3">sent_cl3</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.staining" href="#plaque_assay.db_models.NE_workflow_tracking.staining">staining</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.start_date" href="#plaque_assay.db_models.NE_workflow_tracking.start_date">start_date</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.status" href="#plaque_assay.db_models.NE_workflow_tracking.status">status</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_workflow_tracking.workflow_id" href="#plaque_assay.db_models.NE_workflow_tracking.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

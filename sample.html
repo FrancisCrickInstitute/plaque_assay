@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>plaque_assay.sample API documentation</title>
+<meta name="description" content="module docstring" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>plaque_assay.sample</code></h1>
+</header>
+<section id="section-intro">
+<p>module docstring</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+module docstring
+&#34;&#34;&#34;
+from . import stats
+from . import failure
+from . import utils
+from . import qc_criteria
+from .consts import POSITIVE_CONTROL_WELLS
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+class Sample:
+    &#34;&#34;&#34;Sample object holds the data for a sample across 4 concentrations
+    including replicates.
+
+    Parameters
+    -----------
+    sample_name : string
+        sample name, typically well-label
+    data : pandas.DataFrame
+        2 column dataframe: [dilution, value]
+
+    Attributes
+    ----------
+    sample_name : str
+        Typically a well label e.g &#34;A01&#34;.
+    data : pd.DataFrame
+        Dataframe containing results filtered to a single sample. Containing
+        2 columns: `dilution` and `value`.
+    failures : list
+        List containing potential `failures.WellFailures`. These include reasons
+        such as:
+
+            - invalid IC50 value if the sample is a positive control
+
+            - failing to fit a model
+
+            - discordant replicate values
+
+    is_positive_control : Bool
+        Whether or not the sample is a positive control or not.
+    ic50 : float
+        Calculated ic50 values.
+    ic50_pretty : float or str
+        Calculated IC50 value, but negative integer values that indicate
+        categories such as &#34;complete inhbition&#34; are converted to their
+        string representation.
+    model_params : array
+        Fitted model parameters from `scipy.optimize.curve_fit()` for
+        the 4-parameter dose-response model. These are
+        `(top, bottom, ic50, hillslope)`
+    fit_method : str
+        How the model was fitted, either through an heuristic or
+        via fitting a curve.
+
+    Methods
+    --------
+    plot()
+    &#34;&#34;&#34;
+
+    def __init__(self, sample_name, data):
+        &#34;&#34;&#34;
+        &#34;&#34;&#34;
+        self.sample_name = sample_name
+        self.data = data
+        self.failures = []
+        self.calc_ic50()
+        self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
+        self.check_positive_control()
+        self.check_duplicate_differences()
+        self.check_for_model_fit_failure()
+
+    def calc_ic50(self):
+        &#34;&#34;&#34;calculate IC50 value&#34;&#34;&#34;
+        fit_method, ic50, model_params = stats.calc_results_model(
+            self.sample_name, self.data
+        )
+        self.fit_method = fit_method
+        self.ic50 = ic50
+        self.ic50_pretty = ic50 if ic50 &gt; 0 else utils.int_to_result(ic50)
+        self.model_params = model_params
+
+    def check_positive_control(self):
+        &#34;&#34;&#34;
+        If this sample is a postitive control, then determine
+        if the IC50 value is between 500-800. Otherwise it&#39;s an
+        failure.
+        &#34;&#34;&#34;
+        lower_limit = qc_criteria.positive_control_low
+        upper_limit = qc_criteria.positive_control_high
+        if self.is_positive_control:
+            if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+                positive_control_failure = failure.WellFailure(
+                    well=self.sample_name,
+                    plate=&#34;DILUTION SERIES&#34;,
+                    reason=f&#34;positive control failure. IC50 = {self.ic50_pretty}&#34;,
+                )
+                self.failures.append(positive_control_failure)
+
+    def check_duplicate_differences(self):
+        &#34;&#34;&#34;
+        Want to calculate the differences between duplicates and determine
+        if the difference is larger than some threshold. If this is the case
+        for more than 2 duplicates in a sample then this should be flagged as
+        a QC well failure.
+        &#34;&#34;&#34;
+        failed_count = 0
+        difference_threshold = qc_criteria.duplicate_difference
+        if self.ic50_pretty in (&#34;no inhibition&#34;, &#34;failed to fit model&#34;):
+            # don&#39;t flag for bad replicates if there&#39;s no inhbition
+            # or aleady failed model fit
+            return None
+        for _, group in self.data.groupby(&#34;Dilution&#34;):
+            if group.shape[0] == 2:
+                x, y = group[&#34;Percentage Infected&#34;].values
+                difference = abs(x - y)
+                if difference &gt;= difference_threshold:
+                    failed_count += 1
+        if failed_count &gt;= 2:
+            # is a well failure
+            duplicate_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
+            )
+            self.failures.append(duplicate_failure)
+
+    def check_for_model_fit_failure(self):
+        &#34;&#34;&#34;
+        If the model has failed to fit this should also be flagged as a QC failure
+        &#34;&#34;&#34;
+        if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
+            model_fit_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                reason=&#34;failed to fit model to data points&#34;,
+            )
+            self.failures.append(model_fit_failure)
+
+    def plot(self):
+        &#34;&#34;&#34;Simple static plot of points and fitted curve
+
+        Returns
+        --------
+        matplotlib.pyplot.plot
+        &#34;&#34;&#34;
+        plt.figure(figsize=[10, 6])
+        plt.axhline(y=50, linestyle=&#34;--&#34;, color=&#34;grey&#34;)
+        plt.scatter(1 / self.data[&#34;Dilution&#34;], self.data[&#34;Percentage Infected&#34;])
+        x = np.linspace(self.data[&#34;Dilution&#34;].min(), self.data[&#34;Dilution&#34;].max(), 1000)
+        if self.model_params is not None:
+            x_min = self.data[&#34;Dilution&#34;].min()
+            x_max = self.data[&#34;Dilution&#34;].max()
+            curve = stats.dr_4(x, *self.model_params)
+            plt.plot(1 / x, curve, linestyle=&#34;--&#34;, label=&#34;4 param dose-response&#34;)
+            plt.legend(loc=&#34;upper left&#34;)
+            try:
+                intersect_x, intersect_y = stats.find_intersect_on_curve(
+                    x_min, x_max, curve
+                )
+                plt.plot(
+                    1 / intersect_x, intersect_y, marker=&#34;P&#34;, color=&#34;black&#34;, zorder=999
+                )
+            except RuntimeError:
+                # caused by stats.find_intersect_on_curve finding more than
+                # 1 intersect point, so a model fit failure anyway, so dont
+                # plot the curve
+                pass
+        plt.xscale(&#34;log&#34;)
+        plt.grid(linestyle=&#34;:&#34;)
+        plt.ylim([0, 110])
+        plt.xlim([30, 3000])
+        plt.xlabel(&#34;Dilution&#34;)
+        plt.ylabel(&#34;Percentage Infected&#34;)
+        plt.title(self.sample_name)
+        return plt</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="plaque_assay.sample.Sample"><code class="flex name class">
+<span>class <span class="ident">Sample</span></span>
+<span>(</span><span>sample_name, data)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sample object holds the data for a sample across 4 concentrations
+including replicates.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>sample_name</code></strong> :&ensp;<code>string</code></dt>
+<dd>sample name, typically well-label</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
+<dd>2 column dataframe: [dilution, value]</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>sample_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Typically a well label e.g "A01".</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>Dataframe containing results filtered to a single sample. Containing
+2 columns: <code>dilution</code> and <code>value</code>.</dd>
+<dt><strong><code>failures</code></strong> :&ensp;<code>list</code></dt>
+<dd>List containing potential <code>failures.WellFailures</code>. These include reasons
+such as:<pre><code>- invalid IC50 value if the sample is a positive control
+
+- failing to fit a model
+
+- discordant replicate values
+</code></pre>
+</dd>
+<dt><strong><code>is_positive_control</code></strong> :&ensp;<code>Bool</code></dt>
+<dd>Whether or not the sample is a positive control or not.</dd>
+<dt><strong><code>ic50</code></strong> :&ensp;<code>float</code></dt>
+<dd>Calculated ic50 values.</dd>
+<dt><strong><code>ic50_pretty</code></strong> :&ensp;<code>float</code> or <code>str</code></dt>
+<dd>Calculated IC50 value, but negative integer values that indicate
+categories such as "complete inhbition" are converted to their
+string representation.</dd>
+<dt><strong><code>model_params</code></strong> :&ensp;<code>array</code></dt>
+<dd>Fitted model parameters from <code>scipy.optimize.curve_fit()</code> for
+the 4-parameter dose-response model. These are
+<code>(top, bottom, ic50, hillslope)</code></dd>
+<dt><strong><code>fit_method</code></strong> :&ensp;<code>str</code></dt>
+<dd>How the model was fitted, either through an heuristic or
+via fitting a curve.</dd>
+</dl>
+<h2 id="methods">Methods</h2>
+<p>plot()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Sample:
+    &#34;&#34;&#34;Sample object holds the data for a sample across 4 concentrations
+    including replicates.
+
+    Parameters
+    -----------
+    sample_name : string
+        sample name, typically well-label
+    data : pandas.DataFrame
+        2 column dataframe: [dilution, value]
+
+    Attributes
+    ----------
+    sample_name : str
+        Typically a well label e.g &#34;A01&#34;.
+    data : pd.DataFrame
+        Dataframe containing results filtered to a single sample. Containing
+        2 columns: `dilution` and `value`.
+    failures : list
+        List containing potential `failures.WellFailures`. These include reasons
+        such as:
+
+            - invalid IC50 value if the sample is a positive control
+
+            - failing to fit a model
+
+            - discordant replicate values
+
+    is_positive_control : Bool
+        Whether or not the sample is a positive control or not.
+    ic50 : float
+        Calculated ic50 values.
+    ic50_pretty : float or str
+        Calculated IC50 value, but negative integer values that indicate
+        categories such as &#34;complete inhbition&#34; are converted to their
+        string representation.
+    model_params : array
+        Fitted model parameters from `scipy.optimize.curve_fit()` for
+        the 4-parameter dose-response model. These are
+        `(top, bottom, ic50, hillslope)`
+    fit_method : str
+        How the model was fitted, either through an heuristic or
+        via fitting a curve.
+
+    Methods
+    --------
+    plot()
+    &#34;&#34;&#34;
+
+    def __init__(self, sample_name, data):
+        &#34;&#34;&#34;
+        &#34;&#34;&#34;
+        self.sample_name = sample_name
+        self.data = data
+        self.failures = []
+        self.calc_ic50()
+        self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
+        self.check_positive_control()
+        self.check_duplicate_differences()
+        self.check_for_model_fit_failure()
+
+    def calc_ic50(self):
+        &#34;&#34;&#34;calculate IC50 value&#34;&#34;&#34;
+        fit_method, ic50, model_params = stats.calc_results_model(
+            self.sample_name, self.data
+        )
+        self.fit_method = fit_method
+        self.ic50 = ic50
+        self.ic50_pretty = ic50 if ic50 &gt; 0 else utils.int_to_result(ic50)
+        self.model_params = model_params
+
+    def check_positive_control(self):
+        &#34;&#34;&#34;
+        If this sample is a postitive control, then determine
+        if the IC50 value is between 500-800. Otherwise it&#39;s an
+        failure.
+        &#34;&#34;&#34;
+        lower_limit = qc_criteria.positive_control_low
+        upper_limit = qc_criteria.positive_control_high
+        if self.is_positive_control:
+            if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+                positive_control_failure = failure.WellFailure(
+                    well=self.sample_name,
+                    plate=&#34;DILUTION SERIES&#34;,
+                    reason=f&#34;positive control failure. IC50 = {self.ic50_pretty}&#34;,
+                )
+                self.failures.append(positive_control_failure)
+
+    def check_duplicate_differences(self):
+        &#34;&#34;&#34;
+        Want to calculate the differences between duplicates and determine
+        if the difference is larger than some threshold. If this is the case
+        for more than 2 duplicates in a sample then this should be flagged as
+        a QC well failure.
+        &#34;&#34;&#34;
+        failed_count = 0
+        difference_threshold = qc_criteria.duplicate_difference
+        if self.ic50_pretty in (&#34;no inhibition&#34;, &#34;failed to fit model&#34;):
+            # don&#39;t flag for bad replicates if there&#39;s no inhbition
+            # or aleady failed model fit
+            return None
+        for _, group in self.data.groupby(&#34;Dilution&#34;):
+            if group.shape[0] == 2:
+                x, y = group[&#34;Percentage Infected&#34;].values
+                difference = abs(x - y)
+                if difference &gt;= difference_threshold:
+                    failed_count += 1
+        if failed_count &gt;= 2:
+            # is a well failure
+            duplicate_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
+            )
+            self.failures.append(duplicate_failure)
+
+    def check_for_model_fit_failure(self):
+        &#34;&#34;&#34;
+        If the model has failed to fit this should also be flagged as a QC failure
+        &#34;&#34;&#34;
+        if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
+            model_fit_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                reason=&#34;failed to fit model to data points&#34;,
+            )
+            self.failures.append(model_fit_failure)
+
+    def plot(self):
+        &#34;&#34;&#34;Simple static plot of points and fitted curve
+
+        Returns
+        --------
+        matplotlib.pyplot.plot
+        &#34;&#34;&#34;
+        plt.figure(figsize=[10, 6])
+        plt.axhline(y=50, linestyle=&#34;--&#34;, color=&#34;grey&#34;)
+        plt.scatter(1 / self.data[&#34;Dilution&#34;], self.data[&#34;Percentage Infected&#34;])
+        x = np.linspace(self.data[&#34;Dilution&#34;].min(), self.data[&#34;Dilution&#34;].max(), 1000)
+        if self.model_params is not None:
+            x_min = self.data[&#34;Dilution&#34;].min()
+            x_max = self.data[&#34;Dilution&#34;].max()
+            curve = stats.dr_4(x, *self.model_params)
+            plt.plot(1 / x, curve, linestyle=&#34;--&#34;, label=&#34;4 param dose-response&#34;)
+            plt.legend(loc=&#34;upper left&#34;)
+            try:
+                intersect_x, intersect_y = stats.find_intersect_on_curve(
+                    x_min, x_max, curve
+                )
+                plt.plot(
+                    1 / intersect_x, intersect_y, marker=&#34;P&#34;, color=&#34;black&#34;, zorder=999
+                )
+            except RuntimeError:
+                # caused by stats.find_intersect_on_curve finding more than
+                # 1 intersect point, so a model fit failure anyway, so dont
+                # plot the curve
+                pass
+        plt.xscale(&#34;log&#34;)
+        plt.grid(linestyle=&#34;:&#34;)
+        plt.ylim([0, 110])
+        plt.xlim([30, 3000])
+        plt.xlabel(&#34;Dilution&#34;)
+        plt.ylabel(&#34;Percentage Infected&#34;)
+        plt.title(self.sample_name)
+        return plt</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="plaque_assay.sample.Sample.calc_ic50"><code class="name flex">
+<span>def <span class="ident">calc_ic50</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>calculate IC50 value</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_ic50(self):
+    &#34;&#34;&#34;calculate IC50 value&#34;&#34;&#34;
+    fit_method, ic50, model_params = stats.calc_results_model(
+        self.sample_name, self.data
+    )
+    self.fit_method = fit_method
+    self.ic50 = ic50
+    self.ic50_pretty = ic50 if ic50 &gt; 0 else utils.int_to_result(ic50)
+    self.model_params = model_params</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.sample.Sample.check_duplicate_differences"><code class="name flex">
+<span>def <span class="ident">check_duplicate_differences</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Want to calculate the differences between duplicates and determine
+if the difference is larger than some threshold. If this is the case
+for more than 2 duplicates in a sample then this should be flagged as
+a QC well failure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_duplicate_differences(self):
+    &#34;&#34;&#34;
+    Want to calculate the differences between duplicates and determine
+    if the difference is larger than some threshold. If this is the case
+    for more than 2 duplicates in a sample then this should be flagged as
+    a QC well failure.
+    &#34;&#34;&#34;
+    failed_count = 0
+    difference_threshold = qc_criteria.duplicate_difference
+    if self.ic50_pretty in (&#34;no inhibition&#34;, &#34;failed to fit model&#34;):
+        # don&#39;t flag for bad replicates if there&#39;s no inhbition
+        # or aleady failed model fit
+        return None
+    for _, group in self.data.groupby(&#34;Dilution&#34;):
+        if group.shape[0] == 2:
+            x, y = group[&#34;Percentage Infected&#34;].values
+            difference = abs(x - y)
+            if difference &gt;= difference_threshold:
+                failed_count += 1
+    if failed_count &gt;= 2:
+        # is a well failure
+        duplicate_failure = failure.WellFailure(
+            well=self.sample_name,
+            plate=&#34;DILUTION SERIES&#34;,
+            reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
+        )
+        self.failures.append(duplicate_failure)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.sample.Sample.check_for_model_fit_failure"><code class="name flex">
+<span>def <span class="ident">check_for_model_fit_failure</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If the model has failed to fit this should also be flagged as a QC failure</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_for_model_fit_failure(self):
+    &#34;&#34;&#34;
+    If the model has failed to fit this should also be flagged as a QC failure
+    &#34;&#34;&#34;
+    if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
+        model_fit_failure = failure.WellFailure(
+            well=self.sample_name,
+            plate=&#34;DILUTION SERIES&#34;,
+            reason=&#34;failed to fit model to data points&#34;,
+        )
+        self.failures.append(model_fit_failure)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.sample.Sample.check_positive_control"><code class="name flex">
+<span>def <span class="ident">check_positive_control</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If this sample is a postitive control, then determine
+if the IC50 value is between 500-800. Otherwise it's an
+failure.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_positive_control(self):
+    &#34;&#34;&#34;
+    If this sample is a postitive control, then determine
+    if the IC50 value is between 500-800. Otherwise it&#39;s an
+    failure.
+    &#34;&#34;&#34;
+    lower_limit = qc_criteria.positive_control_low
+    upper_limit = qc_criteria.positive_control_high
+    if self.is_positive_control:
+        if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+            positive_control_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                reason=f&#34;positive control failure. IC50 = {self.ic50_pretty}&#34;,
+            )
+            self.failures.append(positive_control_failure)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.sample.Sample.plot"><code class="name flex">
+<span>def <span class="ident">plot</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simple static plot of points and fitted curve</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>matplotlib.pyplot.plot</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot(self):
+    &#34;&#34;&#34;Simple static plot of points and fitted curve
+
+    Returns
+    --------
+    matplotlib.pyplot.plot
+    &#34;&#34;&#34;
+    plt.figure(figsize=[10, 6])
+    plt.axhline(y=50, linestyle=&#34;--&#34;, color=&#34;grey&#34;)
+    plt.scatter(1 / self.data[&#34;Dilution&#34;], self.data[&#34;Percentage Infected&#34;])
+    x = np.linspace(self.data[&#34;Dilution&#34;].min(), self.data[&#34;Dilution&#34;].max(), 1000)
+    if self.model_params is not None:
+        x_min = self.data[&#34;Dilution&#34;].min()
+        x_max = self.data[&#34;Dilution&#34;].max()
+        curve = stats.dr_4(x, *self.model_params)
+        plt.plot(1 / x, curve, linestyle=&#34;--&#34;, label=&#34;4 param dose-response&#34;)
+        plt.legend(loc=&#34;upper left&#34;)
+        try:
+            intersect_x, intersect_y = stats.find_intersect_on_curve(
+                x_min, x_max, curve
+            )
+            plt.plot(
+                1 / intersect_x, intersect_y, marker=&#34;P&#34;, color=&#34;black&#34;, zorder=999
+            )
+        except RuntimeError:
+            # caused by stats.find_intersect_on_curve finding more than
+            # 1 intersect point, so a model fit failure anyway, so dont
+            # plot the curve
+            pass
+    plt.xscale(&#34;log&#34;)
+    plt.grid(linestyle=&#34;:&#34;)
+    plt.ylim([0, 110])
+    plt.xlim([30, 3000])
+    plt.xlabel(&#34;Dilution&#34;)
+    plt.ylabel(&#34;Percentage Infected&#34;)
+    plt.title(self.sample_name)
+    return plt</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="plaque_assay" href="index.html">plaque_assay</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="plaque_assay.sample.Sample" href="#plaque_assay.sample.Sample">Sample</a></code></h4>
+<ul class="">
+<li><code><a title="plaque_assay.sample.Sample.calc_ic50" href="#plaque_assay.sample.Sample.calc_ic50">calc_ic50</a></code></li>
+<li><code><a title="plaque_assay.sample.Sample.check_duplicate_differences" href="#plaque_assay.sample.Sample.check_duplicate_differences">check_duplicate_differences</a></code></li>
+<li><code><a title="plaque_assay.sample.Sample.check_for_model_fit_failure" href="#plaque_assay.sample.Sample.check_for_model_fit_failure">check_for_model_fit_failure</a></code></li>
+<li><code><a title="plaque_assay.sample.Sample.check_positive_control" href="#plaque_assay.sample.Sample.check_positive_control">check_positive_control</a></code></li>
+<li><code><a title="plaque_assay.sample.Sample.plot" href="#plaque_assay.sample.Sample.plot">plot</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

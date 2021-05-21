@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>plaque_assay.stats API documentation</title>
+<meta name="description" content="Stats and number crunching functions." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>plaque_assay.stats</code></h1>
+</header>
+<section id="section-intro">
+<p>Stats and number crunching functions.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Stats and number crunching functions.
+&#34;&#34;&#34;
+
+
+import logging
+
+import numpy as np
+import scipy.optimize
+
+from . import utils
+
+
+def dr_3(x, top, bottom, ec50):
+    &#34;&#34;&#34;3 parameter dose response curve
+
+    Parameters
+    -----------
+    x : array-like
+    top : numeric
+    bottom : numeric
+    ec50 : numeric
+
+    Returns
+    --------
+    array-like
+        same shape as input `x`
+    &#34;&#34;&#34;
+    return bottom + x * (top - bottom) / (ec50 + x)
+
+
+def dr_4(x, top, bottom, ec50, hill_slope):
+    &#34;&#34;&#34;4 parameter dose response curve
+
+    Parameters
+    -----------
+    x : array-like
+    top : numeric
+    bottom : numeric
+    ec50 : numeric
+    hill_slope : numeric
+
+    Returns
+    --------
+    array-like
+        same shape as input `x`
+    &#34;&#34;&#34;
+    # during optimisation numpy doesn&#39;t like raising negative numbers
+    # to a fractional power, this stops it spamming up the logs
+    with np.errstate(invalid=&#34;ignore&#34;):
+        return (bottom - top) / (1 + (x / ec50) ** hill_slope)
+
+
+def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
+    &#34;&#34;&#34;Find intersect of two curves.
+
+    Really hacky way of finding intersect of two curves,
+    used for finding dilution where percentage infection is 50%.
+    In this case one of the curves is just a horizontal line where y = 50.
+    TODO: solve this mathematically
+
+    Parameters
+    ----------
+    x_min : numeric
+    x_max : numeric
+    curve : array-like
+    intersect : numeric
+
+    Returns
+    --------
+    tuple
+        x, y values of intersect
+    &#34;&#34;&#34;
+    x = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
+    line = np.full(x.shape, intersect)
+    idx = np.argwhere(np.diff(np.sign(line - curve))).flatten()
+    if len(idx) &gt; 1:
+        logging.error(f&#34;Found more than 1 intersect. len = {len(idx)}&#34;)
+        return None
+    return x[idx], curve[idx]
+
+
+def non_linear_model(x, y, func=dr_4):
+    &#34;&#34;&#34;
+    fit non-linear least squares to the data
+
+    Parameters
+    ----------
+    x : numeric
+    y : numeric
+    func : Callable
+
+    Returns
+    --------
+    tuple
+    &#34;&#34;&#34;
+    # initial guess at sensible parameters
+    p0 = [0, 100, 0.015, 1]
+    bounds = ((-0.01, 0, -10, -10), (100, 120, 10, 10))
+    popt, pcov = scipy.optimize.curve_fit(
+        func, x, y, p0=p0, method=&#34;trf&#34;, bounds=bounds, maxfev=500
+    )
+    return popt, pcov
+
+
+def calc_heuristics_dilutions(group, threshold, weak_threshold):
+    &#34;&#34;&#34;Simple heuristics based on the values without model fitting
+
+    Parameters
+    ----------
+    group
+    threshold
+    weak_threshold
+
+    Returns
+    --------
+    numeric
+        IC50 value, or negative integer indicating an error code
+    &#34;&#34;&#34;
+    result = None
+    avg = group.groupby(&#34;Dilution&#34;)[&#34;Percentage Infected&#34;].mean()
+    # convert dilutions into 40 -&gt; 2560
+    avg.index = 1 / avg.index
+    avg.index = avg.index.astype(int)
+    # round to nearest 10
+    avg.index = [round(i, -1) for i in avg.index]
+    # for complete inhibition
+    if all(avg.values &lt;= threshold):
+        result = &#34;complete inhibition&#34;
+    try:
+        # if 2 most dilute values are below threshold, then
+        # label it as complete inhibition
+        if avg[2560] &lt;= threshold and avg[640] &lt;= threshold:
+            result = &#34;complete inhibition&#34;
+    except KeyError:
+        # missing this dilution, possibly removed due to high-background
+        try:
+            # try the next dilution
+            if avg[640] &lt;= threshold and avg[160] &lt;= threshold:
+                result = &#34;complete inhibition&#34;
+        except KeyError:
+            # if this returns a KeyError aswell we&#39;re missing 2 dilutions
+            # so we can&#39;t get anthing meaningful from the model
+            result = &#34;failed to fit model&#34;
+    # check for weak inhibition
+    try:
+        if avg[40] &gt; threshold and avg[40] &lt; weak_threshold:
+            result = &#34;weak inhibition&#34;
+    except KeyError:
+        # missing this dilution, possibly removed due to high-background
+        try:
+            # try the next dilution
+            if avg[160] &gt; threshold and avg[160] &lt; weak_threshold:
+                result = &#34;weak inhibition&#34;
+        except KeyError:
+            # if this returns a KeyError aswell we&#39;re missing 2 dilutions
+            # so we can&#39;t get anthing meaningful from the model
+            result = &#34;failed to fit model&#34;
+    # check for no inhibition
+    if all(avg.values &gt; weak_threshold):
+        result = &#34;no inhibition&#34;
+    if result:
+        return utils.result_to_int(result)
+
+
+def calc_heuristics_curve(name, x, y, threshold, weak_threshold):
+    &#34;&#34;&#34;
+    heuristics based on the model fit where we cannot calculate the intercept
+    at the threshold
+
+    Parameters
+    -----------
+    name : str
+        name of sample or well
+    x : array-like
+    y : array-like
+    threshold : numeric
+    weak_threshold : numeric
+
+    Returns
+    -------
+    int or None
+        If `None`, then an heuristic was not found.
+        Otherwise returns a negative integer code.
+    &#34;&#34;&#34;
+    result = None
+    # look for sharp changes in the curve shape indicating a bad fit
+    outliers = hampel(y, 5)
+    if outliers:
+        result = &#34;failed to fit model&#34;
+        logging.warning(&#34;well %s model failed due to hampel outliers on curve&#34;, name)
+    # look for times when the curve doesn&#39;t reach below threshold but
+    # drops below weak_threshold indicated &#34;weak inhibition&#34;
+    if min(y) &gt; threshold and min(y) &lt; weak_threshold:
+        # determine minimum is on the side we would expect (1:40)
+        idx_min = np.argmin(y)
+        # checking for greater than as the actual values are inverted because
+        # we&#39;re using 1/dilution
+        if idx_min &gt; len(x) / 4:
+            result = &#34;weak inhibition&#34;
+        else:
+            result = &#34;failed to fit model&#34;
+    if result:
+        return utils.result_to_int(result)
+
+
+def calc_results_model(name, df, threshold=50, weak_threshold=60):
+    &#34;&#34;&#34;
+    Try simple heuristics first without model fitting.
+    Once a model is fitted try heuristics based on the fitted curve.
+    Then calculate the value based on the intercept where the curve = threshold.
+
+    Parameters
+    -----------
+    name : str
+    df : pandas.DataFrame
+    threshold : numeric
+    weak_threshold : numeric
+
+    Returns
+    --------
+    tuple (`fit_method`, `result`, `model_params`)
+    &#34;&#34;&#34;
+    # FIXME: drop missing values
+    df = df.dropna()
+    #
+    df = df.sort_values(&#34;Dilution&#34;)
+    x = df[&#34;Dilution&#34;].values
+    x_min = 0.0000390625
+    x_max = 0.25
+    x_interpolated = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
+    y = df[&#34;Percentage Infected&#34;].values
+    model_params = None
+    heuristic = calc_heuristics_dilutions(df, threshold, weak_threshold)
+    if heuristic is not None:
+        result = heuristic
+        fit_method = &#34;heuristic&#34;
+    else:
+        # fit non-linear_model
+        try:
+            model_params, _ = non_linear_model(x, y)
+        except RuntimeError:
+            model_params = None
+            result = utils.result_to_int(&#34;failed to fit model&#34;)
+        fit_method = &#34;model fit&#34;
+        if model_params is not None:
+            dr_curve = dr_4(x_interpolated, *model_params)
+            curve_heuristics = calc_heuristics_curve(
+                name, x_interpolated, dr_curve, threshold, weak_threshold
+            )
+            if curve_heuristics is not None:
+                result = curve_heuristics
+            else:
+                try:
+                    intersect_x, intersect_y = find_intersect_on_curve(
+                        x_min, x_max, dr_curve
+                    )
+                    result = 1 / intersect_x[0]
+                    if result &lt; 1 / x.max():
+                        logging.info(
+                            &#34;%s IC50 of %s less than lowest dilution, weak inhibition&#34;,
+                            name,
+                            result,
+                        )
+                        result = utils.result_to_int(&#34;weak inhibition&#34;)
+                except (IndexError, RuntimeError) as e:
+                    logging.error(&#34;during model fitting: %s&#34;, e)
+                    result = utils.result_to_int(&#34;failed to fit model&#34;)
+    logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
+    return fit_method, result, model_params
+
+
+def hampel(x, k, t0=3):
+    &#34;&#34;&#34;Hampel&#39;s outlier test
+
+    Adapted from hampel function in R package pracma.
+
+    Parameters
+    -----------
+    x : 1-d array
+        numbers to be filtered
+    k : int
+        number of items in window/2 (# forward and backward wanted to capture in median filter)
+    t0 : numeric (float or int)
+        number of standard deviations to use; 3 is default
+
+    Returns
+    -------
+    array-like
+        indices in x of outliers
+    &#34;&#34;&#34;
+    n = len(x)
+    L = 1.4826
+    indices = []
+    for i in range((k + 1), (n - k)):
+        if np.isnan(x[(i - k) : (i + k + 1)]).all():
+            continue
+        x0 = np.nanmedian(x[(i - k) : (i + k + 1)])
+        S0 = L * np.nanmedian(np.abs(x[(i - k) : (i + k + 1)] - x0))
+        if np.abs(x[i] - x0) &gt; t0 * S0:
+            indices.append(i)
+    return indices
+
+
+def calc_median_all_plates(df):
+    &#34;&#34;&#34;Median of `Cells - Image Region Area` of all plates
+
+    Calculate the median of &#34;Cells - Image Region Area - Mean per Well&#34;
+    for all wells of all plates
+
+    Parameters
+    --------
+    df : pandas.DataFrame
+
+    Returns
+    ---------
+    numeric
+    &#34;&#34;&#34;
+    median = df[&#34;Cells - Image Region Area [µm²] - Mean per Well&#34;].median()
+    logging.info(&#34;median &#39;Cells = Image Region Area&#39; for all plates %s&#34;, median)
+    return median</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="plaque_assay.stats.calc_heuristics_curve"><code class="name flex">
+<span>def <span class="ident">calc_heuristics_curve</span></span>(<span>name, x, y, threshold, weak_threshold)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>heuristics based on the model fit where we cannot calculate the intercept
+at the threshold</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>name of sample or well</dd>
+<dt><strong><code>x</code></strong> :&ensp;<code>array-like</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>array-like</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>threshold</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>weak_threshold</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code> or <code>None</code></dt>
+<dd>If <code>None</code>, then an heuristic was not found.
+Otherwise returns a negative integer code.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_heuristics_curve(name, x, y, threshold, weak_threshold):
+    &#34;&#34;&#34;
+    heuristics based on the model fit where we cannot calculate the intercept
+    at the threshold
+
+    Parameters
+    -----------
+    name : str
+        name of sample or well
+    x : array-like
+    y : array-like
+    threshold : numeric
+    weak_threshold : numeric
+
+    Returns
+    -------
+    int or None
+        If `None`, then an heuristic was not found.
+        Otherwise returns a negative integer code.
+    &#34;&#34;&#34;
+    result = None
+    # look for sharp changes in the curve shape indicating a bad fit
+    outliers = hampel(y, 5)
+    if outliers:
+        result = &#34;failed to fit model&#34;
+        logging.warning(&#34;well %s model failed due to hampel outliers on curve&#34;, name)
+    # look for times when the curve doesn&#39;t reach below threshold but
+    # drops below weak_threshold indicated &#34;weak inhibition&#34;
+    if min(y) &gt; threshold and min(y) &lt; weak_threshold:
+        # determine minimum is on the side we would expect (1:40)
+        idx_min = np.argmin(y)
+        # checking for greater than as the actual values are inverted because
+        # we&#39;re using 1/dilution
+        if idx_min &gt; len(x) / 4:
+            result = &#34;weak inhibition&#34;
+        else:
+            result = &#34;failed to fit model&#34;
+    if result:
+        return utils.result_to_int(result)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.calc_heuristics_dilutions"><code class="name flex">
+<span>def <span class="ident">calc_heuristics_dilutions</span></span>(<span>group, threshold, weak_threshold)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simple heuristics based on the values without model fitting</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>group</code></strong></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>threshold</code></strong></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>weak_threshold</code></strong></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>numeric</code></dt>
+<dd>IC50 value, or negative integer indicating an error code</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_heuristics_dilutions(group, threshold, weak_threshold):
+    &#34;&#34;&#34;Simple heuristics based on the values without model fitting
+
+    Parameters
+    ----------
+    group
+    threshold
+    weak_threshold
+
+    Returns
+    --------
+    numeric
+        IC50 value, or negative integer indicating an error code
+    &#34;&#34;&#34;
+    result = None
+    avg = group.groupby(&#34;Dilution&#34;)[&#34;Percentage Infected&#34;].mean()
+    # convert dilutions into 40 -&gt; 2560
+    avg.index = 1 / avg.index
+    avg.index = avg.index.astype(int)
+    # round to nearest 10
+    avg.index = [round(i, -1) for i in avg.index]
+    # for complete inhibition
+    if all(avg.values &lt;= threshold):
+        result = &#34;complete inhibition&#34;
+    try:
+        # if 2 most dilute values are below threshold, then
+        # label it as complete inhibition
+        if avg[2560] &lt;= threshold and avg[640] &lt;= threshold:
+            result = &#34;complete inhibition&#34;
+    except KeyError:
+        # missing this dilution, possibly removed due to high-background
+        try:
+            # try the next dilution
+            if avg[640] &lt;= threshold and avg[160] &lt;= threshold:
+                result = &#34;complete inhibition&#34;
+        except KeyError:
+            # if this returns a KeyError aswell we&#39;re missing 2 dilutions
+            # so we can&#39;t get anthing meaningful from the model
+            result = &#34;failed to fit model&#34;
+    # check for weak inhibition
+    try:
+        if avg[40] &gt; threshold and avg[40] &lt; weak_threshold:
+            result = &#34;weak inhibition&#34;
+    except KeyError:
+        # missing this dilution, possibly removed due to high-background
+        try:
+            # try the next dilution
+            if avg[160] &gt; threshold and avg[160] &lt; weak_threshold:
+                result = &#34;weak inhibition&#34;
+        except KeyError:
+            # if this returns a KeyError aswell we&#39;re missing 2 dilutions
+            # so we can&#39;t get anthing meaningful from the model
+            result = &#34;failed to fit model&#34;
+    # check for no inhibition
+    if all(avg.values &gt; weak_threshold):
+        result = &#34;no inhibition&#34;
+    if result:
+        return utils.result_to_int(result)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.calc_median_all_plates"><code class="name flex">
+<span>def <span class="ident">calc_median_all_plates</span></span>(<span>df)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Median of <code>Cells - Image Region Area</code> of all plates</p>
+<p>Calculate the median of "Cells - Image Region Area - Mean per Well"
+for all wells of all plates</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>numeric</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_median_all_plates(df):
+    &#34;&#34;&#34;Median of `Cells - Image Region Area` of all plates
+
+    Calculate the median of &#34;Cells - Image Region Area - Mean per Well&#34;
+    for all wells of all plates
+
+    Parameters
+    --------
+    df : pandas.DataFrame
+
+    Returns
+    ---------
+    numeric
+    &#34;&#34;&#34;
+    median = df[&#34;Cells - Image Region Area [µm²] - Mean per Well&#34;].median()
+    logging.info(&#34;median &#39;Cells = Image Region Area&#39; for all plates %s&#34;, median)
+    return median</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.calc_results_model"><code class="name flex">
+<span>def <span class="ident">calc_results_model</span></span>(<span>name, df, threshold=50, weak_threshold=60)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Try simple heuristics first without model fitting.
+Once a model is fitted try heuristics based on the fitted curve.
+Then calculate the value based on the intercept where the curve = threshold.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>df</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>threshold</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>weak_threshold</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>tuple (<code>fit_method</code>, <code>result</code>, <code>model_params</code>)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_results_model(name, df, threshold=50, weak_threshold=60):
+    &#34;&#34;&#34;
+    Try simple heuristics first without model fitting.
+    Once a model is fitted try heuristics based on the fitted curve.
+    Then calculate the value based on the intercept where the curve = threshold.
+
+    Parameters
+    -----------
+    name : str
+    df : pandas.DataFrame
+    threshold : numeric
+    weak_threshold : numeric
+
+    Returns
+    --------
+    tuple (`fit_method`, `result`, `model_params`)
+    &#34;&#34;&#34;
+    # FIXME: drop missing values
+    df = df.dropna()
+    #
+    df = df.sort_values(&#34;Dilution&#34;)
+    x = df[&#34;Dilution&#34;].values
+    x_min = 0.0000390625
+    x_max = 0.25
+    x_interpolated = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
+    y = df[&#34;Percentage Infected&#34;].values
+    model_params = None
+    heuristic = calc_heuristics_dilutions(df, threshold, weak_threshold)
+    if heuristic is not None:
+        result = heuristic
+        fit_method = &#34;heuristic&#34;
+    else:
+        # fit non-linear_model
+        try:
+            model_params, _ = non_linear_model(x, y)
+        except RuntimeError:
+            model_params = None
+            result = utils.result_to_int(&#34;failed to fit model&#34;)
+        fit_method = &#34;model fit&#34;
+        if model_params is not None:
+            dr_curve = dr_4(x_interpolated, *model_params)
+            curve_heuristics = calc_heuristics_curve(
+                name, x_interpolated, dr_curve, threshold, weak_threshold
+            )
+            if curve_heuristics is not None:
+                result = curve_heuristics
+            else:
+                try:
+                    intersect_x, intersect_y = find_intersect_on_curve(
+                        x_min, x_max, dr_curve
+                    )
+                    result = 1 / intersect_x[0]
+                    if result &lt; 1 / x.max():
+                        logging.info(
+                            &#34;%s IC50 of %s less than lowest dilution, weak inhibition&#34;,
+                            name,
+                            result,
+                        )
+                        result = utils.result_to_int(&#34;weak inhibition&#34;)
+                except (IndexError, RuntimeError) as e:
+                    logging.error(&#34;during model fitting: %s&#34;, e)
+                    result = utils.result_to_int(&#34;failed to fit model&#34;)
+    logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
+    return fit_method, result, model_params</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.dr_3"><code class="name flex">
+<span>def <span class="ident">dr_3</span></span>(<span>x, top, bottom, ec50)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>3 parameter dose response curve</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>array-like</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>top</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>bottom</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>ec50</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>array-like</code></dt>
+<dd>same shape as input <code>x</code></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dr_3(x, top, bottom, ec50):
+    &#34;&#34;&#34;3 parameter dose response curve
+
+    Parameters
+    -----------
+    x : array-like
+    top : numeric
+    bottom : numeric
+    ec50 : numeric
+
+    Returns
+    --------
+    array-like
+        same shape as input `x`
+    &#34;&#34;&#34;
+    return bottom + x * (top - bottom) / (ec50 + x)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.dr_4"><code class="name flex">
+<span>def <span class="ident">dr_4</span></span>(<span>x, top, bottom, ec50, hill_slope)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>4 parameter dose response curve</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>array-like</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>top</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>bottom</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>ec50</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>hill_slope</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>array-like</code></dt>
+<dd>same shape as input <code>x</code></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dr_4(x, top, bottom, ec50, hill_slope):
+    &#34;&#34;&#34;4 parameter dose response curve
+
+    Parameters
+    -----------
+    x : array-like
+    top : numeric
+    bottom : numeric
+    ec50 : numeric
+    hill_slope : numeric
+
+    Returns
+    --------
+    array-like
+        same shape as input `x`
+    &#34;&#34;&#34;
+    # during optimisation numpy doesn&#39;t like raising negative numbers
+    # to a fractional power, this stops it spamming up the logs
+    with np.errstate(invalid=&#34;ignore&#34;):
+        return (bottom - top) / (1 + (x / ec50) ** hill_slope)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.find_intersect_on_curve"><code class="name flex">
+<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min, x_max, curve, intersect=50)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find intersect of two curves.</p>
+<p>Really hacky way of finding intersect of two curves,
+used for finding dilution where percentage infection is 50%.
+In this case one of the curves is just a horizontal line where y = 50.
+TODO: solve this mathematically</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x_min</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>x_max</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>curve</code></strong> :&ensp;<code>array-like</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>intersect</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>x, y values of intersect</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
+    &#34;&#34;&#34;Find intersect of two curves.
+
+    Really hacky way of finding intersect of two curves,
+    used for finding dilution where percentage infection is 50%.
+    In this case one of the curves is just a horizontal line where y = 50.
+    TODO: solve this mathematically
+
+    Parameters
+    ----------
+    x_min : numeric
+    x_max : numeric
+    curve : array-like
+    intersect : numeric
+
+    Returns
+    --------
+    tuple
+        x, y values of intersect
+    &#34;&#34;&#34;
+    x = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
+    line = np.full(x.shape, intersect)
+    idx = np.argwhere(np.diff(np.sign(line - curve))).flatten()
+    if len(idx) &gt; 1:
+        logging.error(f&#34;Found more than 1 intersect. len = {len(idx)}&#34;)
+        return None
+    return x[idx], curve[idx]</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.hampel"><code class="name flex">
+<span>def <span class="ident">hampel</span></span>(<span>x, k, t0=3)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Hampel's outlier test</p>
+<p>Adapted from hampel function in R package pracma.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>1-d array</code></dt>
+<dd>numbers to be filtered</dd>
+<dt><strong><code>k</code></strong> :&ensp;<code>int</code></dt>
+<dd>number of items in window/2 (# forward and backward wanted to capture in median filter)</dd>
+<dt><strong><code>t0</code></strong> :&ensp;<code>numeric (float</code> or <code>int)</code></dt>
+<dd>number of standard deviations to use; 3 is default</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>array-like</code></dt>
+<dd>indices in x of outliers</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def hampel(x, k, t0=3):
+    &#34;&#34;&#34;Hampel&#39;s outlier test
+
+    Adapted from hampel function in R package pracma.
+
+    Parameters
+    -----------
+    x : 1-d array
+        numbers to be filtered
+    k : int
+        number of items in window/2 (# forward and backward wanted to capture in median filter)
+    t0 : numeric (float or int)
+        number of standard deviations to use; 3 is default
+
+    Returns
+    -------
+    array-like
+        indices in x of outliers
+    &#34;&#34;&#34;
+    n = len(x)
+    L = 1.4826
+    indices = []
+    for i in range((k + 1), (n - k)):
+        if np.isnan(x[(i - k) : (i + k + 1)]).all():
+            continue
+        x0 = np.nanmedian(x[(i - k) : (i + k + 1)])
+        S0 = L * np.nanmedian(np.abs(x[(i - k) : (i + k + 1)] - x0))
+        if np.abs(x[i] - x0) &gt; t0 * S0:
+            indices.append(i)
+    return indices</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.non_linear_model"><code class="name flex">
+<span>def <span class="ident">non_linear_model</span></span>(<span>x, y, func=&lt;function dr_4&gt;)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>fit non-linear least squares to the data</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>func</code></strong> :&ensp;<code>Callable</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def non_linear_model(x, y, func=dr_4):
+    &#34;&#34;&#34;
+    fit non-linear least squares to the data
+
+    Parameters
+    ----------
+    x : numeric
+    y : numeric
+    func : Callable
+
+    Returns
+    --------
+    tuple
+    &#34;&#34;&#34;
+    # initial guess at sensible parameters
+    p0 = [0, 100, 0.015, 1]
+    bounds = ((-0.01, 0, -10, -10), (100, 120, 10, 10))
+    popt, pcov = scipy.optimize.curve_fit(
+        func, x, y, p0=p0, method=&#34;trf&#34;, bounds=bounds, maxfev=500
+    )
+    return popt, pcov</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="plaque_assay" href="index.html">plaque_assay</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="plaque_assay.stats.calc_heuristics_curve" href="#plaque_assay.stats.calc_heuristics_curve">calc_heuristics_curve</a></code></li>
+<li><code><a title="plaque_assay.stats.calc_heuristics_dilutions" href="#plaque_assay.stats.calc_heuristics_dilutions">calc_heuristics_dilutions</a></code></li>
+<li><code><a title="plaque_assay.stats.calc_median_all_plates" href="#plaque_assay.stats.calc_median_all_plates">calc_median_all_plates</a></code></li>
+<li><code><a title="plaque_assay.stats.calc_results_model" href="#plaque_assay.stats.calc_results_model">calc_results_model</a></code></li>
+<li><code><a title="plaque_assay.stats.dr_3" href="#plaque_assay.stats.dr_3">dr_3</a></code></li>
+<li><code><a title="plaque_assay.stats.dr_4" href="#plaque_assay.stats.dr_4">dr_4</a></code></li>
+<li><code><a title="plaque_assay.stats.find_intersect_on_curve" href="#plaque_assay.stats.find_intersect_on_curve">find_intersect_on_curve</a></code></li>
+<li><code><a title="plaque_assay.stats.hampel" href="#plaque_assay.stats.hampel">hampel</a></code></li>
+<li><code><a title="plaque_assay.stats.non_linear_model" href="#plaque_assay.stats.non_linear_model">non_linear_model</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
