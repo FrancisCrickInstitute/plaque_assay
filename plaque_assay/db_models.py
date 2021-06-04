@@ -149,6 +149,7 @@ class NE_model_parameters(Base):
         sql.Integer, sql.ForeignKey("NE_workflow_tracking.workflow_id")
     )
     variant = sql.Column(sql.String(45))
+    mean_squared_error = sql.Column(sql.DECIMAL(20, 15))
 
 
 class NE_assay_plate_tracker_384(Base):
