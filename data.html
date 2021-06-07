@@ -441,7 +441,7 @@ class DatabaseUploader:
         None
         &#34;&#34;&#34;
         results = results.copy()
-        # TODO: double-check what master_plate is??
+        # don&#39;t have master_plate details from accessible tables, set as None
         results[&#34;master_plate&#34;] = None
         # get workflow_id
         assert results[&#34;experiment&#34;].nunique() == 1
@@ -466,12 +466,9 @@ class DatabaseUploader:
         None
         &#34;&#34;&#34;
         failures = failures.copy()
-        # FIXME: get workflow_id
         if failures.shape[0] &gt; 0:
             assert failures[&#34;experiment&#34;].nunique() == 1
             failures[&#34;workflow_id&#34;] = failures[&#34;experiment&#34;].astype(int)
-            # FIXME: doesn&#39;t work with multiple well in plate failures
-            # failures[&#34;well&#34;] = utils.unpad_well_col(failures[&#34;well&#34;])
             self.session.bulk_insert_mappings(
                 db_models.NE_failed_results, failures.to_dict(orient=&#34;records&#34;)
             )
@@ -1050,7 +1047,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
         None
         &#34;&#34;&#34;
         results = results.copy()
-        # TODO: double-check what master_plate is??
+        # don&#39;t have master_plate details from accessible tables, set as None
         results[&#34;master_plate&#34;] = None
         # get workflow_id
         assert results[&#34;experiment&#34;].nunique() == 1
@@ -1075,12 +1072,9 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
         None
         &#34;&#34;&#34;
         failures = failures.copy()
-        # FIXME: get workflow_id
         if failures.shape[0] &gt; 0:
             assert failures[&#34;experiment&#34;].nunique() == 1
             failures[&#34;workflow_id&#34;] = failures[&#34;experiment&#34;].astype(int)
-            # FIXME: doesn&#39;t work with multiple well in plate failures
-            # failures[&#34;well&#34;] = utils.unpad_well_col(failures[&#34;well&#34;])
             self.session.bulk_insert_mappings(
                 db_models.NE_failed_results, failures.to_dict(orient=&#34;records&#34;)
             )
@@ -1386,12 +1380,9 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
     None
     &#34;&#34;&#34;
     failures = failures.copy()
-    # FIXME: get workflow_id
     if failures.shape[0] &gt; 0:
         assert failures[&#34;experiment&#34;].nunique() == 1
         failures[&#34;workflow_id&#34;] = failures[&#34;experiment&#34;].astype(int)
-        # FIXME: doesn&#39;t work with multiple well in plate failures
-        # failures[&#34;well&#34;] = utils.unpad_well_col(failures[&#34;well&#34;])
         self.session.bulk_insert_mappings(
             db_models.NE_failed_results, failures.to_dict(orient=&#34;records&#34;)
         )</code></pre>
@@ -1431,7 +1422,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
     None
     &#34;&#34;&#34;
     results = results.copy()
-    # TODO: double-check what master_plate is??
+    # don&#39;t have master_plate details from accessible tables, set as None
     results[&#34;master_plate&#34;] = None
     # get workflow_id
     assert results[&#34;experiment&#34;].nunique() == 1

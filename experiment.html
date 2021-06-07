@@ -299,10 +299,12 @@ class Experiment:
               - `param_bottom`
               - `param_ec50`
               - `param_hillslope`
+              - `mean_squared_error`
         &#34;&#34;&#34;
         param_dict = defaultdict(list)
         for well, sample_obj in self.sample_store.items():
             model_params = sample_obj.model_params
+            mean_squared_error = sample_obj.mean_squared_error
             if model_params is not None:
                 top, bottom, ec50, hillslope = model_params
             else:
@@ -312,6 +314,7 @@ class Experiment:
             param_dict[&#34;param_bottom&#34;].append(bottom)
             param_dict[&#34;param_ec50&#34;].append(ec50)
             param_dict[&#34;param_hillslope&#34;].append(hillslope)
+            param_dict[&#34;mean_squared_error&#34;].append(mean_squared_error)
         df = pd.DataFrame(param_dict)
         df[&#34;experiment&#34;] = self.experiment_name
         df[&#34;variant&#34;] = self.variant
@@ -629,10 +632,12 @@ class Experiment:
               - `param_bottom`
               - `param_ec50`
               - `param_hillslope`
+              - `mean_squared_error`
         &#34;&#34;&#34;
         param_dict = defaultdict(list)
         for well, sample_obj in self.sample_store.items():
             model_params = sample_obj.model_params
+            mean_squared_error = sample_obj.mean_squared_error
             if model_params is not None:
                 top, bottom, ec50, hillslope = model_params
             else:
@@ -642,6 +647,7 @@ class Experiment:
             param_dict[&#34;param_bottom&#34;].append(bottom)
             param_dict[&#34;param_ec50&#34;].append(ec50)
             param_dict[&#34;param_hillslope&#34;].append(hillslope)
+            param_dict[&#34;mean_squared_error&#34;].append(mean_squared_error)
         df = pd.DataFrame(param_dict)
         df[&#34;experiment&#34;] = self.experiment_name
         df[&#34;variant&#34;] = self.variant
@@ -820,6 +826,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <li><code>param_bottom</code></li>
 <li><code>param_ec50</code></li>
 <li><code>param_hillslope</code></li>
+<li><code>mean_squared_error</code></li>
 </ul>
 </dd>
 </dl></div>
@@ -845,10 +852,12 @@ where no model was fitted then these will be <code>NaN</code>.</p>
           - `param_bottom`
           - `param_ec50`
           - `param_hillslope`
+          - `mean_squared_error`
     &#34;&#34;&#34;
     param_dict = defaultdict(list)
     for well, sample_obj in self.sample_store.items():
         model_params = sample_obj.model_params
+        mean_squared_error = sample_obj.mean_squared_error
         if model_params is not None:
             top, bottom, ec50, hillslope = model_params
         else:
@@ -858,6 +867,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
         param_dict[&#34;param_bottom&#34;].append(bottom)
         param_dict[&#34;param_ec50&#34;].append(ec50)
         param_dict[&#34;param_hillslope&#34;].append(hillslope)
+        param_dict[&#34;mean_squared_error&#34;].append(mean_squared_error)
     df = pd.DataFrame(param_dict)
     df[&#34;experiment&#34;] = self.experiment_name
     df[&#34;variant&#34;] = self.variant

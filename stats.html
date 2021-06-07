@@ -31,7 +31,7 @@
 Stats and number crunching functions.
 &#34;&#34;&#34;
 
-
+from collections import namedtuple
 import logging
 
 import numpy as np
@@ -130,6 +130,41 @@ def non_linear_model(x, y, func=dr_4):
         func, x, y, p0=p0, method=&#34;trf&#34;, bounds=bounds, maxfev=500
     )
     return popt, pcov
+
+
+def std_dev_params(pcov):
+    &#34;&#34;&#34;
+    Compute the standard deviation errors on the model parameters.
+
+    Parameters
+    ----------
+    pcov: 2D array
+
+    Returns
+    --------
+    1D array
+    &#34;&#34;&#34;
+    return np.sqrt(np.diag(pcov))
+
+
+def model_mse(y_observed, y_fitted):
+    &#34;&#34;&#34;
+    Mean squared error between the observed
+    and the estimated values.
+
+    Parameters
+    -----------
+    y_observed : numeric
+        observed y-values
+    y_estimated : numeric
+        estimated y-values from model fit
+
+    Returns
+    -------
+    float
+    &#34;&#34;&#34;
+    assert y_observed.shape == y_fitted.shape
+    return np.mean((y_observed - y_fitted)**2)
 
 
 def calc_heuristics_dilutions(group, threshold, weak_threshold):
@@ -248,18 +283,19 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
 
     Returns
     --------
-    tuple (`fit_method`, `result`, `model_params`)
+    namedtuple(&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;)
     &#34;&#34;&#34;
-    # FIXME: drop missing values
-    df = df.dropna()
-    #
-    df = df.sort_values(&#34;Dilution&#34;)
+    output = namedtuple(
+        &#34;ResultsModel&#34;, [&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;]
+    )
+    df = df.dropna().sort_values(&#34;Dilution&#34;)
     x = df[&#34;Dilution&#34;].values
     x_min = 0.0000390625
     x_max = 0.25
     x_interpolated = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
     y = df[&#34;Percentage Infected&#34;].values
     model_params = None
+    mean_squared_error = None
     heuristic = calc_heuristics_dilutions(df, threshold, weak_threshold)
     if heuristic is not None:
         result = heuristic
@@ -273,16 +309,21 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
             result = utils.result_to_int(&#34;failed to fit model&#34;)
         fit_method = &#34;model fit&#34;
         if model_params is not None:
-            dr_curve = dr_4(x_interpolated, *model_params)
+            # predicted y-values for interpolated x-values, useful to generate curve
+            y_fitted = dr_4(x_interpolated, *model_params)
+            # predicted y-values only for dilution x-values, useful for MSE
+            # calculation
+            y_hat = dr_4(x, *model_params)
+            mean_squared_error = model_mse(y_hat, y)
             curve_heuristics = calc_heuristics_curve(
-                name, x_interpolated, dr_curve, threshold, weak_threshold
+                name, x_interpolated, y_fitted, threshold, weak_threshold
             )
             if curve_heuristics is not None:
                 result = curve_heuristics
             else:
                 try:
                     intersect_x, intersect_y = find_intersect_on_curve(
-                        x_min, x_max, dr_curve
+                        x_min, x_max, y_fitted
                     )
                     result = 1 / intersect_x[0]
                     if result &lt; 1 / x.max():
@@ -296,7 +337,7 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
                     logging.error(&#34;during model fitting: %s&#34;, e)
                     result = utils.result_to_int(&#34;failed to fit model&#34;)
     logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
-    return fit_method, result, model_params
+    return output(fit_method, result, model_params, mean_squared_error)
 
 
 def hampel(x, k, t0=3):
@@ -569,7 +610,10 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 <dd>&nbsp;</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>tuple (<code>fit_method</code>, <code>result</code>, <code>model_params</code>)</p></div>
+<dl>
+<dt><code>namedtuple("fit_method", "result", "model_params", "mean_squared_error")</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -589,18 +633,19 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 
     Returns
     --------
-    tuple (`fit_method`, `result`, `model_params`)
+    namedtuple(&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;)
     &#34;&#34;&#34;
-    # FIXME: drop missing values
-    df = df.dropna()
-    #
-    df = df.sort_values(&#34;Dilution&#34;)
+    output = namedtuple(
+        &#34;ResultsModel&#34;, [&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;]
+    )
+    df = df.dropna().sort_values(&#34;Dilution&#34;)
     x = df[&#34;Dilution&#34;].values
     x_min = 0.0000390625
     x_max = 0.25
     x_interpolated = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
     y = df[&#34;Percentage Infected&#34;].values
     model_params = None
+    mean_squared_error = None
     heuristic = calc_heuristics_dilutions(df, threshold, weak_threshold)
     if heuristic is not None:
         result = heuristic
@@ -614,16 +659,21 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
             result = utils.result_to_int(&#34;failed to fit model&#34;)
         fit_method = &#34;model fit&#34;
         if model_params is not None:
-            dr_curve = dr_4(x_interpolated, *model_params)
+            # predicted y-values for interpolated x-values, useful to generate curve
+            y_fitted = dr_4(x_interpolated, *model_params)
+            # predicted y-values only for dilution x-values, useful for MSE
+            # calculation
+            y_hat = dr_4(x, *model_params)
+            mean_squared_error = model_mse(y_hat, y)
             curve_heuristics = calc_heuristics_curve(
-                name, x_interpolated, dr_curve, threshold, weak_threshold
+                name, x_interpolated, y_fitted, threshold, weak_threshold
             )
             if curve_heuristics is not None:
                 result = curve_heuristics
             else:
                 try:
                     intersect_x, intersect_y = find_intersect_on_curve(
-                        x_min, x_max, dr_curve
+                        x_min, x_max, y_fitted
                     )
                     result = 1 / intersect_x[0]
                     if result &lt; 1 / x.max():
@@ -637,7 +687,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
                     logging.error(&#34;during model fitting: %s&#34;, e)
                     result = utils.result_to_int(&#34;failed to fit model&#34;)
     logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
-    return fit_method, result, model_params</code></pre>
+    return output(fit_method, result, model_params, mean_squared_error)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.stats.dr_3"><code class="name flex">
@@ -846,6 +896,48 @@ TODO: solve this mathematically</p>
     return indices</code></pre>
 </details>
 </dd>
+<dt id="plaque_assay.stats.model_mse"><code class="name flex">
+<span>def <span class="ident">model_mse</span></span>(<span>y_observed, y_fitted)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Mean squared error between the observed
+and the estimated values.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>y_observed</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>observed y-values</dd>
+<dt><strong><code>y_estimated</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>estimated y-values from model fit</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def model_mse(y_observed, y_fitted):
+    &#34;&#34;&#34;
+    Mean squared error between the observed
+    and the estimated values.
+
+    Parameters
+    -----------
+    y_observed : numeric
+        observed y-values
+    y_estimated : numeric
+        estimated y-values from model fit
+
+    Returns
+    -------
+    float
+    &#34;&#34;&#34;
+    assert y_observed.shape == y_fitted.shape
+    return np.mean((y_observed - y_fitted)**2)</code></pre>
+</details>
+</dd>
 <dt id="plaque_assay.stats.non_linear_model"><code class="name flex">
 <span>def <span class="ident">non_linear_model</span></span>(<span>x, y, func=&lt;function dr_4&gt;)</span>
 </code></dt>
@@ -892,6 +984,40 @@ TODO: solve this mathematically</p>
     return popt, pcov</code></pre>
 </details>
 </dd>
+<dt id="plaque_assay.stats.std_dev_params"><code class="name flex">
+<span>def <span class="ident">std_dev_params</span></span>(<span>pcov)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute the standard deviation errors on the model parameters.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>pcov</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>1D array</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def std_dev_params(pcov):
+    &#34;&#34;&#34;
+    Compute the standard deviation errors on the model parameters.
+
+    Parameters
+    ----------
+    pcov: 2D array
+
+    Returns
+    --------
+    1D array
+    &#34;&#34;&#34;
+    return np.sqrt(np.diag(pcov))</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -918,7 +1044,9 @@ TODO: solve this mathematically</p>
 <li><code><a title="plaque_assay.stats.dr_4" href="#plaque_assay.stats.dr_4">dr_4</a></code></li>
 <li><code><a title="plaque_assay.stats.find_intersect_on_curve" href="#plaque_assay.stats.find_intersect_on_curve">find_intersect_on_curve</a></code></li>
 <li><code><a title="plaque_assay.stats.hampel" href="#plaque_assay.stats.hampel">hampel</a></code></li>
+<li><code><a title="plaque_assay.stats.model_mse" href="#plaque_assay.stats.model_mse">model_mse</a></code></li>
 <li><code><a title="plaque_assay.stats.non_linear_model" href="#plaque_assay.stats.non_linear_model">non_linear_model</a></code></li>
+<li><code><a title="plaque_assay.stats.std_dev_params" href="#plaque_assay.stats.std_dev_params">std_dev_params</a></code></li>
 </ul>
 </li>
 </ul>
