@@ -77,6 +77,13 @@ def read_data_from_list(plate_list):
             well_labels.append(utils.row_col_to_well(row, col))
         df[&#34;Well&#34;] = well_labels
         df[&#34;Plate_barcode&#34;] = plate_barcode
+        # Empty wells with no background produce NaNs rather than 0 in the
+        # image analysis, which causes missing data for truely complete
+        # inhbition. So we replace NaNs with 0 in the measurement columns we
+        # use.
+        fillna_cols = [&#34;Normalised Plaque area&#34;, &#34;Normalised Plaque intensity&#34;]
+        for colname in fillna_cols:
+            df[colname] = df[colname].fillna(0)
         dataframes.append(df)
     df_concat = pd.concat(dataframes)
     # NOTE: mock barcodes before changing wells
@@ -671,6 +678,13 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
             well_labels.append(utils.row_col_to_well(row, col))
         df[&#34;Well&#34;] = well_labels
         df[&#34;Plate_barcode&#34;] = plate_barcode
+        # Empty wells with no background produce NaNs rather than 0 in the
+        # image analysis, which causes missing data for truely complete
+        # inhbition. So we replace NaNs with 0 in the measurement columns we
+        # use.
+        fillna_cols = [&#34;Normalised Plaque area&#34;, &#34;Normalised Plaque intensity&#34;]
+        for colname in fillna_cols:
+            df[colname] = df[colname].fillna(0)
         dataframes.append(df)
     df_concat = pd.concat(dataframes)
     # NOTE: mock barcodes before changing wells

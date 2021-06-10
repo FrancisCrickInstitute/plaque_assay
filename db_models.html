@@ -173,6 +173,7 @@ class NE_model_parameters(Base):
     param_bottom = sql.Column(sql.DECIMAL(20, 15))
     param_ec50 = sql.Column(sql.DECIMAL(20, 15))
     param_hillslope = sql.Column(sql.DECIMAL(20, 15))
+    mean_squared_error = sql.Column(sql.DECIMAL(20, 15))
     workflow_id = sql.Column(
         sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
     )
@@ -1051,6 +1052,7 @@ for example, any mapped columns or relationships.</p></div>
     param_bottom = sql.Column(sql.DECIMAL(20, 15))
     param_ec50 = sql.Column(sql.DECIMAL(20, 15))
     param_hillslope = sql.Column(sql.DECIMAL(20, 15))
+    mean_squared_error = sql.Column(sql.DECIMAL(20, 15))
     workflow_id = sql.Column(
         sql.Integer, sql.ForeignKey(&#34;NE_workflow_tracking.workflow_id&#34;)
     )
@@ -1063,6 +1065,24 @@ for example, any mapped columns or relationships.</p></div>
 <h3>Instance variables</h3>
 <dl>
 <dt id="plaque_assay.db_models.NE_model_parameters.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_model_parameters.mean_squared_error"><code class="name">var <span class="ident">mean_squared_error</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -2740,6 +2760,7 @@ for example, any mapped columns or relationships.</p></div>
 <h4><code><a title="plaque_assay.db_models.NE_model_parameters" href="#plaque_assay.db_models.NE_model_parameters">NE_model_parameters</a></code></h4>
 <ul class="two-column">
 <li><code><a title="plaque_assay.db_models.NE_model_parameters.id" href="#plaque_assay.db_models.NE_model_parameters.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_model_parameters.mean_squared_error" href="#plaque_assay.db_models.NE_model_parameters.mean_squared_error">mean_squared_error</a></code></li>
 <li><code><a title="plaque_assay.db_models.NE_model_parameters.param_bottom" href="#plaque_assay.db_models.NE_model_parameters.param_bottom">param_bottom</a></code></li>
 <li><code><a title="plaque_assay.db_models.NE_model_parameters.param_ec50" href="#plaque_assay.db_models.NE_model_parameters.param_ec50">param_ec50</a></code></li>
 <li><code><a title="plaque_assay.db_models.NE_model_parameters.param_hillslope" href="#plaque_assay.db_models.NE_model_parameters.param_hillslope">param_hillslope</a></code></li>
