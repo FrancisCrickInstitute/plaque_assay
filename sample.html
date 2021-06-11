@@ -44,6 +44,10 @@ class Sample:
     &#34;&#34;&#34;Sample object holds the data for a sample across 4 concentrations
     including replicates.
 
+    The key attribute here is a dataframe of 2 columns: `dilution` and `value`.
+    Which is used to calculate the IC50 and detect and failures for the sample.
+    `value` is the percentage infected metric.
+
     Parameters
     -----------
     sample_name : string
@@ -61,14 +65,10 @@ class Sample:
     failures : list
         List containing potential `failures.WellFailures`. These include reasons
         such as:
-
-            - invalid IC50 value if the sample is a positive control
-
-            - failing to fit a model
-
-            - discordant replicate values
-
-    is_positive_control : Bool
+        - invalid IC50 value if the sample is a positive control
+        - failing to fit a model
+        - discordant replicate values
+    is_positive_control : bool
         Whether or not the sample is a positive control or not.
     ic50 : float
         Calculated ic50 values.
@@ -83,10 +83,6 @@ class Sample:
     fit_method : str
         How the model was fitted, either through an heuristic or
         via fitting a curve.
-
-    Methods
-    --------
-    plot()
     &#34;&#34;&#34;
 
     def __init__(self, sample_name, data):
@@ -102,7 +98,27 @@ class Sample:
         self.check_for_model_fit_failure()
 
     def calc_ic50(self):
-        &#34;&#34;&#34;calculate IC50 value&#34;&#34;&#34;
+        &#34;&#34;&#34;calculate IC50 value
+
+        This calculates an IC50 value if possible, though this could also
+        be an heuristic such as `complete inhibition`, `no inhibition`,
+        `weak inhibition` or `model fit failure`.
+
+        The `ic50` attribute is always numeric, if it is in heuristic it is
+        stored as a negative integer (see `utils.int_to_result`).
+        the `ic50_pretty` attribute is used for display, where it will
+        show either the numeric ic50 value, or the heuristic text.
+
+        This method also calculates the `mean_squared_error` of the model
+        if a model has been used to calculate the IC50.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
+        &#34;&#34;&#34;
         model_results = stats.calc_results_model(self.sample_name, self.data)
         self.fit_method = model_results.fit_method
         self.ic50 = model_results.result
@@ -115,6 +131,15 @@ class Sample:
         If this sample is a postitive control, then determine
         if the IC50 value is between 500-800. Otherwise it&#39;s an
         failure.
+
+        Appends `failure.WellFailure`s to the `failures` attribute.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
         &#34;&#34;&#34;
         lower_limit = qc_criteria.positive_control_low
         upper_limit = qc_criteria.positive_control_high
@@ -133,6 +158,15 @@ class Sample:
         if the difference is larger than some threshold. If this is the case
         for more than 2 duplicates in a sample then this should be flagged as
         a QC well failure.
+
+        Appends `failure.WellFailure`s to the `failures` attribute.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
         &#34;&#34;&#34;
         failed_count = 0
         difference_threshold = qc_criteria.duplicate_difference
@@ -158,6 +192,15 @@ class Sample:
     def check_for_model_fit_failure(self):
         &#34;&#34;&#34;
         If the model has failed to fit this should also be flagged as a QC failure
+
+        Appends `failure.WellFailure`s to the `failures` attribute.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
         &#34;&#34;&#34;
         if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
             model_fit_failure = failure.WellFailure(
@@ -168,7 +211,16 @@ class Sample:
             self.failures.append(model_fit_failure)
 
     def plot(self):
-        &#34;&#34;&#34;Simple static plot of points and fitted curve
+        &#34;&#34;&#34;
+        Simple static plot of points and fitted curve.
+
+        Notes
+        ------
+        This is not used within the automated analysis, but is
+        here for convenience when using `plaque_assay` as a separate module.
+
+        Parameters
+        -----------
 
         Returns
         --------
@@ -222,6 +274,9 @@ class Sample:
 <dd>
 <div class="desc"><p>Sample object holds the data for a sample across 4 concentrations
 including replicates.</p>
+<p>The key attribute here is a dataframe of 2 columns: <code>dilution</code> and <code>value</code>.
+Which is used to calculate the IC50 and detect and failures for the sample.
+<code>value</code> is the percentage infected metric.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>sample_name</code></strong> :&ensp;<code>string</code></dt>
@@ -238,14 +293,11 @@ including replicates.</p>
 2 columns: <code>dilution</code> and <code>value</code>.</dd>
 <dt><strong><code>failures</code></strong> :&ensp;<code>list</code></dt>
 <dd>List containing potential <code>failures.WellFailures</code>. These include reasons
-such as:<pre><code>- invalid IC50 value if the sample is a positive control
-
+such as:
+- invalid IC50 value if the sample is a positive control
 - failing to fit a model
-
-- discordant replicate values
-</code></pre>
-</dd>
-<dt><strong><code>is_positive_control</code></strong> :&ensp;<code>Bool</code></dt>
+- discordant replicate values</dd>
+<dt><strong><code>is_positive_control</code></strong> :&ensp;<code>bool</code></dt>
 <dd>Whether or not the sample is a positive control or not.</dd>
 <dt><strong><code>ic50</code></strong> :&ensp;<code>float</code></dt>
 <dd>Calculated ic50 values.</dd>
@@ -260,9 +312,7 @@ the 4-parameter dose-response model. These are
 <dt><strong><code>fit_method</code></strong> :&ensp;<code>str</code></dt>
 <dd>How the model was fitted, either through an heuristic or
 via fitting a curve.</dd>
-</dl>
-<h2 id="methods">Methods</h2>
-<p>plot()</p></div>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -270,6 +320,10 @@ via fitting a curve.</dd>
 <pre><code class="python">class Sample:
     &#34;&#34;&#34;Sample object holds the data for a sample across 4 concentrations
     including replicates.
+
+    The key attribute here is a dataframe of 2 columns: `dilution` and `value`.
+    Which is used to calculate the IC50 and detect and failures for the sample.
+    `value` is the percentage infected metric.
 
     Parameters
     -----------
@@ -288,14 +342,10 @@ via fitting a curve.</dd>
     failures : list
         List containing potential `failures.WellFailures`. These include reasons
         such as:
-
-            - invalid IC50 value if the sample is a positive control
-
-            - failing to fit a model
-
-            - discordant replicate values
-
-    is_positive_control : Bool
+        - invalid IC50 value if the sample is a positive control
+        - failing to fit a model
+        - discordant replicate values
+    is_positive_control : bool
         Whether or not the sample is a positive control or not.
     ic50 : float
         Calculated ic50 values.
@@ -310,10 +360,6 @@ via fitting a curve.</dd>
     fit_method : str
         How the model was fitted, either through an heuristic or
         via fitting a curve.
-
-    Methods
-    --------
-    plot()
     &#34;&#34;&#34;
 
     def __init__(self, sample_name, data):
@@ -329,7 +375,27 @@ via fitting a curve.</dd>
         self.check_for_model_fit_failure()
 
     def calc_ic50(self):
-        &#34;&#34;&#34;calculate IC50 value&#34;&#34;&#34;
+        &#34;&#34;&#34;calculate IC50 value
+
+        This calculates an IC50 value if possible, though this could also
+        be an heuristic such as `complete inhibition`, `no inhibition`,
+        `weak inhibition` or `model fit failure`.
+
+        The `ic50` attribute is always numeric, if it is in heuristic it is
+        stored as a negative integer (see `utils.int_to_result`).
+        the `ic50_pretty` attribute is used for display, where it will
+        show either the numeric ic50 value, or the heuristic text.
+
+        This method also calculates the `mean_squared_error` of the model
+        if a model has been used to calculate the IC50.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
+        &#34;&#34;&#34;
         model_results = stats.calc_results_model(self.sample_name, self.data)
         self.fit_method = model_results.fit_method
         self.ic50 = model_results.result
@@ -342,6 +408,15 @@ via fitting a curve.</dd>
         If this sample is a postitive control, then determine
         if the IC50 value is between 500-800. Otherwise it&#39;s an
         failure.
+
+        Appends `failure.WellFailure`s to the `failures` attribute.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
         &#34;&#34;&#34;
         lower_limit = qc_criteria.positive_control_low
         upper_limit = qc_criteria.positive_control_high
@@ -360,6 +435,15 @@ via fitting a curve.</dd>
         if the difference is larger than some threshold. If this is the case
         for more than 2 duplicates in a sample then this should be flagged as
         a QC well failure.
+
+        Appends `failure.WellFailure`s to the `failures` attribute.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
         &#34;&#34;&#34;
         failed_count = 0
         difference_threshold = qc_criteria.duplicate_difference
@@ -385,6 +469,15 @@ via fitting a curve.</dd>
     def check_for_model_fit_failure(self):
         &#34;&#34;&#34;
         If the model has failed to fit this should also be flagged as a QC failure
+
+        Appends `failure.WellFailure`s to the `failures` attribute.
+
+        Parameters
+        ----------
+
+        Returns
+        --------
+        None
         &#34;&#34;&#34;
         if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
             model_fit_failure = failure.WellFailure(
@@ -395,7 +488,16 @@ via fitting a curve.</dd>
             self.failures.append(model_fit_failure)
 
     def plot(self):
-        &#34;&#34;&#34;Simple static plot of points and fitted curve
+        &#34;&#34;&#34;
+        Simple static plot of points and fitted curve.
+
+        Notes
+        ------
+        This is not used within the automated analysis, but is
+        here for convenience when using `plaque_assay` as a separate module.
+
+        Parameters
+        -----------
 
         Returns
         --------
@@ -438,13 +540,48 @@ via fitting a curve.</dd>
 <span>def <span class="ident">calc_ic50</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>calculate IC50 value</p></div>
+<div class="desc"><p>calculate IC50 value</p>
+<p>This calculates an IC50 value if possible, though this could also
+be an heuristic such as <code>complete inhibition</code>, <code>no inhibition</code>,
+<code>weak inhibition</code> or <code>model fit failure</code>.</p>
+<p>The <code>ic50</code> attribute is always numeric, if it is in heuristic it is
+stored as a negative integer (see <code>utils.int_to_result</code>).
+the <code>ic50_pretty</code> attribute is used for display, where it will
+show either the numeric ic50 value, or the heuristic text.</p>
+<p>This method also calculates the <code>mean_squared_error</code> of the model
+if a model has been used to calculate the IC50.</p>
+<h2 id="parameters">Parameters</h2>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def calc_ic50(self):
-    &#34;&#34;&#34;calculate IC50 value&#34;&#34;&#34;
+    &#34;&#34;&#34;calculate IC50 value
+
+    This calculates an IC50 value if possible, though this could also
+    be an heuristic such as `complete inhibition`, `no inhibition`,
+    `weak inhibition` or `model fit failure`.
+
+    The `ic50` attribute is always numeric, if it is in heuristic it is
+    stored as a negative integer (see `utils.int_to_result`).
+    the `ic50_pretty` attribute is used for display, where it will
+    show either the numeric ic50 value, or the heuristic text.
+
+    This method also calculates the `mean_squared_error` of the model
+    if a model has been used to calculate the IC50.
+
+    Parameters
+    ----------
+
+    Returns
+    --------
+    None
+    &#34;&#34;&#34;
     model_results = stats.calc_results_model(self.sample_name, self.data)
     self.fit_method = model_results.fit_method
     self.ic50 = model_results.result
@@ -460,7 +597,14 @@ via fitting a curve.</dd>
 <div class="desc"><p>Want to calculate the differences between duplicates and determine
 if the difference is larger than some threshold. If this is the case
 for more than 2 duplicates in a sample then this should be flagged as
-a QC well failure.</p></div>
+a QC well failure.</p>
+<p>Appends <code>failure.WellFailure</code>s to the <code>failures</code> attribute.</p>
+<h2 id="parameters">Parameters</h2>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -471,6 +615,15 @@ a QC well failure.</p></div>
     if the difference is larger than some threshold. If this is the case
     for more than 2 duplicates in a sample then this should be flagged as
     a QC well failure.
+
+    Appends `failure.WellFailure`s to the `failures` attribute.
+
+    Parameters
+    ----------
+
+    Returns
+    --------
+    None
     &#34;&#34;&#34;
     failed_count = 0
     difference_threshold = qc_criteria.duplicate_difference
@@ -498,7 +651,14 @@ a QC well failure.</p></div>
 <span>def <span class="ident">check_for_model_fit_failure</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>If the model has failed to fit this should also be flagged as a QC failure</p></div>
+<div class="desc"><p>If the model has failed to fit this should also be flagged as a QC failure</p>
+<p>Appends <code>failure.WellFailure</code>s to the <code>failures</code> attribute.</p>
+<h2 id="parameters">Parameters</h2>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -506,6 +666,15 @@ a QC well failure.</p></div>
 <pre><code class="python">def check_for_model_fit_failure(self):
     &#34;&#34;&#34;
     If the model has failed to fit this should also be flagged as a QC failure
+
+    Appends `failure.WellFailure`s to the `failures` attribute.
+
+    Parameters
+    ----------
+
+    Returns
+    --------
+    None
     &#34;&#34;&#34;
     if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
         model_fit_failure = failure.WellFailure(
@@ -522,7 +691,14 @@ a QC well failure.</p></div>
 <dd>
 <div class="desc"><p>If this sample is a postitive control, then determine
 if the IC50 value is between 500-800. Otherwise it's an
-failure.</p></div>
+failure.</p>
+<p>Appends <code>failure.WellFailure</code>s to the <code>failures</code> attribute.</p>
+<h2 id="parameters">Parameters</h2>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -532,6 +708,15 @@ failure.</p></div>
     If this sample is a postitive control, then determine
     if the IC50 value is between 500-800. Otherwise it&#39;s an
     failure.
+
+    Appends `failure.WellFailure`s to the `failures` attribute.
+
+    Parameters
+    ----------
+
+    Returns
+    --------
+    None
     &#34;&#34;&#34;
     lower_limit = qc_criteria.positive_control_low
     upper_limit = qc_criteria.positive_control_high
@@ -549,7 +734,11 @@ failure.</p></div>
 <span>def <span class="ident">plot</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Simple static plot of points and fitted curve</p>
+<div class="desc"><p>Simple static plot of points and fitted curve.</p>
+<h2 id="notes">Notes</h2>
+<p>This is not used within the automated analysis, but is
+here for convenience when using <code><a title="plaque_assay" href="index.html">plaque_assay</a></code> as a separate module.</p>
+<h2 id="parameters">Parameters</h2>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>matplotlib.pyplot.plot</code></dt>
@@ -560,7 +749,16 @@ failure.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def plot(self):
-    &#34;&#34;&#34;Simple static plot of points and fitted curve
+    &#34;&#34;&#34;
+    Simple static plot of points and fitted curve.
+
+    Notes
+    ------
+    This is not used within the automated analysis, but is
+    here for convenience when using `plaque_assay` as a separate module.
+
+    Parameters
+    -----------
 
     Returns
     --------
