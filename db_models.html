@@ -198,7 +198,18 @@ class NE_available_strains(Base):
     id = sql.Column(sql.Integer, primary_key=True)
     mutant_strain = sql.Column(sql.String(45))
     plate_id_1 = sql.Column(sql.String(5))
-    plate_id_2 = sql.Column(sql.String(5))</code></pre>
+    plate_id_2 = sql.Column(sql.String(5))
+
+
+class NE_reporter_plate_status(Base):
+    __tablename__ = &#34;NE_reporter_plate_status&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    workflow_id = sql.Column(sql.Integer, nullable=False)
+    variant = sql.Column(sql.String(45), nullable=False)
+    status = sql.Column(sql.String(45), nullable=False)
+    reporter = sql.Column(sql.String(45))
+    updated_at = sql.Column(sql.TIMESTAMP)
+    reason = sql.Column(sql.TEXT)</code></pre>
 </details>
 </section>
 <section>
@@ -2290,6 +2301,168 @@ for example, any mapped columns or relationships.</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status"><code class="flex name class">
+<span>class <span class="ident">NE_reporter_plate_status</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_reporter_plate_status(Base):
+    __tablename__ = &#34;NE_reporter_plate_status&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    workflow_id = sql.Column(sql.Integer, nullable=False)
+    variant = sql.Column(sql.String(45), nullable=False)
+    status = sql.Column(sql.String(45), nullable=False)
+    reporter = sql.Column(sql.String(45))
+    updated_at = sql.Column(sql.TIMESTAMP)
+    reason = sql.Column(sql.TEXT)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status.reason"><code class="name">var <span class="ident">reason</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status.reporter"><code class="name">var <span class="ident">reporter</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status.status"><code class="name">var <span class="ident">status</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status.updated_at"><code class="name">var <span class="ident">updated_at</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_reporter_plate_status.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="plaque_assay.db_models.NE_workflow_tracking"><code class="flex name class">
 <span>class <span class="ident">NE_workflow_tracking</span></span>
 <span>(</span><span>**kwargs)</span>
@@ -2834,6 +3007,18 @@ for example, any mapped columns or relationships.</p></div>
 <li><code><a title="plaque_assay.db_models.NE_raw_results.variant" href="#plaque_assay.db_models.NE_raw_results.variant">variant</a></code></li>
 <li><code><a title="plaque_assay.db_models.NE_raw_results.well" href="#plaque_assay.db_models.NE_raw_results.well">well</a></code></li>
 <li><code><a title="plaque_assay.db_models.NE_raw_results.workflow_id" href="#plaque_assay.db_models.NE_raw_results.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_reporter_plate_status" href="#plaque_assay.db_models.NE_reporter_plate_status">NE_reporter_plate_status</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_reporter_plate_status.id" href="#plaque_assay.db_models.NE_reporter_plate_status.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_reporter_plate_status.reason" href="#plaque_assay.db_models.NE_reporter_plate_status.reason">reason</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_reporter_plate_status.reporter" href="#plaque_assay.db_models.NE_reporter_plate_status.reporter">reporter</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_reporter_plate_status.status" href="#plaque_assay.db_models.NE_reporter_plate_status.status">status</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_reporter_plate_status.updated_at" href="#plaque_assay.db_models.NE_reporter_plate_status.updated_at">updated_at</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_reporter_plate_status.variant" href="#plaque_assay.db_models.NE_reporter_plate_status.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_reporter_plate_status.workflow_id" href="#plaque_assay.db_models.NE_reporter_plate_status.workflow_id">workflow_id</a></code></li>
 </ul>
 </li>
 <li>

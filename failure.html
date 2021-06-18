@@ -41,6 +41,7 @@ class PlateFailure:
     reason : str
 
     &#34;&#34;&#34;
+
     def __init__(self, plate, wells, reason=&#34;&#34;):
         self.plate = plate
         self.wells = wells
@@ -64,12 +65,14 @@ class PlateFailure:
 
 class InfectionPlateFailure(PlateFailure):
     &#34;&#34;&#34;Plate failure due to virus-only infection median outside expected range&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
 class CellAreaPlateFailure(PlateFailure):
     &#34;&#34;&#34;Plate failure due to cell-image-region-area outside expected limits&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reason = &#34;cell-image-region-area outside expected limits&#34;
@@ -77,6 +80,7 @@ class CellAreaPlateFailure(PlateFailure):
 
 class DAPIPlateFailure(PlateFailure):
     &#34;&#34;&#34;Plate failure due to large number of DAPI images outside expected range&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reason = &#34;possible plate fail - check DAPI plate image&#34;
@@ -96,6 +100,7 @@ class WellFailure:
     to_dict()
         convert to dictionary
     &#34;&#34;&#34;
+
     def __init__(self, well, plate, reason):
         self.well = well
         self.plate = plate
@@ -137,6 +142,7 @@ class WellFailure:
 </summary>
 <pre><code class="python">class CellAreaPlateFailure(PlateFailure):
     &#34;&#34;&#34;Plate failure due to cell-image-region-area outside expected limits&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reason = &#34;cell-image-region-area outside expected limits&#34;</code></pre>
@@ -166,6 +172,7 @@ class WellFailure:
 </summary>
 <pre><code class="python">class DAPIPlateFailure(PlateFailure):
     &#34;&#34;&#34;Plate failure due to large number of DAPI images outside expected range&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reason = &#34;possible plate fail - check DAPI plate image&#34;</code></pre>
@@ -195,6 +202,7 @@ class WellFailure:
 </summary>
 <pre><code class="python">class InfectionPlateFailure(PlateFailure):
     &#34;&#34;&#34;Plate failure due to virus-only infection median outside expected range&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)</code></pre>
 </details>
@@ -238,6 +246,7 @@ class WellFailure:
     reason : str
 
     &#34;&#34;&#34;
+
     def __init__(self, plate, wells, reason=&#34;&#34;):
         self.plate = plate
         self.wells = wells
@@ -323,6 +332,7 @@ convert to dictionary</p></div>
     to_dict()
         convert to dictionary
     &#34;&#34;&#34;
+
     def __init__(self, well, plate, reason):
         self.well = well
         self.plate = plate
