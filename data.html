@@ -541,14 +541,14 @@ class DatabaseUploader:
         Parameters
         ----------
         workflow_id: int
-        vaiant: str
+        variant: str
 
         Returns
         -------
         None
         &#34;&#34;&#34;
         plate_entry = db_models.NE_reporter_plate_status(
-            workfloW_id=int(workflow_id), variant=variant, status=&#34;awaiting&#34;
+            workflow_id=int(workflow_id), variant=variant, status=&#34;awaiting&#34;
         )
         self.session.add(plate_entry)</code></pre>
 </details>
@@ -1174,14 +1174,14 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
         Parameters
         ----------
         workflow_id: int
-        vaiant: str
+        variant: str
 
         Returns
         -------
         None
         &#34;&#34;&#34;
         plate_entry = db_models.NE_reporter_plate_status(
-            workfloW_id=int(workflow_id), variant=variant, status=&#34;awaiting&#34;
+            workflow_id=int(workflow_id), variant=variant, status=&#34;awaiting&#34;
         )
         self.session.add(plate_entry)</code></pre>
 </details>
@@ -1750,7 +1750,7 @@ reporter decision (pass, fail).</p>
 <dl>
 <dt><strong><code>workflow_id</code></strong> :&ensp;<code>int</code></dt>
 <dd>&nbsp;</dd>
-<dt><strong><code>vaiant</code></strong> :&ensp;<code>str</code></dt>
+<dt><strong><code>variant</code></strong> :&ensp;<code>str</code></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -1770,14 +1770,14 @@ reporter decision (pass, fail).</p>
     Parameters
     ----------
     workflow_id: int
-    vaiant: str
+    variant: str
 
     Returns
     -------
     None
     &#34;&#34;&#34;
     plate_entry = db_models.NE_reporter_plate_status(
-        workfloW_id=int(workflow_id), variant=variant, status=&#34;awaiting&#34;
+        workflow_id=int(workflow_id), variant=variant, status=&#34;awaiting&#34;
     )
     self.session.add(plate_entry)</code></pre>
 </details>
