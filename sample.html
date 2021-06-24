@@ -30,6 +30,8 @@
 <pre><code class="python">&#34;&#34;&#34;
 module docstring
 &#34;&#34;&#34;
+import logging
+
 from . import stats
 from . import failure
 from . import utils
@@ -54,6 +56,8 @@ class Sample:
         sample name, typically well-label
     data : pandas.DataFrame
         2 column dataframe: [dilution, value]
+    variant : string
+        virus variant name, used for variant-specific QC checks
 
     Attributes
     ----------
@@ -85,11 +89,10 @@ class Sample:
         via fitting a curve.
     &#34;&#34;&#34;
 
-    def __init__(self, sample_name, data):
-        &#34;&#34;&#34;
-        &#34;&#34;&#34;
+    def __init__(self, sample_name, data, variant):
         self.sample_name = sample_name
         self.data = data
+        self.variant = variant
         self.failures = []
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
@@ -131,28 +134,35 @@ class Sample:
     def check_positive_control(self):
         &#34;&#34;&#34;
         If this sample is a postitive control, then determine
-        if the IC50 value is between 500-800. Otherwise it&#39;s an
-        failure.
+        if the IC50 value is between a variant-specific range.
+        If it&#39;s outside this range it&#39;s flagged as a well failure.
 
         Appends `failure.WellFailure`s to the `failures` attribute.
 
         Parameters
         ----------
+        None
 
         Returns
         --------
         None
         &#34;&#34;&#34;
-        lower_limit = qc_criteria.positive_control_low
-        upper_limit = qc_criteria.positive_control_high
-        if self.is_positive_control:
-            if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
-                positive_control_failure = failure.WellFailure(
-                    well=self.sample_name,
-                    plate=&#34;DILUTION SERIES&#34;,
-                    reason=f&#34;positive control failure. IC50 = {self.ic50_pretty}&#34;,
-                )
-                self.failures.append(positive_control_failure)
+        if not self.is_positive_control:
+            return None
+        if qc_criteria.positive_control_ic50.get(self.variant) is None:
+            # no positive control IC50 QC criteria defined for this variant
+            # so don&#39;t flag anything.
+            logging.warning(f&#34;No QC criteria defined for this variant {self.variant}&#34;)
+            return None
+        lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
+        upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
+        if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+            positive_control_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                reason=f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;,
+            )
+            self.failures.append(positive_control_failure)
 
     def check_duplicate_differences(self):
         &#34;&#34;&#34;
@@ -271,7 +281,7 @@ class Sample:
 <dl>
 <dt id="plaque_assay.sample.Sample"><code class="flex name class">
 <span>class <span class="ident">Sample</span></span>
-<span>(</span><span>sample_name, data)</span>
+<span>(</span><span>sample_name, data, variant)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sample object holds the data for a sample across 4 concentrations
@@ -285,6 +295,8 @@ Which is used to calculate the IC50 and detect and failures for the sample.
 <dd>sample name, typically well-label</dd>
 <dt><strong><code>data</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
 <dd>2 column dataframe: [dilution, value]</dd>
+<dt><strong><code>variant</code></strong> :&ensp;<code>string</code></dt>
+<dd>virus variant name, used for variant-specific QC checks</dd>
 </dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
@@ -333,6 +345,8 @@ via fitting a curve.</dd>
         sample name, typically well-label
     data : pandas.DataFrame
         2 column dataframe: [dilution, value]
+    variant : string
+        virus variant name, used for variant-specific QC checks
 
     Attributes
     ----------
@@ -364,11 +378,10 @@ via fitting a curve.</dd>
         via fitting a curve.
     &#34;&#34;&#34;
 
-    def __init__(self, sample_name, data):
-        &#34;&#34;&#34;
-        &#34;&#34;&#34;
+    def __init__(self, sample_name, data, variant):
         self.sample_name = sample_name
         self.data = data
+        self.variant = variant
         self.failures = []
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
@@ -410,28 +423,35 @@ via fitting a curve.</dd>
     def check_positive_control(self):
         &#34;&#34;&#34;
         If this sample is a postitive control, then determine
-        if the IC50 value is between 500-800. Otherwise it&#39;s an
-        failure.
+        if the IC50 value is between a variant-specific range.
+        If it&#39;s outside this range it&#39;s flagged as a well failure.
 
         Appends `failure.WellFailure`s to the `failures` attribute.
 
         Parameters
         ----------
+        None
 
         Returns
         --------
         None
         &#34;&#34;&#34;
-        lower_limit = qc_criteria.positive_control_low
-        upper_limit = qc_criteria.positive_control_high
-        if self.is_positive_control:
-            if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
-                positive_control_failure = failure.WellFailure(
-                    well=self.sample_name,
-                    plate=&#34;DILUTION SERIES&#34;,
-                    reason=f&#34;positive control failure. IC50 = {self.ic50_pretty}&#34;,
-                )
-                self.failures.append(positive_control_failure)
+        if not self.is_positive_control:
+            return None
+        if qc_criteria.positive_control_ic50.get(self.variant) is None:
+            # no positive control IC50 QC criteria defined for this variant
+            # so don&#39;t flag anything.
+            logging.warning(f&#34;No QC criteria defined for this variant {self.variant}&#34;)
+            return None
+        lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
+        upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
+        if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+            positive_control_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                reason=f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;,
+            )
+            self.failures.append(positive_control_failure)
 
     def check_duplicate_differences(self):
         &#34;&#34;&#34;
@@ -696,10 +716,14 @@ a QC well failure.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>If this sample is a postitive control, then determine
-if the IC50 value is between 500-800. Otherwise it's an
-failure.</p>
+if the IC50 value is between a variant-specific range.
+If it's outside this range it's flagged as a well failure.</p>
 <p>Appends <code>failure.WellFailure</code>s to the <code>failures</code> attribute.</p>
 <h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>None</code></strong></dt>
+<dd>&nbsp;</dd>
+</dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>None</code></dt>
@@ -712,28 +736,35 @@ failure.</p>
 <pre><code class="python">def check_positive_control(self):
     &#34;&#34;&#34;
     If this sample is a postitive control, then determine
-    if the IC50 value is between 500-800. Otherwise it&#39;s an
-    failure.
+    if the IC50 value is between a variant-specific range.
+    If it&#39;s outside this range it&#39;s flagged as a well failure.
 
     Appends `failure.WellFailure`s to the `failures` attribute.
 
     Parameters
     ----------
+    None
 
     Returns
     --------
     None
     &#34;&#34;&#34;
-    lower_limit = qc_criteria.positive_control_low
-    upper_limit = qc_criteria.positive_control_high
-    if self.is_positive_control:
-        if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
-            positive_control_failure = failure.WellFailure(
-                well=self.sample_name,
-                plate=&#34;DILUTION SERIES&#34;,
-                reason=f&#34;positive control failure. IC50 = {self.ic50_pretty}&#34;,
-            )
-            self.failures.append(positive_control_failure)</code></pre>
+    if not self.is_positive_control:
+        return None
+    if qc_criteria.positive_control_ic50.get(self.variant) is None:
+        # no positive control IC50 QC criteria defined for this variant
+        # so don&#39;t flag anything.
+        logging.warning(f&#34;No QC criteria defined for this variant {self.variant}&#34;)
+        return None
+    lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
+    upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
+    if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+        positive_control_failure = failure.WellFailure(
+            well=self.sample_name,
+            plate=&#34;DILUTION SERIES&#34;,
+            reason=f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;,
+        )
+        self.failures.append(positive_control_failure)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.plot"><code class="name flex">

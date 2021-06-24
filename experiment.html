@@ -92,7 +92,7 @@ class Experiment:
         sample_dict = dict()
         for name, group in self.df.groupby(&#34;Well&#34;):
             sample_df = group[[&#34;Dilution&#34;, &#34;Percentage Infected&#34;]]
-            sample_dict[name] = Sample(name, sample_df)
+            sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
     def get_failures_as_json(self):
@@ -426,7 +426,7 @@ class Experiment:
         sample_dict = dict()
         for name, group in self.df.groupby(&#34;Well&#34;):
             sample_df = group[[&#34;Dilution&#34;, &#34;Percentage Infected&#34;]]
-            sample_dict[name] = Sample(name, sample_df)
+            sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
     def get_failures_as_json(self):
@@ -1036,7 +1036,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
     sample_dict = dict()
     for name, group in self.df.groupby(&#34;Well&#34;):
         sample_df = group[[&#34;Dilution&#34;, &#34;Percentage Infected&#34;]]
-        sample_dict[name] = Sample(name, sample_df)
+        sample_dict[name] = Sample(name, sample_df, self.variant)
     return sample_dict</code></pre>
 </details>
 </dd>

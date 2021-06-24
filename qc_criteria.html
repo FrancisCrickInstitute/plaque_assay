@@ -26,10 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import os
-import textwrap
+<pre><code class="python">import numpy as np
 
-from . import consts
 
 &#34;&#34;&#34;
 1. Calculate median of “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
@@ -76,51 +74,24 @@ infection_rate_high = 0.8
     c. If between 40-50% inhibition at 1:40, return ‘weak inhibition’
 
 8. Check IC50 for control wells A6, H6, D12, and E12.
-    a. If IC50 is not between 300-800, then flag “positive control IC50 outside expected range”.
+    a. If IC50 is not between variant-specific range, then flag “positive control IC50 outside
+       expected range”.
 &#34;&#34;&#34;
 # If this sample is a postitive control, then determine
 # if the IC50 value is between specified values. Otherwise it&#39;s an
 # failure.
-positive_control_low = 300
-positive_control_high = 800
+positive_control_ic50 = {
+    &#34;England2&#34;: {&#34;low&#34;: 400, &#34;high&#34;: 1200},
+    &#34;B117&#34;: {&#34;low&#34;: 250, &#34;high&#34;: 600},
+    &#34;B1351&#34;: {&#34;low&#34;: 400, &#34;high&#34;: 1200},
+    &#34;FCI_003&#34;: {&#34;low&#34;: 400, &#34;high&#34;: 1200},
+    &#34;B.1.617.2 (India)&#34;: {&#34;low&#34;: 900, &#34;high&#34;: np.inf},
+}
 
 
 # the difference between replicates in &#34;percentage infected&#34;
 # over which, the duplicates will be considered too far apart
-duplicate_difference = 37
-
-
-def print_criteria():
-    output = textwrap.dedent(
-        f&#34;&#34;&#34;
-        Quality control criteria used in this analysis
-        ===============================================
-
-        Wells identified where &#34;Cells - Image Region Area [µm²] - Mean per Well&#34;
-        is &lt; {low_cells_image_region_area_low*100:.1f}% or &gt; {low_cells_image_region_area_high*100:.1f} % of the plate median.
-        If any of these wells are in column 12 then flag the entire plate for failure.
-
-        The IC50 values of the positive control wells have to be between {positive_control_low:.1f} and {positive_control_high:.1f}.
-
-        The infection rate of the virus only wells has to be between {infection_rate_low*100:.1f}% and {infection_rate_high*100:.1f}%.
-        This is calculated from &#34;Background Subtracted Plaque Area&#34;, and the entire plate is failed if the median
-        of the virus-only-wells is outside of these limits.
-
-        virus only wells: {consts.VIRUS_ONLY_WELLS}
-
-        no virus wells: {consts.NO_VIRUS_WELLS}
-
-        positive control wells: {consts.POSITIVE_CONTROL_WELLS}
-        &#34;&#34;&#34;
-    )
-    return output
-
-
-def save_qc_criteria(output_dir, experiment):
-    text = print_criteria()
-    save_path = os.path.join(output_dir, f&#34;qc_criteria_{experiment}.txt&#34;)
-    with open(save_path, &#34;w&#34;) as f:
-        f.write(text)</code></pre>
+duplicate_difference = 37</code></pre>
 </details>
 </section>
 <section>
@@ -143,7 +114,8 @@ c. If between 40-50% inhibition at 1:40, return ‘weak inhibition’</p>
 </li>
 <li>
 <p>Check IC50 for control wells A6, H6, D12, and E12.
-a. If IC50 is not between 300-800, then flag “positive control IC50 outside expected range”.</p>
+a. If IC50 is not between variant-specific range, then flag “positive control IC50 outside
+expected range”.</p>
 </li>
 </ol></div>
 </dd>
@@ -169,60 +141,6 @@ flag ‘plate fail due to infection outside optimal range’.</p>
 </dl>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="plaque_assay.qc_criteria.print_criteria"><code class="name flex">
-<span>def <span class="ident">print_criteria</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def print_criteria():
-    output = textwrap.dedent(
-        f&#34;&#34;&#34;
-        Quality control criteria used in this analysis
-        ===============================================
-
-        Wells identified where &#34;Cells - Image Region Area [µm²] - Mean per Well&#34;
-        is &lt; {low_cells_image_region_area_low*100:.1f}% or &gt; {low_cells_image_region_area_high*100:.1f} % of the plate median.
-        If any of these wells are in column 12 then flag the entire plate for failure.
-
-        The IC50 values of the positive control wells have to be between {positive_control_low:.1f} and {positive_control_high:.1f}.
-
-        The infection rate of the virus only wells has to be between {infection_rate_low*100:.1f}% and {infection_rate_high*100:.1f}%.
-        This is calculated from &#34;Background Subtracted Plaque Area&#34;, and the entire plate is failed if the median
-        of the virus-only-wells is outside of these limits.
-
-        virus only wells: {consts.VIRUS_ONLY_WELLS}
-
-        no virus wells: {consts.NO_VIRUS_WELLS}
-
-        positive control wells: {consts.POSITIVE_CONTROL_WELLS}
-        &#34;&#34;&#34;
-    )
-    return output</code></pre>
-</details>
-</dd>
-<dt id="plaque_assay.qc_criteria.save_qc_criteria"><code class="name flex">
-<span>def <span class="ident">save_qc_criteria</span></span>(<span>output_dir, experiment)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def save_qc_criteria(output_dir, experiment):
-    text = print_criteria()
-    save_path = os.path.join(output_dir, f&#34;qc_criteria_{experiment}.txt&#34;)
-    with open(save_path, &#34;w&#34;) as f:
-        f.write(text)</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 </section>
@@ -242,12 +160,6 @@ flag ‘plate fail due to infection outside optimal range’.</p>
 <ul class="">
 <li><code><a title="plaque_assay.qc_criteria.infection_rate_high" href="#plaque_assay.qc_criteria.infection_rate_high">infection_rate_high</a></code></li>
 <li><code><a title="plaque_assay.qc_criteria.low_cells_image_region_area_high" href="#plaque_assay.qc_criteria.low_cells_image_region_area_high">low_cells_image_region_area_high</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="plaque_assay.qc_criteria.print_criteria" href="#plaque_assay.qc_criteria.print_criteria">print_criteria</a></code></li>
-<li><code><a title="plaque_assay.qc_criteria.save_qc_criteria" href="#plaque_assay.qc_criteria.save_qc_criteria">save_qc_criteria</a></code></li>
 </ul>
 </li>
 </ul>
