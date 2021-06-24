@@ -3,6 +3,8 @@ from plaque_assay.sample import Sample
 import pandas as pd
 
 
+VARIANT = "England2"
+
 dilutions = [
     0.000391,
     0.000391,
@@ -76,13 +78,15 @@ bad_replicate_no_inhib_data = pd.DataFrame(
 
 
 def test_check_positive_control():
-    sample_good = Sample(sample_name="A06", data=good_test_data)
+    sample_good = Sample(sample_name="A06", data=good_test_data, variant=VARIANT)
     # shouldn't have any positive control failures
     assert len(sample_good.failures) == 0
 
 
 def test_check_duplicate_differences():
-    sample_bad_rep = Sample(sample_name="A01", data=bad_replicate_test_data)
+    sample_bad_rep = Sample(
+        sample_name="A01", data=bad_replicate_test_data, variant=VARIANT
+    )
     assert len(sample_bad_rep.failures) > 0
     # check that the failure is actually due to duplicate difference
     assert any(
@@ -93,13 +97,15 @@ def test_check_duplicate_differences():
 
 def test_check_duplicate_differnces_no_inhibition():
     """Don't flag duplicate difference if the result is "no inhibition"""
-    sample = Sample(sample_name="A01", data=bad_replicate_no_inhib_data)
+    sample = Sample(
+        sample_name="A01", data=bad_replicate_no_inhib_data, variant=VARIANT
+    )
     assert len(sample.failures) == 0
     assert sample.ic50_pretty == "no inhibition"
 
 
 def test_check_for_model_fit_failure():
-    sample = Sample(sample_name="A01", data=model_failure_data)
+    sample = Sample(sample_name="A01", data=model_failure_data, variant=VARIANT)
     assert len(sample.failures) > 0
     assert any(
         i.reason == "failed to fit model to data points" for i in sample.failures
