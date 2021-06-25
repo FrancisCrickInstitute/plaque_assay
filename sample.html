@@ -241,7 +241,11 @@ class Sample:
         plt.figure(figsize=[10, 6])
         plt.axhline(y=50, linestyle=&#34;--&#34;, color=&#34;grey&#34;)
         plt.scatter(1 / self.data[&#34;Dilution&#34;], self.data[&#34;Percentage Infected&#34;])
-        x = np.linspace(self.data[&#34;Dilution&#34;].min(), self.data[&#34;Dilution&#34;].max(), 1000)
+        x = np.logspace(
+            np.log10(self.data[&#34;Dilution&#34;].min()),
+            np.log10(self.data[&#34;Dilution&#34;].max()),
+            10000
+        )
         if self.model_params is not None:
             x_min = self.data[&#34;Dilution&#34;].min()
             x_max = self.data[&#34;Dilution&#34;].max()
@@ -530,7 +534,11 @@ via fitting a curve.</dd>
         plt.figure(figsize=[10, 6])
         plt.axhline(y=50, linestyle=&#34;--&#34;, color=&#34;grey&#34;)
         plt.scatter(1 / self.data[&#34;Dilution&#34;], self.data[&#34;Percentage Infected&#34;])
-        x = np.linspace(self.data[&#34;Dilution&#34;].min(), self.data[&#34;Dilution&#34;].max(), 1000)
+        x = np.logspace(
+            np.log10(self.data[&#34;Dilution&#34;].min()),
+            np.log10(self.data[&#34;Dilution&#34;].max()),
+            10000
+        )
         if self.model_params is not None:
             x_min = self.data[&#34;Dilution&#34;].min()
             x_max = self.data[&#34;Dilution&#34;].max()
@@ -804,7 +812,11 @@ here for convenience when using <code><a title="plaque_assay" href="index.html">
     plt.figure(figsize=[10, 6])
     plt.axhline(y=50, linestyle=&#34;--&#34;, color=&#34;grey&#34;)
     plt.scatter(1 / self.data[&#34;Dilution&#34;], self.data[&#34;Percentage Infected&#34;])
-    x = np.linspace(self.data[&#34;Dilution&#34;].min(), self.data[&#34;Dilution&#34;].max(), 1000)
+    x = np.logspace(
+        np.log10(self.data[&#34;Dilution&#34;].min()),
+        np.log10(self.data[&#34;Dilution&#34;].max()),
+        10000
+    )
     if self.model_params is not None:
         x_min = self.data[&#34;Dilution&#34;].min()
         x_max = self.data[&#34;Dilution&#34;].max()
