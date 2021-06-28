@@ -31,6 +31,7 @@
 module docstring
 &#34;&#34;&#34;
 import logging
+from typing import List, Any
 
 from . import stats
 from . import failure
@@ -94,7 +95,7 @@ class Sample:
         self.sample_name = sample_name
         self.data = data
         self.variant = variant
-        self.failures = []
+        self.failures: List[Any] = []
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
         self.check_positive_control()
@@ -132,7 +133,7 @@ class Sample:
         self.model_params = model_results.model_params
         self.mean_squared_error = model_results.mean_squared_error
 
-    def check_positive_control(self):
+    def check_positive_control(self) -&gt; None:
         &#34;&#34;&#34;
         If this sample is a postitive control, then determine
         if the IC50 value is between a variant-specific range.
@@ -165,7 +166,7 @@ class Sample:
             )
             self.failures.append(positive_control_failure)
 
-    def check_duplicate_differences(self):
+    def check_duplicate_differences(self) -&gt; None:
         &#34;&#34;&#34;
         Want to calculate the differences between duplicates and determine
         if the difference is larger than some threshold. If this is the case
@@ -202,7 +203,7 @@ class Sample:
             )
             self.failures.append(duplicate_failure)
 
-    def check_for_model_fit_failure(self):
+    def check_for_model_fit_failure(self) -&gt; None:
         &#34;&#34;&#34;
         If the model has failed to fit this should also be flagged as a QC failure
 
@@ -223,7 +224,7 @@ class Sample:
             )
             self.failures.append(model_fit_failure)
 
-    def plot(self):
+    def plot(self) -&gt; List:
         &#34;&#34;&#34;
         Simple static plot of points and fitted curve.
 
@@ -254,12 +255,15 @@ class Sample:
             plt.plot(1 / x, curve, linestyle=&#34;--&#34;, label=&#34;4 param dose-response&#34;)
             plt.legend(loc=&#34;upper left&#34;)
             try:
-                intersect_x, intersect_y = stats.find_intersect_on_curve(
-                    x_min, x_max, curve
-                )
-                plt.plot(
-                    1 / intersect_x, intersect_y, marker=&#34;P&#34;, color=&#34;black&#34;, zorder=999
-                )
+                intersect = stats.find_intersect_on_curve(x_min, x_max, curve)
+                if intersect:
+                    plt.plot(
+                        1.0 / intersect.x,
+                        intersect.y,
+                        marker=&#34;P&#34;,
+                        color=&#34;black&#34;,
+                        zorder=999,
+                    )
             except RuntimeError:
                 # caused by stats.find_intersect_on_curve finding more than
                 # 1 intersect point, so a model fit failure anyway, so dont
@@ -387,7 +391,7 @@ via fitting a curve.</dd>
         self.sample_name = sample_name
         self.data = data
         self.variant = variant
-        self.failures = []
+        self.failures: List[Any] = []
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
         self.check_positive_control()
@@ -425,7 +429,7 @@ via fitting a curve.</dd>
         self.model_params = model_results.model_params
         self.mean_squared_error = model_results.mean_squared_error
 
-    def check_positive_control(self):
+    def check_positive_control(self) -&gt; None:
         &#34;&#34;&#34;
         If this sample is a postitive control, then determine
         if the IC50 value is between a variant-specific range.
@@ -458,7 +462,7 @@ via fitting a curve.</dd>
             )
             self.failures.append(positive_control_failure)
 
-    def check_duplicate_differences(self):
+    def check_duplicate_differences(self) -&gt; None:
         &#34;&#34;&#34;
         Want to calculate the differences between duplicates and determine
         if the difference is larger than some threshold. If this is the case
@@ -495,7 +499,7 @@ via fitting a curve.</dd>
             )
             self.failures.append(duplicate_failure)
 
-    def check_for_model_fit_failure(self):
+    def check_for_model_fit_failure(self) -&gt; None:
         &#34;&#34;&#34;
         If the model has failed to fit this should also be flagged as a QC failure
 
@@ -516,7 +520,7 @@ via fitting a curve.</dd>
             )
             self.failures.append(model_fit_failure)
 
-    def plot(self):
+    def plot(self) -&gt; List:
         &#34;&#34;&#34;
         Simple static plot of points and fitted curve.
 
@@ -547,12 +551,15 @@ via fitting a curve.</dd>
             plt.plot(1 / x, curve, linestyle=&#34;--&#34;, label=&#34;4 param dose-response&#34;)
             plt.legend(loc=&#34;upper left&#34;)
             try:
-                intersect_x, intersect_y = stats.find_intersect_on_curve(
-                    x_min, x_max, curve
-                )
-                plt.plot(
-                    1 / intersect_x, intersect_y, marker=&#34;P&#34;, color=&#34;black&#34;, zorder=999
-                )
+                intersect = stats.find_intersect_on_curve(x_min, x_max, curve)
+                if intersect:
+                    plt.plot(
+                        1.0 / intersect.x,
+                        intersect.y,
+                        marker=&#34;P&#34;,
+                        color=&#34;black&#34;,
+                        zorder=999,
+                    )
             except RuntimeError:
                 # caused by stats.find_intersect_on_curve finding more than
                 # 1 intersect point, so a model fit failure anyway, so dont
@@ -626,7 +633,7 @@ if a model has been used to calculate the IC50.</p>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_duplicate_differences"><code class="name flex">
-<span>def <span class="ident">check_duplicate_differences</span></span>(<span>self)</span>
+<span>def <span class="ident">check_duplicate_differences</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Want to calculate the differences between duplicates and determine
@@ -644,7 +651,7 @@ a QC well failure.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_duplicate_differences(self):
+<pre><code class="python">def check_duplicate_differences(self) -&gt; None:
     &#34;&#34;&#34;
     Want to calculate the differences between duplicates and determine
     if the difference is larger than some threshold. If this is the case
@@ -683,7 +690,7 @@ a QC well failure.</p>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_for_model_fit_failure"><code class="name flex">
-<span>def <span class="ident">check_for_model_fit_failure</span></span>(<span>self)</span>
+<span>def <span class="ident">check_for_model_fit_failure</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>If the model has failed to fit this should also be flagged as a QC failure</p>
@@ -698,7 +705,7 @@ a QC well failure.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_for_model_fit_failure(self):
+<pre><code class="python">def check_for_model_fit_failure(self) -&gt; None:
     &#34;&#34;&#34;
     If the model has failed to fit this should also be flagged as a QC failure
 
@@ -721,7 +728,7 @@ a QC well failure.</p>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_positive_control"><code class="name flex">
-<span>def <span class="ident">check_positive_control</span></span>(<span>self)</span>
+<span>def <span class="ident">check_positive_control</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>If this sample is a postitive control, then determine
@@ -742,7 +749,7 @@ If it's outside this range it's flagged as a well failure.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_positive_control(self):
+<pre><code class="python">def check_positive_control(self) -&gt; None:
     &#34;&#34;&#34;
     If this sample is a postitive control, then determine
     if the IC50 value is between a variant-specific range.
@@ -777,7 +784,7 @@ If it's outside this range it's flagged as a well failure.</p>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>self)</span>
+<span>def <span class="ident">plot</span></span>(<span>self) ‑> List</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Simple static plot of points and fitted curve.</p>
@@ -794,7 +801,7 @@ here for convenience when using <code><a title="plaque_assay" href="index.html">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def plot(self):
+<pre><code class="python">def plot(self) -&gt; List:
     &#34;&#34;&#34;
     Simple static plot of points and fitted curve.
 
@@ -825,12 +832,15 @@ here for convenience when using <code><a title="plaque_assay" href="index.html">
         plt.plot(1 / x, curve, linestyle=&#34;--&#34;, label=&#34;4 param dose-response&#34;)
         plt.legend(loc=&#34;upper left&#34;)
         try:
-            intersect_x, intersect_y = stats.find_intersect_on_curve(
-                x_min, x_max, curve
-            )
-            plt.plot(
-                1 / intersect_x, intersect_y, marker=&#34;P&#34;, color=&#34;black&#34;, zorder=999
-            )
+            intersect = stats.find_intersect_on_curve(x_min, x_max, curve)
+            if intersect:
+                plt.plot(
+                    1.0 / intersect.x,
+                    intersect.y,
+                    marker=&#34;P&#34;,
+                    color=&#34;black&#34;,
+                    zorder=999,
+                )
         except RuntimeError:
             # caused by stats.find_intersect_on_curve finding more than
             # 1 intersect point, so a model fit failure anyway, so dont

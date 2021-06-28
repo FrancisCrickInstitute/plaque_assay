@@ -37,7 +37,7 @@ Class to encapsulate all plates and samples.
 import logging
 import os
 from collections import defaultdict
-from typing import Dict
+from typing import Dict, List, Union, Any
 
 import pandas as pd
 
@@ -96,33 +96,32 @@ class Experiment:
             sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
-    def get_failures_as_json(self) -&gt; Dict:
+    def get_failures_as_json(self) -&gt; Dict[str, Union[List, Dict]]:
         &#34;&#34;&#34;Return failures as a dictionary.
 
         Returns
         -------
         dict
         &#34;&#34;&#34;
-        failure_dict = {}
-        failure_dict[&#34;plate_failures&#34;] = {}
-        failure_dict[&#34;well_failures&#34;] = []
+        well_failures = []
+        plate_failures = {}
         for plate_name, plate_object in self.plates:
             # plate failures
             if plate_object.plate_failed:
                 plate_failures_as_dict = [
                     i.to_dict() for i in plate_object.plate_failures
                 ]
-                failure_dict[&#34;plate_failures&#34;][plate_name] = plate_failures_as_dict
+                plate_failures[plate_name] = plate_failures_as_dict
             # well failures
             # convert WellFailure objects to dictionaries
             well_failures_as_dict = [i.to_dict() for i in plate_object.well_failures]
-            failure_dict[&#34;well_failures&#34;].extend(well_failures_as_dict)
+            well_failures.extend(well_failures_as_dict)
         # failures in the Sample object are actually failures of the
         # positive control wells
-        for sample_name, sample_object in self.samples:
+        for _, sample_object in self.samples:
             sample_failures_as_dict = [i.to_dict() for i in sample_object.failures]
-            failure_dict[&#34;well_failures&#34;].extend(sample_failures_as_dict)
-        return failure_dict
+            well_failures.extend(sample_failures_as_dict)
+        return {&#34;plate_failures&#34;: plate_failures, &#34;well_failures&#34;: well_failures}
 
     def get_failures_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return failures a dataframe
@@ -138,7 +137,7 @@ class Experiment:
         reasons = []
         # go through plate failures first as have to join multiple wells into a string
         plate_failures = failures_dict[&#34;plate_failures&#34;]
-        for _, plate_list in plate_failures.items():
+        for plate_list in plate_failures.values():
             plate = plate_list[0]  # it&#39;s a single-element list
             types.append(plate[&#34;type&#34;])
             plates.append(plate[&#34;plate&#34;])
@@ -169,7 +168,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_failures_as_dataframe(self, output_dir: str):
+    def save_failures_as_dataframe(self, output_dir: str) -&gt; None:
         &#34;&#34;&#34;Save failures as a csv file.
 
         Parameters
@@ -212,7 +211,7 @@ class Experiment:
         results_dict = self.get_results_as_json()
         result_mapping = results_dict[&#34;result_mapping&#34;]
         wells = []
-        ic50s = []
+        ic50s: List[Any] = []
         statuses = []
         for well, value in results_dict[&#34;results&#34;].items():
             wells.append(well)
@@ -230,7 +229,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_results_as_dataframe(self, output_dir: str):
+    def save_results_as_dataframe(self, output_dir: str) -&gt; None:
         results_df = self.get_results_as_dataframe()
         result_output_path = os.path.join(
             output_dir, f&#34;results_{self.experiment_name}.csv&#34;
@@ -253,7 +252,7 @@ class Experiment:
         df_concat[&#34;variant&#34;] = self.variant
         return df_concat
 
-    def save_normalised_data(self, output_dir: str, concatenate: bool = True):
+    def save_normalised_data(self, output_dir: str, concatenate: bool = True) -&gt; None:
         &#34;&#34;&#34;Save normalised data as a csv file
 
         Parameters
@@ -430,33 +429,32 @@ class Experiment:
             sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
-    def get_failures_as_json(self) -&gt; Dict:
+    def get_failures_as_json(self) -&gt; Dict[str, Union[List, Dict]]:
         &#34;&#34;&#34;Return failures as a dictionary.
 
         Returns
         -------
         dict
         &#34;&#34;&#34;
-        failure_dict = {}
-        failure_dict[&#34;plate_failures&#34;] = {}
-        failure_dict[&#34;well_failures&#34;] = []
+        well_failures = []
+        plate_failures = {}
         for plate_name, plate_object in self.plates:
             # plate failures
             if plate_object.plate_failed:
                 plate_failures_as_dict = [
                     i.to_dict() for i in plate_object.plate_failures
                 ]
-                failure_dict[&#34;plate_failures&#34;][plate_name] = plate_failures_as_dict
+                plate_failures[plate_name] = plate_failures_as_dict
             # well failures
             # convert WellFailure objects to dictionaries
             well_failures_as_dict = [i.to_dict() for i in plate_object.well_failures]
-            failure_dict[&#34;well_failures&#34;].extend(well_failures_as_dict)
+            well_failures.extend(well_failures_as_dict)
         # failures in the Sample object are actually failures of the
         # positive control wells
-        for sample_name, sample_object in self.samples:
+        for _, sample_object in self.samples:
             sample_failures_as_dict = [i.to_dict() for i in sample_object.failures]
-            failure_dict[&#34;well_failures&#34;].extend(sample_failures_as_dict)
-        return failure_dict
+            well_failures.extend(sample_failures_as_dict)
+        return {&#34;plate_failures&#34;: plate_failures, &#34;well_failures&#34;: well_failures}
 
     def get_failures_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return failures a dataframe
@@ -472,7 +470,7 @@ class Experiment:
         reasons = []
         # go through plate failures first as have to join multiple wells into a string
         plate_failures = failures_dict[&#34;plate_failures&#34;]
-        for _, plate_list in plate_failures.items():
+        for plate_list in plate_failures.values():
             plate = plate_list[0]  # it&#39;s a single-element list
             types.append(plate[&#34;type&#34;])
             plates.append(plate[&#34;plate&#34;])
@@ -503,7 +501,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_failures_as_dataframe(self, output_dir: str):
+    def save_failures_as_dataframe(self, output_dir: str) -&gt; None:
         &#34;&#34;&#34;Save failures as a csv file.
 
         Parameters
@@ -546,7 +544,7 @@ class Experiment:
         results_dict = self.get_results_as_json()
         result_mapping = results_dict[&#34;result_mapping&#34;]
         wells = []
-        ic50s = []
+        ic50s: List[Any] = []
         statuses = []
         for well, value in results_dict[&#34;results&#34;].items():
             wells.append(well)
@@ -564,7 +562,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_results_as_dataframe(self, output_dir: str):
+    def save_results_as_dataframe(self, output_dir: str) -&gt; None:
         results_df = self.get_results_as_dataframe()
         result_output_path = os.path.join(
             output_dir, f&#34;results_{self.experiment_name}.csv&#34;
@@ -587,7 +585,7 @@ class Experiment:
         df_concat[&#34;variant&#34;] = self.variant
         return df_concat
 
-    def save_normalised_data(self, output_dir: str, concatenate: bool = True):
+    def save_normalised_data(self, output_dir: str, concatenate: bool = True) -&gt; None:
         &#34;&#34;&#34;Save normalised data as a csv file
 
         Parameters
@@ -733,7 +731,7 @@ def samples(self):
     reasons = []
     # go through plate failures first as have to join multiple wells into a string
     plate_failures = failures_dict[&#34;plate_failures&#34;]
-    for _, plate_list in plate_failures.items():
+    for plate_list in plate_failures.values():
         plate = plate_list[0]  # it&#39;s a single-element list
         types.append(plate[&#34;type&#34;])
         plates.append(plate[&#34;plate&#34;])
@@ -766,7 +764,7 @@ def samples(self):
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_failures_as_json"><code class="name flex">
-<span>def <span class="ident">get_failures_as_json</span></span>(<span>self) ‑> Dict</span>
+<span>def <span class="ident">get_failures_as_json</span></span>(<span>self) ‑> Dict[str, Union[List, Dict]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return failures as a dictionary.</p>
@@ -779,33 +777,32 @@ def samples(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_failures_as_json(self) -&gt; Dict:
+<pre><code class="python">def get_failures_as_json(self) -&gt; Dict[str, Union[List, Dict]]:
     &#34;&#34;&#34;Return failures as a dictionary.
 
     Returns
     -------
     dict
     &#34;&#34;&#34;
-    failure_dict = {}
-    failure_dict[&#34;plate_failures&#34;] = {}
-    failure_dict[&#34;well_failures&#34;] = []
+    well_failures = []
+    plate_failures = {}
     for plate_name, plate_object in self.plates:
         # plate failures
         if plate_object.plate_failed:
             plate_failures_as_dict = [
                 i.to_dict() for i in plate_object.plate_failures
             ]
-            failure_dict[&#34;plate_failures&#34;][plate_name] = plate_failures_as_dict
+            plate_failures[plate_name] = plate_failures_as_dict
         # well failures
         # convert WellFailure objects to dictionaries
         well_failures_as_dict = [i.to_dict() for i in plate_object.well_failures]
-        failure_dict[&#34;well_failures&#34;].extend(well_failures_as_dict)
+        well_failures.extend(well_failures_as_dict)
     # failures in the Sample object are actually failures of the
     # positive control wells
-    for sample_name, sample_object in self.samples:
+    for _, sample_object in self.samples:
         sample_failures_as_dict = [i.to_dict() for i in sample_object.failures]
-        failure_dict[&#34;well_failures&#34;].extend(sample_failures_as_dict)
-    return failure_dict</code></pre>
+        well_failures.extend(sample_failures_as_dict)
+    return {&#34;plate_failures&#34;: plate_failures, &#34;well_failures&#34;: well_failures}</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_model_parameters"><code class="name flex">
@@ -964,7 +961,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
     results_dict = self.get_results_as_json()
     result_mapping = results_dict[&#34;result_mapping&#34;]
     wells = []
-    ic50s = []
+    ic50s: List[Any] = []
     statuses = []
     for well, value in results_dict[&#34;results&#34;].items():
         wells.append(well)
@@ -1042,7 +1039,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.save_failures_as_dataframe"><code class="name flex">
-<span>def <span class="ident">save_failures_as_dataframe</span></span>(<span>self, output_dir: str)</span>
+<span>def <span class="ident">save_failures_as_dataframe</span></span>(<span>self, output_dir: str) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Save failures as a csv file.</p>
@@ -1060,7 +1057,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_failures_as_dataframe(self, output_dir: str):
+<pre><code class="python">def save_failures_as_dataframe(self, output_dir: str) -&gt; None:
     &#34;&#34;&#34;Save failures as a csv file.
 
     Parameters
@@ -1081,7 +1078,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.save_normalised_data"><code class="name flex">
-<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir: str, concatenate: bool = True)</span>
+<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir: str, concatenate: bool = True) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Save normalised data as a csv file</p>
@@ -1103,7 +1100,7 @@ per plate.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_normalised_data(self, output_dir: str, concatenate: bool = True):
+<pre><code class="python">def save_normalised_data(self, output_dir: str, concatenate: bool = True) -&gt; None:
     &#34;&#34;&#34;Save normalised data as a csv file
 
     Parameters
@@ -1134,7 +1131,7 @@ per plate.</dd>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.save_results_as_dataframe"><code class="name flex">
-<span>def <span class="ident">save_results_as_dataframe</span></span>(<span>self, output_dir: str)</span>
+<span>def <span class="ident">save_results_as_dataframe</span></span>(<span>self, output_dir: str) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1142,7 +1139,7 @@ per plate.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_results_as_dataframe(self, output_dir: str):
+<pre><code class="python">def save_results_as_dataframe(self, output_dir: str) -&gt; None:
     results_df = self.get_results_as_dataframe()
     result_output_path = os.path.join(
         output_dir, f&#34;results_{self.experiment_name}.csv&#34;

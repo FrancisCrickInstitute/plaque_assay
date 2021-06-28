@@ -83,6 +83,7 @@ This also means that the well labels in this class have been converted from thei
 &#34;&#34;&#34;
 
 import os
+from typing import List, Any
 
 import pandas as pd
 
@@ -130,8 +131,8 @@ class Plate:
         assert df[&#34;Dilution&#34;].nunique() == 1
         self.dilution = df[&#34;Dilution&#34;].values[0]
         self.plate_failed = False
-        self.well_failures = []
-        self.plate_failures = []
+        self.well_failures: List[Any] = []
+        self.plate_failures: List[Any] = []
         self.calc_percentage_infected()
         self.outside_image_area()
 
@@ -141,7 +142,7 @@ class Plate:
     def __str__(self):
         return f&#34;Plate {self.barcode}&#34;
 
-    def outside_image_area(self):
+    def outside_image_area(self) -&gt; None:
         &#34;&#34;&#34;QC check for `cell_region_area`
 
         Determines if `cell_region_area` is outside the expected range and
@@ -209,7 +210,7 @@ class Plate:
         df[new_colname] = df[feature] - background
         return df
 
-    def calc_percentage_infected(self):
+    def calc_percentage_infected(self) -&gt; None:
         &#34;&#34;&#34;Calculate percentage infected.
 
         `Percentage Infected` is the `Background Subtracted Plaque Area`
@@ -265,7 +266,7 @@ class Plate:
         )
         return df_wanted
 
-    def save_normalised_data(self, output_dir: str):
+    def save_normalised_data(self, output_dir: str) -&gt; None:
         &#34;&#34;&#34;Save csv of the normalised data
 
         Parameters
@@ -363,8 +364,8 @@ for one of more QC reasons.</dd>
         assert df[&#34;Dilution&#34;].nunique() == 1
         self.dilution = df[&#34;Dilution&#34;].values[0]
         self.plate_failed = False
-        self.well_failures = []
-        self.plate_failures = []
+        self.well_failures: List[Any] = []
+        self.plate_failures: List[Any] = []
         self.calc_percentage_infected()
         self.outside_image_area()
 
@@ -374,7 +375,7 @@ for one of more QC reasons.</dd>
     def __str__(self):
         return f&#34;Plate {self.barcode}&#34;
 
-    def outside_image_area(self):
+    def outside_image_area(self) -&gt; None:
         &#34;&#34;&#34;QC check for `cell_region_area`
 
         Determines if `cell_region_area` is outside the expected range and
@@ -442,7 +443,7 @@ for one of more QC reasons.</dd>
         df[new_colname] = df[feature] - background
         return df
 
-    def calc_percentage_infected(self):
+    def calc_percentage_infected(self) -&gt; None:
         &#34;&#34;&#34;Calculate percentage infected.
 
         `Percentage Infected` is the `Background Subtracted Plaque Area`
@@ -498,7 +499,7 @@ for one of more QC reasons.</dd>
         )
         return df_wanted
 
-    def save_normalised_data(self, output_dir: str):
+    def save_normalised_data(self, output_dir: str) -&gt; None:
         &#34;&#34;&#34;Save csv of the normalised data
 
         Parameters
@@ -513,7 +514,7 @@ for one of more QC reasons.</dd>
 <h3>Methods</h3>
 <dl>
 <dt id="plaque_assay.plate.Plate.calc_percentage_infected"><code class="name flex">
-<span>def <span class="ident">calc_percentage_infected</span></span>(<span>self)</span>
+<span>def <span class="ident">calc_percentage_infected</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate percentage infected.</p>
@@ -527,7 +528,7 @@ this is false.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calc_percentage_infected(self):
+<pre><code class="python">def calc_percentage_infected(self) -&gt; None:
     &#34;&#34;&#34;Calculate percentage infected.
 
     `Percentage Infected` is the `Background Subtracted Plaque Area`
@@ -601,7 +602,7 @@ this is false.</p></div>
 </details>
 </dd>
 <dt id="plaque_assay.plate.Plate.outside_image_area"><code class="name flex">
-<span>def <span class="ident">outside_image_area</span></span>(<span>self)</span>
+<span>def <span class="ident">outside_image_area</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>QC check for <code>cell_region_area</code></p>
@@ -611,7 +612,7 @@ adds any failures to <code>well_failures</code>.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def outside_image_area(self):
+<pre><code class="python">def outside_image_area(self) -&gt; None:
     &#34;&#34;&#34;QC check for `cell_region_area`
 
     Determines if `cell_region_area` is outside the expected range and
@@ -656,7 +657,7 @@ adds any failures to <code>well_failures</code>.</p></div>
 </details>
 </dd>
 <dt id="plaque_assay.plate.Plate.save_normalised_data"><code class="name flex">
-<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir: str)</span>
+<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir: str) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Save csv of the normalised data</p>
@@ -669,7 +670,7 @@ adds any failures to <code>well_failures</code>.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_normalised_data(self, output_dir: str):
+<pre><code class="python">def save_normalised_data(self, output_dir: str) -&gt; None:
     &#34;&#34;&#34;Save csv of the normalised data
 
     Parameters

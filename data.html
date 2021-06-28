@@ -199,7 +199,7 @@ class DatabaseUploader:
     def __init__(self, session):
         self.session = session
 
-    def commit(self):
+    def commit(self) -&gt; None:
         &#34;&#34;&#34;commit data to LIMS serology database&#34;&#34;&#34;
         self.session.commit()
 
@@ -294,7 +294,7 @@ class DatabaseUploader:
             )
         return is_final
 
-    def upload_plate_results(self, plate_results_dataset: pd.DataFrame):
+    def upload_plate_results(self, plate_results_dataset: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload raw concatenated data into database.
 
         This uploads the &#34;raw&#34; dataset into the LIMS serology database.
@@ -348,7 +348,7 @@ class DatabaseUploader:
             db_models.NE_raw_results, plate_results_dataset.to_dict(orient=&#34;records&#34;)
         )
 
-    def upload_indexfiles(self, indexfiles_dataset: pd.DataFrame):
+    def upload_indexfiles(self, indexfiles_dataset: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload indexfiles from the Phenix into the database
 
         This uploads the IndexFile dataset into the LIMS serology database,
@@ -398,7 +398,7 @@ class DatabaseUploader:
                 db_models.NE_raw_index, df_slice.to_dict(orient=&#34;records&#34;)
             )
 
-    def upload_normalised_results(self, norm_results: pd.DataFrame):
+    def upload_normalised_results(self, norm_results: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload normalised results into the database.
 
         Uploads the normalised data, consisting of
@@ -436,7 +436,7 @@ class DatabaseUploader:
             db_models.NE_normalized_results, norm_results.to_dict(orient=&#34;records&#34;)
         )
 
-    def upload_final_results(self, results: pd.DataFrame):
+    def upload_final_results(self, results: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload final results to database
 
         Final results are mainly IC50 and metadata.
@@ -463,7 +463,7 @@ class DatabaseUploader:
             db_models.NE_final_results, results.to_dict(orient=&#34;records&#34;)
         )
 
-    def upload_failures(self, failures: pd.DataFrame):
+    def upload_failures(self, failures: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload failure information to database
 
         Parameters
@@ -482,7 +482,7 @@ class DatabaseUploader:
                 db_models.NE_failed_results, failures.to_dict(orient=&#34;records&#34;)
             )
 
-    def upload_model_parameters(self, model_parameters: pd.DataFrame):
+    def upload_model_parameters(self, model_parameters: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload model parameters to database
 
         Parameters
@@ -502,7 +502,7 @@ class DatabaseUploader:
             db_models.NE_model_parameters, model_parameters.to_dict(orient=&#34;records&#34;)
         )
 
-    def update_workflow_tracking(self, workflow_id: int):
+    def update_workflow_tracking(self, workflow_id: int) -&gt; None:
         &#34;&#34;&#34;Update workflow_tracking table to indicate all variants for
         a workflow have been uploaded.
 
@@ -534,7 +534,7 @@ class DatabaseUploader:
             )
         # fmt: on
 
-    def upload_reporter_plate_status(self, workflow_id: int, variant: str):
+    def upload_reporter_plate_status(self, workflow_id: int, variant: str) -&gt; None:
         &#34;&#34;&#34;Inserts new row in NE_reporter_plate_status to indicate
         current plate (workflow_id &amp; variant) is awaiting
         reporter decision (pass, fail).
@@ -832,7 +832,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
     def __init__(self, session):
         self.session = session
 
-    def commit(self):
+    def commit(self) -&gt; None:
         &#34;&#34;&#34;commit data to LIMS serology database&#34;&#34;&#34;
         self.session.commit()
 
@@ -927,7 +927,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
             )
         return is_final
 
-    def upload_plate_results(self, plate_results_dataset: pd.DataFrame):
+    def upload_plate_results(self, plate_results_dataset: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload raw concatenated data into database.
 
         This uploads the &#34;raw&#34; dataset into the LIMS serology database.
@@ -981,7 +981,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
             db_models.NE_raw_results, plate_results_dataset.to_dict(orient=&#34;records&#34;)
         )
 
-    def upload_indexfiles(self, indexfiles_dataset: pd.DataFrame):
+    def upload_indexfiles(self, indexfiles_dataset: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload indexfiles from the Phenix into the database
 
         This uploads the IndexFile dataset into the LIMS serology database,
@@ -1031,7 +1031,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
                 db_models.NE_raw_index, df_slice.to_dict(orient=&#34;records&#34;)
             )
 
-    def upload_normalised_results(self, norm_results: pd.DataFrame):
+    def upload_normalised_results(self, norm_results: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload normalised results into the database.
 
         Uploads the normalised data, consisting of
@@ -1069,7 +1069,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
             db_models.NE_normalized_results, norm_results.to_dict(orient=&#34;records&#34;)
         )
 
-    def upload_final_results(self, results: pd.DataFrame):
+    def upload_final_results(self, results: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload final results to database
 
         Final results are mainly IC50 and metadata.
@@ -1096,7 +1096,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
             db_models.NE_final_results, results.to_dict(orient=&#34;records&#34;)
         )
 
-    def upload_failures(self, failures: pd.DataFrame):
+    def upload_failures(self, failures: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload failure information to database
 
         Parameters
@@ -1115,7 +1115,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
                 db_models.NE_failed_results, failures.to_dict(orient=&#34;records&#34;)
             )
 
-    def upload_model_parameters(self, model_parameters: pd.DataFrame):
+    def upload_model_parameters(self, model_parameters: pd.DataFrame) -&gt; None:
         &#34;&#34;&#34;Upload model parameters to database
 
         Parameters
@@ -1135,7 +1135,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
             db_models.NE_model_parameters, model_parameters.to_dict(orient=&#34;records&#34;)
         )
 
-    def update_workflow_tracking(self, workflow_id: int):
+    def update_workflow_tracking(self, workflow_id: int) -&gt; None:
         &#34;&#34;&#34;Update workflow_tracking table to indicate all variants for
         a workflow have been uploaded.
 
@@ -1167,7 +1167,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
             )
         # fmt: on
 
-    def upload_reporter_plate_status(self, workflow_id: int, variant: str):
+    def upload_reporter_plate_status(self, workflow_id: int, variant: str) -&gt; None:
         &#34;&#34;&#34;Inserts new row in NE_reporter_plate_status to indicate
         current plate (workflow_id &amp; variant) is awaiting
         reporter decision (pass, fail).
@@ -1243,7 +1243,7 @@ variant, rather than each of the several results tables.</p>
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.commit"><code class="name flex">
-<span>def <span class="ident">commit</span></span>(<span>self)</span>
+<span>def <span class="ident">commit</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>commit data to LIMS serology database</p></div>
@@ -1251,7 +1251,7 @@ variant, rather than each of the several results tables.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def commit(self):
+<pre><code class="python">def commit(self) -&gt; None:
     &#34;&#34;&#34;commit data to LIMS serology database&#34;&#34;&#34;
     self.session.commit()</code></pre>
 </details>
@@ -1350,7 +1350,7 @@ workflow_tracking LIMS database table.</dd>
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.update_workflow_tracking"><code class="name flex">
-<span>def <span class="ident">update_workflow_tracking</span></span>(<span>self, workflow_id: int)</span>
+<span>def <span class="ident">update_workflow_tracking</span></span>(<span>self, workflow_id: int) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Update workflow_tracking table to indicate all variants for
@@ -1371,7 +1371,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def update_workflow_tracking(self, workflow_id: int):
+<pre><code class="python">def update_workflow_tracking(self, workflow_id: int) -&gt; None:
     &#34;&#34;&#34;Update workflow_tracking table to indicate all variants for
     a workflow have been uploaded.
 
@@ -1405,7 +1405,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.upload_failures"><code class="name flex">
-<span>def <span class="ident">upload_failures</span></span>(<span>self, failures: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">upload_failures</span></span>(<span>self, failures: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Upload failure information to database</p>
@@ -1423,7 +1423,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def upload_failures(self, failures: pd.DataFrame):
+<pre><code class="python">def upload_failures(self, failures: pd.DataFrame) -&gt; None:
     &#34;&#34;&#34;Upload failure information to database
 
     Parameters
@@ -1444,7 +1444,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.upload_final_results"><code class="name flex">
-<span>def <span class="ident">upload_final_results</span></span>(<span>self, results: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">upload_final_results</span></span>(<span>self, results: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Upload final results to database</p>
@@ -1463,7 +1463,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def upload_final_results(self, results: pd.DataFrame):
+<pre><code class="python">def upload_final_results(self, results: pd.DataFrame) -&gt; None:
     &#34;&#34;&#34;Upload final results to database
 
     Final results are mainly IC50 and metadata.
@@ -1492,7 +1492,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.upload_indexfiles"><code class="name flex">
-<span>def <span class="ident">upload_indexfiles</span></span>(<span>self, indexfiles_dataset: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">upload_indexfiles</span></span>(<span>self, indexfiles_dataset: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Upload indexfiles from the Phenix into the database</p>
@@ -1514,7 +1514,7 @@ column is added.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def upload_indexfiles(self, indexfiles_dataset: pd.DataFrame):
+<pre><code class="python">def upload_indexfiles(self, indexfiles_dataset: pd.DataFrame) -&gt; None:
     &#34;&#34;&#34;Upload indexfiles from the Phenix into the database
 
     This uploads the IndexFile dataset into the LIMS serology database,
@@ -1566,7 +1566,7 @@ column is added.</p>
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.upload_model_parameters"><code class="name flex">
-<span>def <span class="ident">upload_model_parameters</span></span>(<span>self, model_parameters: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">upload_model_parameters</span></span>(<span>self, model_parameters: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Upload model parameters to database</p>
@@ -1584,7 +1584,7 @@ column is added.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def upload_model_parameters(self, model_parameters: pd.DataFrame):
+<pre><code class="python">def upload_model_parameters(self, model_parameters: pd.DataFrame) -&gt; None:
     &#34;&#34;&#34;Upload model parameters to database
 
     Parameters
@@ -1606,7 +1606,7 @@ column is added.</p>
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.upload_normalised_results"><code class="name flex">
-<span>def <span class="ident">upload_normalised_results</span></span>(<span>self, norm_results: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">upload_normalised_results</span></span>(<span>self, norm_results: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Upload normalised results into the database.</p>
@@ -1627,7 +1627,7 @@ metadata, into the LIMS serology database.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def upload_normalised_results(self, norm_results: pd.DataFrame):
+<pre><code class="python">def upload_normalised_results(self, norm_results: pd.DataFrame) -&gt; None:
     &#34;&#34;&#34;Upload normalised results into the database.
 
     Uploads the normalised data, consisting of
@@ -1667,7 +1667,7 @@ metadata, into the LIMS serology database.</p>
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.upload_plate_results"><code class="name flex">
-<span>def <span class="ident">upload_plate_results</span></span>(<span>self, plate_results_dataset: pandas.core.frame.DataFrame)</span>
+<span>def <span class="ident">upload_plate_results</span></span>(<span>self, plate_results_dataset: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Upload raw concatenated data into database.</p>
@@ -1685,7 +1685,7 @@ renamed, some columns moved, some metadata columns added.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def upload_plate_results(self, plate_results_dataset: pd.DataFrame):
+<pre><code class="python">def upload_plate_results(self, plate_results_dataset: pd.DataFrame) -&gt; None:
     &#34;&#34;&#34;Upload raw concatenated data into database.
 
     This uploads the &#34;raw&#34; dataset into the LIMS serology database.
@@ -1741,7 +1741,7 @@ renamed, some columns moved, some metadata columns added.</p>
 </details>
 </dd>
 <dt id="plaque_assay.data.DatabaseUploader.upload_reporter_plate_status"><code class="name flex">
-<span>def <span class="ident">upload_reporter_plate_status</span></span>(<span>self, workflow_id: int, variant: str)</span>
+<span>def <span class="ident">upload_reporter_plate_status</span></span>(<span>self, workflow_id: int, variant: str) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Inserts new row in NE_reporter_plate_status to indicate
@@ -1763,7 +1763,7 @@ reporter decision (pass, fail).</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def upload_reporter_plate_status(self, workflow_id: int, variant: str):
+<pre><code class="python">def upload_reporter_plate_status(self, workflow_id: int, variant: str) -&gt; None:
     &#34;&#34;&#34;Inserts new row in NE_reporter_plate_status to indicate
     current plate (workflow_id &amp; variant) is awaiting
     reporter decision (pass, fail).

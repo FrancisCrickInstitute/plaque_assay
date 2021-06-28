@@ -91,7 +91,7 @@ def create_local_engine() -&gt; sqlalchemy.engine.base.Engine:
     return engine
 
 
-def run(plate_list: List):
+def run(plate_list: List[str]) -&gt; None:
     &#34;&#34;&#34;Run analysis pipeline.
 
     This runs the entire analysis on a pair of plates, given that the 2
@@ -238,7 +238,7 @@ environment. These credentials are:
 </details>
 </dd>
 <dt id="plaque_assay.main.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>plate_list: List)</span>
+<span>def <span class="ident">run</span></span>(<span>plate_list: List[str]) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Run analysis pipeline.</p>
@@ -266,7 +266,7 @@ are already present in the LIMS serology database.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def run(plate_list: List):
+<pre><code class="python">def run(plate_list: List[str]) -&gt; None:
     &#34;&#34;&#34;Run analysis pipeline.
 
     This runs the entire analysis on a pair of plates, given that the 2

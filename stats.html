@@ -32,8 +32,7 @@ Stats and number crunching functions.
 &#34;&#34;&#34;
 
 import logging
-from numbers import Number
-from typing import NamedTuple, List, Callable, Optional
+from typing import NamedTuple, List, Callable, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -42,9 +41,12 @@ import scipy.optimize
 from . import utils
 
 
+Numeric = Union[int, float]
+
+
 class Intersect(NamedTuple):
-    x: Number
-    y: Number
+    x: Numeric
+    y: Numeric
 
 
 class ModelParams(NamedTuple):
@@ -56,12 +58,12 @@ class ModelParams(NamedTuple):
 
 class ModelResults(NamedTuple):
     fit_method: str
-    result: Number
+    result: Numeric
     model_params: Optional[ModelParams]
-    mean_squared_error: float
+    mean_squared_error: Optional[float]
 
 
-def dr_3(x: np.array, top: Number, bottom: Number, ec50: Number) -&gt; np.array:
+def dr_3(x: np.array, top: Numeric, bottom: Numeric, ec50: Numeric) -&gt; np.array:
     &#34;&#34;&#34;3 parameter dose response curve
 
     Parameters
@@ -80,7 +82,7 @@ def dr_3(x: np.array, top: Number, bottom: Number, ec50: Number) -&gt; np.array:
 
 
 def dr_4(
-    x: np.array, top: Number, bottom: Number, ec50: Number, hill_slope: Number
+    x: np.array, top: Numeric, bottom: Numeric, ec50: Numeric, hill_slope: Numeric
 ) -&gt; np.array:
     &#34;&#34;&#34;4 parameter dose response curve
 
@@ -104,7 +106,7 @@ def dr_4(
 
 
 def find_intersect_on_curve(
-    x_min: Number, x_max: Number, curve: np.array, intersect: Number = 50
+    x_min: Numeric, x_max: Numeric, curve: np.array, intersect: Numeric = 50
 ) -&gt; Optional[Intersect]:
     &#34;&#34;&#34;Find intersect of two curves.
 
@@ -135,7 +137,7 @@ def find_intersect_on_curve(
     return Intersect(x[idx], curve[idx])
 
 
-def non_linear_model(x: Number, y: Number, func: Callable = dr_4) -&gt; ModelParams:
+def non_linear_model(x: Numeric, y: Numeric, func: Callable = dr_4) -&gt; ModelParams:
     &#34;&#34;&#34;
     fit non-linear least squares to the data
 
@@ -179,8 +181,8 @@ def model_mse(y_observed: np.array, y_fitted: np.array) -&gt; float:
 
 
 def calc_heuristics_dilutions(
-    group: pd.DataFrame, threshold: Number, weak_threshold: Number
-) -&gt; Number:
+    group: pd.DataFrame, threshold: Numeric, weak_threshold: Numeric
+) -&gt; Optional[Numeric]:
     &#34;&#34;&#34;Simple heuristics based on the values without model fitting
 
     Parameters
@@ -238,10 +240,12 @@ def calc_heuristics_dilutions(
         result = &#34;no inhibition&#34;
     if result:
         return utils.result_to_int(result)
+    else:
+        return None
 
 
 def calc_heuristics_curve(
-    name: str, x: np.array, y: np.array, threshold: Number, weak_threshold: Number
+    name: str, x: np.array, y: np.array, threshold: Numeric, weak_threshold: Numeric
 ) -&gt; Optional[int]:
     &#34;&#34;&#34;
     heuristics based on the model fit where we cannot calculate the intercept
@@ -281,10 +285,12 @@ def calc_heuristics_curve(
             result = &#34;failed to fit model&#34;
     if result:
         return utils.result_to_int(result)
+    else:
+        return None
 
 
 def calc_model_results(
-    name: str, df: pd.DataFrame, threshold: Number = 50, weak_threshold: Number = 60
+    name: str, df: pd.DataFrame, threshold: int = 50, weak_threshold: int = 60
 ) -&gt; ModelResults:
     &#34;&#34;&#34;
     Try simple heuristics first without model fitting.
@@ -340,7 +346,11 @@ def calc_model_results(
             else:
                 try:
                     intersect = find_intersect_on_curve(x_min, x_max, y_fitted)
-                    result = 1 / intersect.x
+                    if intersect:
+                        result = 1 / intersect.x
+                    else:
+                        model_params = None
+                        result = utils.result_to_int(&#34;failed to fit model&#34;)
                     if result &lt; 1 / x.max():
                         logging.info(
                             &#34;%s IC50 of %s less than lowest dilution, weak inhibition&#34;,
@@ -355,7 +365,7 @@ def calc_model_results(
     return ModelResults(fit_method, result, model_params, mean_squared_error)
 
 
-def hampel(x: np.array, k: int, t0: Number = 3) -&gt; List:
+def hampel(x: np.array, k: int, t0: int = 3) -&gt; List:
     &#34;&#34;&#34;Hampel&#39;s outlier test
 
     Adapted from hampel function in R package pracma.
@@ -395,7 +405,7 @@ def hampel(x: np.array, k: int, t0: Number = 3) -&gt; List:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="plaque_assay.stats.calc_heuristics_curve"><code class="name flex">
-<span>def <span class="ident">calc_heuristics_curve</span></span>(<span>name: str, x: <built-in function array>, y: <built-in function array>, threshold: numbers.Number, weak_threshold: numbers.Number) ‑> Union[int, NoneType]</span>
+<span>def <span class="ident">calc_heuristics_curve</span></span>(<span>name: str, x: <built-in function array>, y: <built-in function array>, threshold: Union[int, float], weak_threshold: Union[int, float]) ‑> Union[int, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>heuristics based on the model fit where we cannot calculate the intercept
@@ -424,7 +434,7 @@ Otherwise returns a negative integer code.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def calc_heuristics_curve(
-    name: str, x: np.array, y: np.array, threshold: Number, weak_threshold: Number
+    name: str, x: np.array, y: np.array, threshold: Numeric, weak_threshold: Numeric
 ) -&gt; Optional[int]:
     &#34;&#34;&#34;
     heuristics based on the model fit where we cannot calculate the intercept
@@ -463,11 +473,13 @@ Otherwise returns a negative integer code.</dd>
         else:
             result = &#34;failed to fit model&#34;
     if result:
-        return utils.result_to_int(result)</code></pre>
+        return utils.result_to_int(result)
+    else:
+        return None</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.stats.calc_heuristics_dilutions"><code class="name flex">
-<span>def <span class="ident">calc_heuristics_dilutions</span></span>(<span>group: pandas.core.frame.DataFrame, threshold: numbers.Number, weak_threshold: numbers.Number) ‑> numbers.Number</span>
+<span>def <span class="ident">calc_heuristics_dilutions</span></span>(<span>group: pandas.core.frame.DataFrame, threshold: Union[int, float], weak_threshold: Union[int, float]) ‑> Union[int, float, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Simple heuristics based on the values without model fitting</p>
@@ -490,8 +502,8 @@ Otherwise returns a negative integer code.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def calc_heuristics_dilutions(
-    group: pd.DataFrame, threshold: Number, weak_threshold: Number
-) -&gt; Number:
+    group: pd.DataFrame, threshold: Numeric, weak_threshold: Numeric
+) -&gt; Optional[Numeric]:
     &#34;&#34;&#34;Simple heuristics based on the values without model fitting
 
     Parameters
@@ -548,11 +560,13 @@ Otherwise returns a negative integer code.</dd>
     if all(avg.values &gt; weak_threshold):
         result = &#34;no inhibition&#34;
     if result:
-        return utils.result_to_int(result)</code></pre>
+        return utils.result_to_int(result)
+    else:
+        return None</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.stats.calc_model_results"><code class="name flex">
-<span>def <span class="ident">calc_model_results</span></span>(<span>name: str, df: pandas.core.frame.DataFrame, threshold: numbers.Number = 50, weak_threshold: numbers.Number = 60) ‑> <a title="plaque_assay.stats.ModelResults" href="#plaque_assay.stats.ModelResults">ModelResults</a></span>
+<span>def <span class="ident">calc_model_results</span></span>(<span>name: str, df: pandas.core.frame.DataFrame, threshold: int = 50, weak_threshold: int = 60) ‑> <a title="plaque_assay.stats.ModelResults" href="#plaque_assay.stats.ModelResults">ModelResults</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Try simple heuristics first without model fitting.
@@ -576,7 +590,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def calc_model_results(
-    name: str, df: pd.DataFrame, threshold: Number = 50, weak_threshold: Number = 60
+    name: str, df: pd.DataFrame, threshold: int = 50, weak_threshold: int = 60
 ) -&gt; ModelResults:
     &#34;&#34;&#34;
     Try simple heuristics first without model fitting.
@@ -632,7 +646,11 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
             else:
                 try:
                     intersect = find_intersect_on_curve(x_min, x_max, y_fitted)
-                    result = 1 / intersect.x
+                    if intersect:
+                        result = 1 / intersect.x
+                    else:
+                        model_params = None
+                        result = utils.result_to_int(&#34;failed to fit model&#34;)
                     if result &lt; 1 / x.max():
                         logging.info(
                             &#34;%s IC50 of %s less than lowest dilution, weak inhibition&#34;,
@@ -648,7 +666,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.dr_3"><code class="name flex">
-<span>def <span class="ident">dr_3</span></span>(<span>x: <built-in function array>, top: numbers.Number, bottom: numbers.Number, ec50: numbers.Number) ‑> <built-in function array></span>
+<span>def <span class="ident">dr_3</span></span>(<span>x: <built-in function array>, top: Union[int, float], bottom: Union[int, float], ec50: Union[int, float]) ‑> <built-in function array></span>
 </code></dt>
 <dd>
 <div class="desc"><p>3 parameter dose response curve</p>
@@ -672,7 +690,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def dr_3(x: np.array, top: Number, bottom: Number, ec50: Number) -&gt; np.array:
+<pre><code class="python">def dr_3(x: np.array, top: Numeric, bottom: Numeric, ec50: Numeric) -&gt; np.array:
     &#34;&#34;&#34;3 parameter dose response curve
 
     Parameters
@@ -691,7 +709,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.dr_4"><code class="name flex">
-<span>def <span class="ident">dr_4</span></span>(<span>x: <built-in function array>, top: numbers.Number, bottom: numbers.Number, ec50: numbers.Number, hill_slope: numbers.Number) ‑> <built-in function array></span>
+<span>def <span class="ident">dr_4</span></span>(<span>x: <built-in function array>, top: Union[int, float], bottom: Union[int, float], ec50: Union[int, float], hill_slope: Union[int, float]) ‑> <built-in function array></span>
 </code></dt>
 <dd>
 <div class="desc"><p>4 parameter dose response curve</p>
@@ -718,7 +736,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def dr_4(
-    x: np.array, top: Number, bottom: Number, ec50: Number, hill_slope: Number
+    x: np.array, top: Numeric, bottom: Numeric, ec50: Numeric, hill_slope: Numeric
 ) -&gt; np.array:
     &#34;&#34;&#34;4 parameter dose response curve
 
@@ -742,7 +760,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.find_intersect_on_curve"><code class="name flex">
-<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min: numbers.Number, x_max: numbers.Number, curve: <built-in function array>, intersect: numbers.Number = 50) ‑> Union[<a title="plaque_assay.stats.Intersect" href="#plaque_assay.stats.Intersect">Intersect</a>, NoneType]</span>
+<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min: Union[int, float], x_max: Union[int, float], curve: <built-in function array>, intersect: Union[int, float] = 50) ‑> Union[<a title="plaque_assay.stats.Intersect" href="#plaque_assay.stats.Intersect">Intersect</a>, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Find intersect of two curves.</p>
@@ -771,7 +789,7 @@ TODO: solve this mathematically</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def find_intersect_on_curve(
-    x_min: Number, x_max: Number, curve: np.array, intersect: Number = 50
+    x_min: Numeric, x_max: Numeric, curve: np.array, intersect: Numeric = 50
 ) -&gt; Optional[Intersect]:
     &#34;&#34;&#34;Find intersect of two curves.
 
@@ -803,7 +821,7 @@ TODO: solve this mathematically</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.hampel"><code class="name flex">
-<span>def <span class="ident">hampel</span></span>(<span>x: <built-in function array>, k: int, t0: numbers.Number = 3) ‑> List</span>
+<span>def <span class="ident">hampel</span></span>(<span>x: <built-in function array>, k: int, t0: int = 3) ‑> List</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Hampel's outlier test</p>
@@ -826,7 +844,7 @@ TODO: solve this mathematically</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def hampel(x: np.array, k: int, t0: Number = 3) -&gt; List:
+<pre><code class="python">def hampel(x: np.array, k: int, t0: int = 3) -&gt; List:
     &#34;&#34;&#34;Hampel&#39;s outlier test
 
     Adapted from hampel function in R package pracma.
@@ -901,7 +919,7 @@ and the estimated values.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.non_linear_model"><code class="name flex">
-<span>def <span class="ident">non_linear_model</span></span>(<span>x: numbers.Number, y: numbers.Number, func: Callable = &lt;function dr_4&gt;) ‑> <a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a></span>
+<span>def <span class="ident">non_linear_model</span></span>(<span>x: Union[int, float], y: Union[int, float], func: Callable = &lt;function dr_4&gt;) ‑> <a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>fit non-linear least squares to the data</p>
@@ -920,7 +938,7 @@ and the estimated values.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def non_linear_model(x: Number, y: Number, func: Callable = dr_4) -&gt; ModelParams:
+<pre><code class="python">def non_linear_model(x: Numeric, y: Numeric, func: Callable = dr_4) -&gt; ModelParams:
     &#34;&#34;&#34;
     fit non-linear least squares to the data
 
@@ -950,7 +968,7 @@ and the estimated values.</p>
 <dl>
 <dt id="plaque_assay.stats.Intersect"><code class="flex name class">
 <span>class <span class="ident">Intersect</span></span>
-<span>(</span><span>x: numbers.Number, y: numbers.Number)</span>
+<span>(</span><span>x: Union[int, float], y: Union[int, float])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Intersect(x, y)</p></div>
@@ -959,8 +977,8 @@ and the estimated values.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Intersect(NamedTuple):
-    x: Number
-    y: Number</code></pre>
+    x: Numeric
+    y: Numeric</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -968,11 +986,11 @@ and the estimated values.</p>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="plaque_assay.stats.Intersect.x"><code class="name">var <span class="ident">x</span> : numbers.Number</code></dt>
+<dt id="plaque_assay.stats.Intersect.x"><code class="name">var <span class="ident">x</span> : Union[int, float]</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 0</p></div>
 </dd>
-<dt id="plaque_assay.stats.Intersect.y"><code class="name">var <span class="ident">y</span> : numbers.Number</code></dt>
+<dt id="plaque_assay.stats.Intersect.y"><code class="name">var <span class="ident">y</span> : Union[int, float]</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 1</p></div>
 </dd>
@@ -1020,7 +1038,7 @@ and the estimated values.</p>
 </dd>
 <dt id="plaque_assay.stats.ModelResults"><code class="flex name class">
 <span>class <span class="ident">ModelResults</span></span>
-<span>(</span><span>fit_method: str, result: numbers.Number, model_params: Union[<a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a>, NoneType], mean_squared_error: float)</span>
+<span>(</span><span>fit_method: str, result: Union[int, float], model_params: Union[<a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a>, NoneType], mean_squared_error: Union[float, NoneType])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>ModelResults(fit_method, result, model_params, mean_squared_error)</p></div>
@@ -1030,9 +1048,9 @@ and the estimated values.</p>
 </summary>
 <pre><code class="python">class ModelResults(NamedTuple):
     fit_method: str
-    result: Number
+    result: Numeric
     model_params: Optional[ModelParams]
-    mean_squared_error: float</code></pre>
+    mean_squared_error: Optional[float]</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1044,7 +1062,7 @@ and the estimated values.</p>
 <dd>
 <div class="desc"><p>Alias for field number 0</p></div>
 </dd>
-<dt id="plaque_assay.stats.ModelResults.mean_squared_error"><code class="name">var <span class="ident">mean_squared_error</span> : float</code></dt>
+<dt id="plaque_assay.stats.ModelResults.mean_squared_error"><code class="name">var <span class="ident">mean_squared_error</span> : Union[float, NoneType]</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 3</p></div>
 </dd>
@@ -1052,7 +1070,7 @@ and the estimated values.</p>
 <dd>
 <div class="desc"><p>Alias for field number 2</p></div>
 </dd>
-<dt id="plaque_assay.stats.ModelResults.result"><code class="name">var <span class="ident">result</span> : numbers.Number</code></dt>
+<dt id="plaque_assay.stats.ModelResults.result"><code class="name">var <span class="ident">result</span> : Union[int, float]</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 1</p></div>
 </dd>
