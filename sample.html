@@ -39,6 +39,7 @@ from . import qc_criteria
 from .consts import POSITIVE_CONTROL_WELLS
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 
@@ -89,7 +90,7 @@ class Sample:
         via fitting a curve.
     &#34;&#34;&#34;
 
-    def __init__(self, sample_name, data, variant):
+    def __init__(self, sample_name: str, data: pd.DataFrame, variant: str):
         self.sample_name = sample_name
         self.data = data
         self.variant = variant
@@ -244,7 +245,7 @@ class Sample:
         x = np.logspace(
             np.log10(self.data[&#34;Dilution&#34;].min()),
             np.log10(self.data[&#34;Dilution&#34;].max()),
-            10000
+            10000,
         )
         if self.model_params is not None:
             x_min = self.data[&#34;Dilution&#34;].min()
@@ -285,7 +286,7 @@ class Sample:
 <dl>
 <dt id="plaque_assay.sample.Sample"><code class="flex name class">
 <span>class <span class="ident">Sample</span></span>
-<span>(</span><span>sample_name, data, variant)</span>
+<span>(</span><span>sample_name: str, data: pandas.core.frame.DataFrame, variant: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sample object holds the data for a sample across 4 concentrations
@@ -382,7 +383,7 @@ via fitting a curve.</dd>
         via fitting a curve.
     &#34;&#34;&#34;
 
-    def __init__(self, sample_name, data, variant):
+    def __init__(self, sample_name: str, data: pd.DataFrame, variant: str):
         self.sample_name = sample_name
         self.data = data
         self.variant = variant
@@ -537,7 +538,7 @@ via fitting a curve.</dd>
         x = np.logspace(
             np.log10(self.data[&#34;Dilution&#34;].min()),
             np.log10(self.data[&#34;Dilution&#34;].max()),
-            10000
+            10000,
         )
         if self.model_params is not None:
             x_min = self.data[&#34;Dilution&#34;].min()
@@ -815,7 +816,7 @@ here for convenience when using <code><a title="plaque_assay" href="index.html">
     x = np.logspace(
         np.log10(self.data[&#34;Dilution&#34;].min()),
         np.log10(self.data[&#34;Dilution&#34;].max()),
-        10000
+        10000,
     )
     if self.model_params is not None:
         x_min = self.data[&#34;Dilution&#34;].min()

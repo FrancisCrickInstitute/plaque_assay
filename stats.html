@@ -31,16 +31,18 @@
 Stats and number crunching functions.
 &#34;&#34;&#34;
 
-from collections import namedtuple
 import logging
+from numbers import Number
+from typing import NamedTuple, Tuple, List, Callable, Union
 
 import numpy as np
+import pandas as pd
 import scipy.optimize
 
 from . import utils
 
 
-def dr_3(x, top, bottom, ec50):
+def dr_3(x: np.array, top: Number, bottom: Number, ec50: Number) -&gt; np.array:
     &#34;&#34;&#34;3 parameter dose response curve
 
     Parameters
@@ -58,7 +60,9 @@ def dr_3(x, top, bottom, ec50):
     return bottom + x * (top - bottom) / (ec50 + x)
 
 
-def dr_4(x, top, bottom, ec50, hill_slope):
+def dr_4(
+    x: np.array, top: Number, bottom: Number, ec50: Number, hill_slope: Number
+) -&gt; np.array:
     &#34;&#34;&#34;4 parameter dose response curve
 
     Parameters
@@ -80,7 +84,9 @@ def dr_4(x, top, bottom, ec50, hill_slope):
         return (bottom - top) / (1 + (x / ec50) ** hill_slope)
 
 
-def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
+def find_intersect_on_curve(
+    x_min: Number, x_max: Number, curve: np.array, intersect: Number = 50
+) -&gt; Tuple[Number, Number]:
     &#34;&#34;&#34;Find intersect of two curves.
 
     Really hacky way of finding intersect of two curves,
@@ -109,7 +115,9 @@ def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
     return x[idx], curve[idx]
 
 
-def non_linear_model(x, y, func=dr_4):
+def non_linear_model(
+    x: Number, y: Number, func: Callable = dr_4
+) -&gt; Tuple[Number, Number]:
     &#34;&#34;&#34;
     fit non-linear least squares to the data
 
@@ -132,7 +140,7 @@ def non_linear_model(x, y, func=dr_4):
     return popt, pcov
 
 
-def std_dev_params(pcov):
+def std_dev_params(pcov: np.array) -&gt; np.array:
     &#34;&#34;&#34;
     Compute the standard deviation errors on the model parameters.
 
@@ -147,7 +155,7 @@ def std_dev_params(pcov):
     return np.sqrt(np.diag(pcov))
 
 
-def model_mse(y_observed, y_fitted):
+def model_mse(y_observed: np.array, y_fitted: np.array) -&gt; float:
     &#34;&#34;&#34;
     Mean squared error between the observed
     and the estimated values.
@@ -167,7 +175,9 @@ def model_mse(y_observed, y_fitted):
     return np.nanmean((y_observed - y_fitted) ** 2)
 
 
-def calc_heuristics_dilutions(group, threshold, weak_threshold):
+def calc_heuristics_dilutions(
+    group: pd.DataFrame, threshold: Number, weak_threshold: Number
+) -&gt; Number:
     &#34;&#34;&#34;Simple heuristics based on the values without model fitting
 
     Parameters
@@ -227,7 +237,9 @@ def calc_heuristics_dilutions(group, threshold, weak_threshold):
         return utils.result_to_int(result)
 
 
-def calc_heuristics_curve(name, x, y, threshold, weak_threshold):
+def calc_heuristics_curve(
+    name: str, x: np.array, y: np.array, threshold: Number, weak_threshold: Number
+) -&gt; Union[int, None]:
     &#34;&#34;&#34;
     heuristics based on the model fit where we cannot calculate the intercept
     at the threshold
@@ -268,7 +280,16 @@ def calc_heuristics_curve(name, x, y, threshold, weak_threshold):
         return utils.result_to_int(result)
 
 
-def calc_results_model(name, df, threshold=50, weak_threshold=60):
+class ResultsModel(NamedTuple):
+    fit_method: str
+    result: Number
+    model_params: Union[Number, None]
+    mean_squared_error: float
+
+
+def calc_results_model(
+    name: str, df: pd.DataFrame, threshold: Number = 50, weak_threshold: Number = 60
+) -&gt; ResultsModel:
     &#34;&#34;&#34;
     Try simple heuristics first without model fitting.
     Once a model is fitted try heuristics based on the fitted curve.
@@ -285,9 +306,6 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
     --------
     namedtuple(&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;)
     &#34;&#34;&#34;
-    output = namedtuple(
-        &#34;ResultsModel&#34;, [&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;]
-    )
     df = df.dropna().sort_values(&#34;Dilution&#34;)
     x = df[&#34;Dilution&#34;].values
     x_min = 0.0000390625
@@ -340,10 +358,10 @@ def calc_results_model(name, df, threshold=50, weak_threshold=60):
                     logging.error(&#34;during model fitting: %s&#34;, e)
                     result = utils.result_to_int(&#34;failed to fit model&#34;)
     logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
-    return output(fit_method, result, model_params, mean_squared_error)
+    return ResultsModel(fit_method, result, model_params, mean_squared_error)
 
 
-def hampel(x, k, t0=3):
+def hampel(x: np.array, k: int, t0: Number = 3) -&gt; List:
     &#34;&#34;&#34;Hampel&#39;s outlier test
 
     Adapted from hampel function in R package pracma.
@@ -375,7 +393,7 @@ def hampel(x, k, t0=3):
     return indices
 
 
-def calc_median_all_plates(df):
+def calc_median_all_plates(df: pd.DataFrame) -&gt; float:
     &#34;&#34;&#34;Median of `Cells - Image Region Area` of all plates
 
     Calculate the median of &#34;Cells - Image Region Area - Mean per Well&#34;
@@ -402,7 +420,7 @@ def calc_median_all_plates(df):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="plaque_assay.stats.calc_heuristics_curve"><code class="name flex">
-<span>def <span class="ident">calc_heuristics_curve</span></span>(<span>name, x, y, threshold, weak_threshold)</span>
+<span>def <span class="ident">calc_heuristics_curve</span></span>(<span>name: str, x: <built-in function array>, y: <built-in function array>, threshold: numbers.Number, weak_threshold: numbers.Number) ‑> Union[int, NoneType]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>heuristics based on the model fit where we cannot calculate the intercept
@@ -430,7 +448,9 @@ Otherwise returns a negative integer code.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calc_heuristics_curve(name, x, y, threshold, weak_threshold):
+<pre><code class="python">def calc_heuristics_curve(
+    name: str, x: np.array, y: np.array, threshold: Number, weak_threshold: Number
+) -&gt; Union[int, None]:
     &#34;&#34;&#34;
     heuristics based on the model fit where we cannot calculate the intercept
     at the threshold
@@ -472,7 +492,7 @@ Otherwise returns a negative integer code.</dd>
 </details>
 </dd>
 <dt id="plaque_assay.stats.calc_heuristics_dilutions"><code class="name flex">
-<span>def <span class="ident">calc_heuristics_dilutions</span></span>(<span>group, threshold, weak_threshold)</span>
+<span>def <span class="ident">calc_heuristics_dilutions</span></span>(<span>group: pandas.core.frame.DataFrame, threshold: numbers.Number, weak_threshold: numbers.Number) ‑> numbers.Number</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Simple heuristics based on the values without model fitting</p>
@@ -494,7 +514,9 @@ Otherwise returns a negative integer code.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calc_heuristics_dilutions(group, threshold, weak_threshold):
+<pre><code class="python">def calc_heuristics_dilutions(
+    group: pd.DataFrame, threshold: Number, weak_threshold: Number
+) -&gt; Number:
     &#34;&#34;&#34;Simple heuristics based on the values without model fitting
 
     Parameters
@@ -555,7 +577,7 @@ Otherwise returns a negative integer code.</dd>
 </details>
 </dd>
 <dt id="plaque_assay.stats.calc_median_all_plates"><code class="name flex">
-<span>def <span class="ident">calc_median_all_plates</span></span>(<span>df)</span>
+<span>def <span class="ident">calc_median_all_plates</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> float</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Median of <code>Cells - Image Region Area</code> of all plates</p>
@@ -575,7 +597,7 @@ for all wells of all plates</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calc_median_all_plates(df):
+<pre><code class="python">def calc_median_all_plates(df: pd.DataFrame) -&gt; float:
     &#34;&#34;&#34;Median of `Cells - Image Region Area` of all plates
 
     Calculate the median of &#34;Cells - Image Region Area - Mean per Well&#34;
@@ -595,7 +617,7 @@ for all wells of all plates</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.calc_results_model"><code class="name flex">
-<span>def <span class="ident">calc_results_model</span></span>(<span>name, df, threshold=50, weak_threshold=60)</span>
+<span>def <span class="ident">calc_results_model</span></span>(<span>name: str, df: pandas.core.frame.DataFrame, threshold: numbers.Number = 50, weak_threshold: numbers.Number = 60) ‑> <a title="plaque_assay.stats.ResultsModel" href="#plaque_assay.stats.ResultsModel">ResultsModel</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Try simple heuristics first without model fitting.
@@ -621,7 +643,9 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calc_results_model(name, df, threshold=50, weak_threshold=60):
+<pre><code class="python">def calc_results_model(
+    name: str, df: pd.DataFrame, threshold: Number = 50, weak_threshold: Number = 60
+) -&gt; ResultsModel:
     &#34;&#34;&#34;
     Try simple heuristics first without model fitting.
     Once a model is fitted try heuristics based on the fitted curve.
@@ -638,9 +662,6 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
     --------
     namedtuple(&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;)
     &#34;&#34;&#34;
-    output = namedtuple(
-        &#34;ResultsModel&#34;, [&#34;fit_method&#34;, &#34;result&#34;, &#34;model_params&#34;, &#34;mean_squared_error&#34;]
-    )
     df = df.dropna().sort_values(&#34;Dilution&#34;)
     x = df[&#34;Dilution&#34;].values
     x_min = 0.0000390625
@@ -693,11 +714,11 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
                     logging.error(&#34;during model fitting: %s&#34;, e)
                     result = utils.result_to_int(&#34;failed to fit model&#34;)
     logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
-    return output(fit_method, result, model_params, mean_squared_error)</code></pre>
+    return ResultsModel(fit_method, result, model_params, mean_squared_error)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.stats.dr_3"><code class="name flex">
-<span>def <span class="ident">dr_3</span></span>(<span>x, top, bottom, ec50)</span>
+<span>def <span class="ident">dr_3</span></span>(<span>x: <built-in function array>, top: numbers.Number, bottom: numbers.Number, ec50: numbers.Number) ‑> <built-in function array></span>
 </code></dt>
 <dd>
 <div class="desc"><p>3 parameter dose response curve</p>
@@ -721,7 +742,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def dr_3(x, top, bottom, ec50):
+<pre><code class="python">def dr_3(x: np.array, top: Number, bottom: Number, ec50: Number) -&gt; np.array:
     &#34;&#34;&#34;3 parameter dose response curve
 
     Parameters
@@ -740,7 +761,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.dr_4"><code class="name flex">
-<span>def <span class="ident">dr_4</span></span>(<span>x, top, bottom, ec50, hill_slope)</span>
+<span>def <span class="ident">dr_4</span></span>(<span>x: <built-in function array>, top: numbers.Number, bottom: numbers.Number, ec50: numbers.Number, hill_slope: numbers.Number) ‑> <built-in function array></span>
 </code></dt>
 <dd>
 <div class="desc"><p>4 parameter dose response curve</p>
@@ -766,7 +787,9 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def dr_4(x, top, bottom, ec50, hill_slope):
+<pre><code class="python">def dr_4(
+    x: np.array, top: Number, bottom: Number, ec50: Number, hill_slope: Number
+) -&gt; np.array:
     &#34;&#34;&#34;4 parameter dose response curve
 
     Parameters
@@ -789,7 +812,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.find_intersect_on_curve"><code class="name flex">
-<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min, x_max, curve, intersect=50)</span>
+<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min: numbers.Number, x_max: numbers.Number, curve: <built-in function array>, intersect: numbers.Number = 50) ‑> Tuple[numbers.Number, numbers.Number]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Find intersect of two curves.</p>
@@ -817,7 +840,9 @@ TODO: solve this mathematically</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def find_intersect_on_curve(x_min, x_max, curve, intersect=50):
+<pre><code class="python">def find_intersect_on_curve(
+    x_min: Number, x_max: Number, curve: np.array, intersect: Number = 50
+) -&gt; Tuple[Number, Number]:
     &#34;&#34;&#34;Find intersect of two curves.
 
     Really hacky way of finding intersect of two curves,
@@ -847,7 +872,7 @@ TODO: solve this mathematically</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.hampel"><code class="name flex">
-<span>def <span class="ident">hampel</span></span>(<span>x, k, t0=3)</span>
+<span>def <span class="ident">hampel</span></span>(<span>x: <built-in function array>, k: int, t0: numbers.Number = 3) ‑> List</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Hampel's outlier test</p>
@@ -870,7 +895,7 @@ TODO: solve this mathematically</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def hampel(x, k, t0=3):
+<pre><code class="python">def hampel(x: np.array, k: int, t0: Number = 3) -&gt; List:
     &#34;&#34;&#34;Hampel&#39;s outlier test
 
     Adapted from hampel function in R package pracma.
@@ -903,7 +928,7 @@ TODO: solve this mathematically</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.model_mse"><code class="name flex">
-<span>def <span class="ident">model_mse</span></span>(<span>y_observed, y_fitted)</span>
+<span>def <span class="ident">model_mse</span></span>(<span>y_observed: <built-in function array>, y_fitted: <built-in function array>) ‑> float</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Mean squared error between the observed
@@ -924,7 +949,7 @@ and the estimated values.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def model_mse(y_observed, y_fitted):
+<pre><code class="python">def model_mse(y_observed: np.array, y_fitted: np.array) -&gt; float:
     &#34;&#34;&#34;
     Mean squared error between the observed
     and the estimated values.
@@ -945,7 +970,7 @@ and the estimated values.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.non_linear_model"><code class="name flex">
-<span>def <span class="ident">non_linear_model</span></span>(<span>x, y, func=&lt;function dr_4&gt;)</span>
+<span>def <span class="ident">non_linear_model</span></span>(<span>x: numbers.Number, y: numbers.Number, func: Callable = &lt;function dr_4&gt;) ‑> Tuple[numbers.Number, numbers.Number]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>fit non-linear least squares to the data</p>
@@ -967,7 +992,9 @@ and the estimated values.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def non_linear_model(x, y, func=dr_4):
+<pre><code class="python">def non_linear_model(
+    x: Number, y: Number, func: Callable = dr_4
+) -&gt; Tuple[Number, Number]:
     &#34;&#34;&#34;
     fit non-linear least squares to the data
 
@@ -991,7 +1018,7 @@ and the estimated values.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.std_dev_params"><code class="name flex">
-<span>def <span class="ident">std_dev_params</span></span>(<span>pcov)</span>
+<span>def <span class="ident">std_dev_params</span></span>(<span>pcov: <built-in function array>) ‑> <built-in function array></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Compute the standard deviation errors on the model parameters.</p>
@@ -1009,7 +1036,7 @@ and the estimated values.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def std_dev_params(pcov):
+<pre><code class="python">def std_dev_params(pcov: np.array) -&gt; np.array:
     &#34;&#34;&#34;
     Compute the standard deviation errors on the model parameters.
 
@@ -1027,6 +1054,49 @@ and the estimated values.</p>
 </dl>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="plaque_assay.stats.ResultsModel"><code class="flex name class">
+<span>class <span class="ident">ResultsModel</span></span>
+<span>(</span><span>fit_method: str, result: numbers.Number, model_params: Union[numbers.Number, NoneType], mean_squared_error: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ResultsModel(fit_method, result, model_params, mean_squared_error)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResultsModel(NamedTuple):
+    fit_method: str
+    result: Number
+    model_params: Union[Number, None]
+    mean_squared_error: float</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.tuple</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.stats.ResultsModel.fit_method"><code class="name">var <span class="ident">fit_method</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 0</p></div>
+</dd>
+<dt id="plaque_assay.stats.ResultsModel.mean_squared_error"><code class="name">var <span class="ident">mean_squared_error</span> : float</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 3</p></div>
+</dd>
+<dt id="plaque_assay.stats.ResultsModel.model_params"><code class="name">var <span class="ident">model_params</span> : Union[numbers.Number, NoneType]</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 2</p></div>
+</dd>
+<dt id="plaque_assay.stats.ResultsModel.result"><code class="name">var <span class="ident">result</span> : numbers.Number</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 1</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -1053,6 +1123,19 @@ and the estimated values.</p>
 <li><code><a title="plaque_assay.stats.model_mse" href="#plaque_assay.stats.model_mse">model_mse</a></code></li>
 <li><code><a title="plaque_assay.stats.non_linear_model" href="#plaque_assay.stats.non_linear_model">non_linear_model</a></code></li>
 <li><code><a title="plaque_assay.stats.std_dev_params" href="#plaque_assay.stats.std_dev_params">std_dev_params</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="plaque_assay.stats.ResultsModel" href="#plaque_assay.stats.ResultsModel">ResultsModel</a></code></h4>
+<ul class="">
+<li><code><a title="plaque_assay.stats.ResultsModel.fit_method" href="#plaque_assay.stats.ResultsModel.fit_method">fit_method</a></code></li>
+<li><code><a title="plaque_assay.stats.ResultsModel.mean_squared_error" href="#plaque_assay.stats.ResultsModel.mean_squared_error">mean_squared_error</a></code></li>
+<li><code><a title="plaque_assay.stats.ResultsModel.model_params" href="#plaque_assay.stats.ResultsModel.model_params">model_params</a></code></li>
+<li><code><a title="plaque_assay.stats.ResultsModel.result" href="#plaque_assay.stats.ResultsModel.result">result</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

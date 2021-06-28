@@ -37,6 +37,7 @@ Class to encapsulate all plates and samples.
 import logging
 import os
 from collections import defaultdict
+from typing import Dict
 
 import pandas as pd
 
@@ -63,7 +64,7 @@ class Experiment:
 
     &#34;&#34;&#34;
 
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame):
         self.df = df
         self.experiment_name = df[&#34;Plate_barcode&#34;].values[0][3:]
         self.variant = df[&#34;variant&#34;].values[0]
@@ -81,7 +82,7 @@ class Experiment:
         &#34;&#34;&#34;Key-value store of all plates in the experiment&#34;&#34;&#34;
         return self.plate_store.items()
 
-    def make_samples(self):
+    def make_samples(self) -&gt; Dict:
         &#34;&#34;&#34;Return samples in the form of a dictionary.
 
         Returns
@@ -95,7 +96,7 @@ class Experiment:
             sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
-    def get_failures_as_json(self):
+    def get_failures_as_json(self) -&gt; Dict:
         &#34;&#34;&#34;Return failures as a dictionary.
 
         Returns
@@ -123,7 +124,7 @@ class Experiment:
             failure_dict[&#34;well_failures&#34;].extend(sample_failures_as_dict)
         return failure_dict
 
-    def get_failures_as_dataframe(self):
+    def get_failures_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return failures a dataframe
 
         Returns
@@ -168,7 +169,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_failures_as_dataframe(self, output_dir):
+    def save_failures_as_dataframe(self, output_dir: str):
         &#34;&#34;&#34;Save failures as a csv file.
 
         Parameters
@@ -187,7 +188,7 @@ class Experiment:
         failures_df.to_csv(failure_output_path, index=False)
         logging.info(&#34;failures dataframe saved to %s&#34;, failure_output_path)
 
-    def get_results_as_json(self):
+    def get_results_as_json(self) -&gt; Dict:
         &#34;&#34;&#34;Return final results as a dictionary.
 
         Returns
@@ -201,7 +202,7 @@ class Experiment:
             results[&#34;results&#34;][sample_name] = sample.ic50
         return results
 
-    def get_results_as_dataframe(self):
+    def get_results_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return final results as a dataframe.
 
         Returns
@@ -229,7 +230,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_results_as_dataframe(self, output_dir):
+    def save_results_as_dataframe(self, output_dir: str):
         results_df = self.get_results_as_dataframe()
         result_output_path = os.path.join(
             output_dir, f&#34;results_{self.experiment_name}.csv&#34;
@@ -237,7 +238,7 @@ class Experiment:
         results_df.to_csv(result_output_path, index=False)
         logging.info(&#34;results dataframe saved to %s&#34;, result_output_path)
 
-    def get_normalised_data(self):
+    def get_normalised_data(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Get normalised data
 
         Returns
@@ -252,7 +253,7 @@ class Experiment:
         df_concat[&#34;variant&#34;] = self.variant
         return df_concat
 
-    def save_normalised_data(self, output_dir, concatenate=True):
+    def save_normalised_data(self, output_dir: str, concatenate: bool = True):
         &#34;&#34;&#34;Save normalised data as a csv file
 
         Parameters
@@ -281,7 +282,7 @@ class Experiment:
             for _, plate_object in self.plates:
                 plate_object.save_normalised_data(output_dir)
 
-    def get_model_parameters(self):
+    def get_model_parameters(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return curve-fitting parameters as a dataframe.
 
         The dataframe contains a row for every well. For wells
@@ -320,7 +321,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def get_percentage_infected_dataframe(self):
+    def get_percentage_infected_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return dataframe value of dilutions and percentage infected
 
         Returns
@@ -351,7 +352,7 @@ class Experiment:
 <dl>
 <dt id="plaque_assay.experiment.Experiment"><code class="flex name class">
 <span>class <span class="ident">Experiment</span></span>
-<span>(</span><span>df)</span>
+<span>(</span><span>df: pandas.core.frame.DataFrame)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Experiment class, holds plates and samples.</p>
@@ -397,7 +398,7 @@ class Experiment:
 
     &#34;&#34;&#34;
 
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame):
         self.df = df
         self.experiment_name = df[&#34;Plate_barcode&#34;].values[0][3:]
         self.variant = df[&#34;variant&#34;].values[0]
@@ -415,7 +416,7 @@ class Experiment:
         &#34;&#34;&#34;Key-value store of all plates in the experiment&#34;&#34;&#34;
         return self.plate_store.items()
 
-    def make_samples(self):
+    def make_samples(self) -&gt; Dict:
         &#34;&#34;&#34;Return samples in the form of a dictionary.
 
         Returns
@@ -429,7 +430,7 @@ class Experiment:
             sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
-    def get_failures_as_json(self):
+    def get_failures_as_json(self) -&gt; Dict:
         &#34;&#34;&#34;Return failures as a dictionary.
 
         Returns
@@ -457,7 +458,7 @@ class Experiment:
             failure_dict[&#34;well_failures&#34;].extend(sample_failures_as_dict)
         return failure_dict
 
-    def get_failures_as_dataframe(self):
+    def get_failures_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return failures a dataframe
 
         Returns
@@ -502,7 +503,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_failures_as_dataframe(self, output_dir):
+    def save_failures_as_dataframe(self, output_dir: str):
         &#34;&#34;&#34;Save failures as a csv file.
 
         Parameters
@@ -521,7 +522,7 @@ class Experiment:
         failures_df.to_csv(failure_output_path, index=False)
         logging.info(&#34;failures dataframe saved to %s&#34;, failure_output_path)
 
-    def get_results_as_json(self):
+    def get_results_as_json(self) -&gt; Dict:
         &#34;&#34;&#34;Return final results as a dictionary.
 
         Returns
@@ -535,7 +536,7 @@ class Experiment:
             results[&#34;results&#34;][sample_name] = sample.ic50
         return results
 
-    def get_results_as_dataframe(self):
+    def get_results_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return final results as a dataframe.
 
         Returns
@@ -563,7 +564,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def save_results_as_dataframe(self, output_dir):
+    def save_results_as_dataframe(self, output_dir: str):
         results_df = self.get_results_as_dataframe()
         result_output_path = os.path.join(
             output_dir, f&#34;results_{self.experiment_name}.csv&#34;
@@ -571,7 +572,7 @@ class Experiment:
         results_df.to_csv(result_output_path, index=False)
         logging.info(&#34;results dataframe saved to %s&#34;, result_output_path)
 
-    def get_normalised_data(self):
+    def get_normalised_data(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Get normalised data
 
         Returns
@@ -586,7 +587,7 @@ class Experiment:
         df_concat[&#34;variant&#34;] = self.variant
         return df_concat
 
-    def save_normalised_data(self, output_dir, concatenate=True):
+    def save_normalised_data(self, output_dir: str, concatenate: bool = True):
         &#34;&#34;&#34;Save normalised data as a csv file
 
         Parameters
@@ -615,7 +616,7 @@ class Experiment:
             for _, plate_object in self.plates:
                 plate_object.save_normalised_data(output_dir)
 
-    def get_model_parameters(self):
+    def get_model_parameters(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return curve-fitting parameters as a dataframe.
 
         The dataframe contains a row for every well. For wells
@@ -654,7 +655,7 @@ class Experiment:
         df[&#34;variant&#34;] = self.variant
         return df
 
-    def get_percentage_infected_dataframe(self):
+    def get_percentage_infected_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return dataframe value of dilutions and percentage infected
 
         Returns
@@ -705,7 +706,7 @@ def samples(self):
 <h3>Methods</h3>
 <dl>
 <dt id="plaque_assay.experiment.Experiment.get_failures_as_dataframe"><code class="name flex">
-<span>def <span class="ident">get_failures_as_dataframe</span></span>(<span>self)</span>
+<span>def <span class="ident">get_failures_as_dataframe</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return failures a dataframe</p>
@@ -718,7 +719,7 @@ def samples(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_failures_as_dataframe(self):
+<pre><code class="python">def get_failures_as_dataframe(self) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Return failures a dataframe
 
     Returns
@@ -765,7 +766,7 @@ def samples(self):
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_failures_as_json"><code class="name flex">
-<span>def <span class="ident">get_failures_as_json</span></span>(<span>self)</span>
+<span>def <span class="ident">get_failures_as_json</span></span>(<span>self) ‑> Dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return failures as a dictionary.</p>
@@ -778,7 +779,7 @@ def samples(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_failures_as_json(self):
+<pre><code class="python">def get_failures_as_json(self) -&gt; Dict:
     &#34;&#34;&#34;Return failures as a dictionary.
 
     Returns
@@ -808,7 +809,7 @@ def samples(self):
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_model_parameters"><code class="name flex">
-<span>def <span class="ident">get_model_parameters</span></span>(<span>self)</span>
+<span>def <span class="ident">get_model_parameters</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return curve-fitting parameters as a dataframe.</p>
@@ -835,7 +836,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_model_parameters(self):
+<pre><code class="python">def get_model_parameters(self) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Return curve-fitting parameters as a dataframe.
 
     The dataframe contains a row for every well. For wells
@@ -876,7 +877,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_normalised_data"><code class="name flex">
-<span>def <span class="ident">get_normalised_data</span></span>(<span>self)</span>
+<span>def <span class="ident">get_normalised_data</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get normalised data</p>
@@ -889,7 +890,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_normalised_data(self):
+<pre><code class="python">def get_normalised_data(self) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Get normalised data
 
     Returns
@@ -906,7 +907,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_percentage_infected_dataframe"><code class="name flex">
-<span>def <span class="ident">get_percentage_infected_dataframe</span></span>(<span>self)</span>
+<span>def <span class="ident">get_percentage_infected_dataframe</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return dataframe value of dilutions and percentage infected</p>
@@ -919,7 +920,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_percentage_infected_dataframe(self):
+<pre><code class="python">def get_percentage_infected_dataframe(self) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Return dataframe value of dilutions and percentage infected
 
     Returns
@@ -940,7 +941,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_results_as_dataframe"><code class="name flex">
-<span>def <span class="ident">get_results_as_dataframe</span></span>(<span>self)</span>
+<span>def <span class="ident">get_results_as_dataframe</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return final results as a dataframe.</p>
@@ -953,7 +954,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_results_as_dataframe(self):
+<pre><code class="python">def get_results_as_dataframe(self) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Return final results as a dataframe.
 
     Returns
@@ -983,7 +984,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_results_as_json"><code class="name flex">
-<span>def <span class="ident">get_results_as_json</span></span>(<span>self)</span>
+<span>def <span class="ident">get_results_as_json</span></span>(<span>self) ‑> Dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return final results as a dictionary.</p>
@@ -996,7 +997,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_results_as_json(self):
+<pre><code class="python">def get_results_as_json(self) -&gt; Dict:
     &#34;&#34;&#34;Return final results as a dictionary.
 
     Returns
@@ -1012,7 +1013,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.make_samples"><code class="name flex">
-<span>def <span class="ident">make_samples</span></span>(<span>self)</span>
+<span>def <span class="ident">make_samples</span></span>(<span>self) ‑> Dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return samples in the form of a dictionary.</p>
@@ -1025,7 +1026,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def make_samples(self):
+<pre><code class="python">def make_samples(self) -&gt; Dict:
     &#34;&#34;&#34;Return samples in the form of a dictionary.
 
     Returns
@@ -1041,7 +1042,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.save_failures_as_dataframe"><code class="name flex">
-<span>def <span class="ident">save_failures_as_dataframe</span></span>(<span>self, output_dir)</span>
+<span>def <span class="ident">save_failures_as_dataframe</span></span>(<span>self, output_dir: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Save failures as a csv file.</p>
@@ -1059,7 +1060,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_failures_as_dataframe(self, output_dir):
+<pre><code class="python">def save_failures_as_dataframe(self, output_dir: str):
     &#34;&#34;&#34;Save failures as a csv file.
 
     Parameters
@@ -1080,7 +1081,7 @@ where no model was fitted then these will be <code>NaN</code>.</p>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.save_normalised_data"><code class="name flex">
-<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir, concatenate=True)</span>
+<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir: str, concatenate: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Save normalised data as a csv file</p>
@@ -1102,7 +1103,7 @@ per plate.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_normalised_data(self, output_dir, concatenate=True):
+<pre><code class="python">def save_normalised_data(self, output_dir: str, concatenate: bool = True):
     &#34;&#34;&#34;Save normalised data as a csv file
 
     Parameters
@@ -1133,7 +1134,7 @@ per plate.</dd>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.save_results_as_dataframe"><code class="name flex">
-<span>def <span class="ident">save_results_as_dataframe</span></span>(<span>self, output_dir)</span>
+<span>def <span class="ident">save_results_as_dataframe</span></span>(<span>self, output_dir: str)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1141,7 +1142,7 @@ per plate.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_results_as_dataframe(self, output_dir):
+<pre><code class="python">def save_results_as_dataframe(self, output_dir: str):
     results_df = self.get_results_as_dataframe()
     result_output_path = os.path.join(
         output_dir, f&#34;results_{self.experiment_name}.csv&#34;

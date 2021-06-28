@@ -30,6 +30,7 @@
 <pre><code class="python">&#34;&#34;&#34;
 Classes to hold information about plate and well failures.
 &#34;&#34;&#34;
+from typing import Dict
 
 
 class PlateFailure:
@@ -42,7 +43,7 @@ class PlateFailure:
 
     &#34;&#34;&#34;
 
-    def __init__(self, plate, wells, reason=&#34;&#34;):
+    def __init__(self, plate: str, wells: str, reason: str = &#34;&#34;):
         self.plate = plate
         self.wells = wells
         self.reason = reason
@@ -53,7 +54,7 @@ class PlateFailure:
     def __repr__(self):
         return str(self.to_dict())
 
-    def to_dict(self):
+    def to_dict(self) -&gt; Dict:
         &#34;&#34;&#34;convert to dictionary&#34;&#34;&#34;
         return {
             &#34;type&#34;: &#34;plate_failure&#34;,
@@ -101,7 +102,7 @@ class WellFailure:
         convert to dictionary
     &#34;&#34;&#34;
 
-    def __init__(self, well, plate, reason):
+    def __init__(self, well: str, plate: str, reason: str):
         self.well = well
         self.plate = plate
         self.reason = reason
@@ -112,7 +113,7 @@ class WellFailure:
     def __repr__(self):
         return str(self.to_dict())
 
-    def to_dict(self):
+    def to_dict(self) -&gt; Dict:
         return {
             &#34;type&#34;: &#34;well_failure&#34;,
             &#34;plate&#34;: self.plate,
@@ -221,7 +222,7 @@ class WellFailure:
 </dd>
 <dt id="plaque_assay.failure.PlateFailure"><code class="flex name class">
 <span>class <span class="ident">PlateFailure</span></span>
-<span>(</span><span>plate, wells, reason='')</span>
+<span>(</span><span>plate: str, wells: str, reason: str = '')</span>
 </code></dt>
 <dd>
 <div class="desc"><h2 id="attributes">Attributes</h2>
@@ -247,7 +248,7 @@ class WellFailure:
 
     &#34;&#34;&#34;
 
-    def __init__(self, plate, wells, reason=&#34;&#34;):
+    def __init__(self, plate: str, wells: str, reason: str = &#34;&#34;):
         self.plate = plate
         self.wells = wells
         self.reason = reason
@@ -258,7 +259,7 @@ class WellFailure:
     def __repr__(self):
         return str(self.to_dict())
 
-    def to_dict(self):
+    def to_dict(self) -&gt; Dict:
         &#34;&#34;&#34;convert to dictionary&#34;&#34;&#34;
         return {
             &#34;type&#34;: &#34;plate_failure&#34;,
@@ -276,7 +277,7 @@ class WellFailure:
 <h3>Methods</h3>
 <dl>
 <dt id="plaque_assay.failure.PlateFailure.to_dict"><code class="name flex">
-<span>def <span class="ident">to_dict</span></span>(<span>self)</span>
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>convert to dictionary</p></div>
@@ -284,7 +285,7 @@ class WellFailure:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_dict(self):
+<pre><code class="python">def to_dict(self) -&gt; Dict:
     &#34;&#34;&#34;convert to dictionary&#34;&#34;&#34;
     return {
         &#34;type&#34;: &#34;plate_failure&#34;,
@@ -298,7 +299,7 @@ class WellFailure:
 </dd>
 <dt id="plaque_assay.failure.WellFailure"><code class="flex name class">
 <span>class <span class="ident">WellFailure</span></span>
-<span>(</span><span>well, plate, reason)</span>
+<span>(</span><span>well: str, plate: str, reason: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Well failure class</p>
@@ -333,7 +334,7 @@ convert to dictionary</p></div>
         convert to dictionary
     &#34;&#34;&#34;
 
-    def __init__(self, well, plate, reason):
+    def __init__(self, well: str, plate: str, reason: str):
         self.well = well
         self.plate = plate
         self.reason = reason
@@ -344,7 +345,7 @@ convert to dictionary</p></div>
     def __repr__(self):
         return str(self.to_dict())
 
-    def to_dict(self):
+    def to_dict(self) -&gt; Dict:
         return {
             &#34;type&#34;: &#34;well_failure&#34;,
             &#34;plate&#34;: self.plate,
@@ -355,7 +356,7 @@ convert to dictionary</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="plaque_assay.failure.WellFailure.to_dict"><code class="name flex">
-<span>def <span class="ident">to_dict</span></span>(<span>self)</span>
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -363,7 +364,7 @@ convert to dictionary</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_dict(self):
+<pre><code class="python">def to_dict(self) -&gt; Dict:
     return {
         &#34;type&#34;: &#34;well_failure&#34;,
         &#34;plate&#34;: self.plate,

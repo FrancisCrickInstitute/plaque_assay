@@ -123,7 +123,7 @@ class Plate:
         for one of more QC reasons.
     &#34;&#34;&#34;
 
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame):
         self.df = self.subtract_plaque_area_background(df)
         assert df[&#34;PlateNum&#34;].nunique() == 1
         self.barcode = df[&#34;Plate_barcode&#34;].values[0]
@@ -184,7 +184,7 @@ class Plate:
                     )
                 )
 
-    def subtract_plaque_area_background(self, df):
+    def subtract_plaque_area_background(self, df: pd.DataFrame) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Remove background from `plaque_area`.
 
         1. Calculate the median of &#34;Normalised Plaque area&#34; fo no virus wells.
@@ -236,7 +236,7 @@ class Plate:
             )
         self.df[&#34;Percentage Infected&#34;] = self.df[feature] / infection * 100
 
-    def get_normalised_data(self):
+    def get_normalised_data(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return a simplified dataframe of just the normalised data
 
         This subsets and renames some columns.
@@ -265,7 +265,7 @@ class Plate:
         )
         return df_wanted
 
-    def save_normalised_data(self, output_dir):
+    def save_normalised_data(self, output_dir: str):
         &#34;&#34;&#34;Save csv of the normalised data
 
         Parameters
@@ -289,7 +289,7 @@ class Plate:
 <dl>
 <dt id="plaque_assay.plate.Plate"><code class="flex name class">
 <span>class <span class="ident">Plate</span></span>
-<span>(</span><span>df)</span>
+<span>(</span><span>df: pandas.core.frame.DataFrame)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Plate class</p>
@@ -356,7 +356,7 @@ for one of more QC reasons.</dd>
         for one of more QC reasons.
     &#34;&#34;&#34;
 
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame):
         self.df = self.subtract_plaque_area_background(df)
         assert df[&#34;PlateNum&#34;].nunique() == 1
         self.barcode = df[&#34;Plate_barcode&#34;].values[0]
@@ -417,7 +417,7 @@ for one of more QC reasons.</dd>
                     )
                 )
 
-    def subtract_plaque_area_background(self, df):
+    def subtract_plaque_area_background(self, df: pd.DataFrame) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Remove background from `plaque_area`.
 
         1. Calculate the median of &#34;Normalised Plaque area&#34; fo no virus wells.
@@ -469,7 +469,7 @@ for one of more QC reasons.</dd>
             )
         self.df[&#34;Percentage Infected&#34;] = self.df[feature] / infection * 100
 
-    def get_normalised_data(self):
+    def get_normalised_data(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return a simplified dataframe of just the normalised data
 
         This subsets and renames some columns.
@@ -498,7 +498,7 @@ for one of more QC reasons.</dd>
         )
         return df_wanted
 
-    def save_normalised_data(self, output_dir):
+    def save_normalised_data(self, output_dir: str):
         &#34;&#34;&#34;Save csv of the normalised data
 
         Parameters
@@ -556,7 +556,7 @@ this is false.</p></div>
 </details>
 </dd>
 <dt id="plaque_assay.plate.Plate.get_normalised_data"><code class="name flex">
-<span>def <span class="ident">get_normalised_data</span></span>(<span>self)</span>
+<span>def <span class="ident">get_normalised_data</span></span>(<span>self) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return a simplified dataframe of just the normalised data</p>
@@ -570,7 +570,7 @@ this is false.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_normalised_data(self):
+<pre><code class="python">def get_normalised_data(self) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Return a simplified dataframe of just the normalised data
 
     This subsets and renames some columns.
@@ -656,7 +656,7 @@ adds any failures to <code>well_failures</code>.</p></div>
 </details>
 </dd>
 <dt id="plaque_assay.plate.Plate.save_normalised_data"><code class="name flex">
-<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir)</span>
+<span>def <span class="ident">save_normalised_data</span></span>(<span>self, output_dir: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Save csv of the normalised data</p>
@@ -669,7 +669,7 @@ adds any failures to <code>well_failures</code>.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save_normalised_data(self, output_dir):
+<pre><code class="python">def save_normalised_data(self, output_dir: str):
     &#34;&#34;&#34;Save csv of the normalised data
 
     Parameters
@@ -683,7 +683,7 @@ adds any failures to <code>well_failures</code>.</p></div>
 </details>
 </dd>
 <dt id="plaque_assay.plate.Plate.subtract_plaque_area_background"><code class="name flex">
-<span>def <span class="ident">subtract_plaque_area_background</span></span>(<span>self, df)</span>
+<span>def <span class="ident">subtract_plaque_area_background</span></span>(<span>self, df: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Remove background from <code>plaque_area</code>.</p>
@@ -711,7 +711,7 @@ as "Background Subtracted Plaque Area"</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def subtract_plaque_area_background(self, df):
+<pre><code class="python">def subtract_plaque_area_background(self, df: pd.DataFrame) -&gt; pd.DataFrame:
     &#34;&#34;&#34;Remove background from `plaque_area`.
 
     1. Calculate the median of &#34;Normalised Plaque area&#34; fo no virus wells.

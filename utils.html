@@ -29,6 +29,10 @@
 <pre><code class="python">import os
 import string
 import math
+from typing import List, Union
+
+import pandas as pd
+import sqlalchemy
 
 from .db_models import NE_available_strains
 
@@ -44,7 +48,7 @@ RESULT_TO_INT = {
 INT_TO_RESULT = {integer: result for result, integer in RESULT_TO_INT.items()}
 
 
-def result_to_int(result):
+def result_to_int(result: str) -&gt; int:
     &#34;&#34;&#34;convert result string to an integer
 
     Parameters
@@ -58,7 +62,7 @@ def result_to_int(result):
     return RESULT_TO_INT[result]
 
 
-def int_to_result(integer):
+def int_to_result(integer: int) -&gt; str:
     &#34;&#34;&#34;convert result integer to a string
 
     Parameters
@@ -72,7 +76,7 @@ def int_to_result(integer):
     return INT_TO_RESULT[integer]
 
 
-def row_col_to_well(row, col):
+def row_col_to_well(row: int, col: int) -&gt; str:
     &#34;&#34;&#34;join row and column indices to well labels
 
     Parameters
@@ -96,7 +100,7 @@ def row_col_to_well(row, col):
     return f&#34;{row_str}{col:02}&#34;
 
 
-def unpad_well(well):
+def unpad_well(well: str) -&gt; str:
     &#34;&#34;&#34;
     Remove zero-padding from well labels
 
@@ -118,7 +122,7 @@ def unpad_well(well):
     return f&#34;{row}{int(col)}&#34;
 
 
-def unpad_well_col(well_col):
+def unpad_well_col(well_col: Union[List, pd.Series]) -&gt; List:
     &#34;&#34;&#34;Remove padding from an entire column of well labels
 
     Parameters
@@ -133,7 +137,7 @@ def unpad_well_col(well_col):
     return [unpad_well(i) for i in well_col]
 
 
-def well_384_to_96(well):
+def well_384_to_96(well: str) -&gt; str:
     &#34;&#34;&#34;Convert 384 well label to 96 well label.
 
     If a 384-well plate has been constructed by stamping out 4 96-well plates,
@@ -161,7 +165,7 @@ def well_384_to_96(well):
     return f&#34;{string.ascii_uppercase[row]}{col:02}&#34;
 
 
-def is_odd(n):
+def is_odd(n: int) -&gt; bool:
     &#34;&#34;&#34;is odd
 
     Parameters
@@ -175,7 +179,7 @@ def is_odd(n):
     return n % 2 != 0
 
 
-def is_even(n):
+def is_even(n: int) -&gt; bool:
     &#34;&#34;&#34;is even
 
     Parameters
@@ -189,7 +193,7 @@ def is_even(n):
     return n % 2 == 0
 
 
-def get_dilution_from_384_well_label(well):
+def get_dilution_from_384_well_label(well: str) -&gt; int:
     &#34;&#34;&#34;Get dilution integer given a well label
 
     Given a 384-well plate constructed from 4 different diltuions
@@ -221,7 +225,7 @@ def get_dilution_from_384_well_label(well):
     return dilution
 
 
-def mock_384_barcode(existing_barcodes, wells):
+def mock_384_barcode(existing_barcodes: List, wells: List) -&gt; List:
     &#34;&#34;&#34;384 -&gt; 96 well plate barcodes
 
     Create mock barcodes for the mock 96-well plates
@@ -247,7 +251,7 @@ def mock_384_barcode(existing_barcodes, wells):
     return new_barcodes
 
 
-def get_prefix_from_full_path(full_path):
+def get_prefix_from_full_path(full_path: str) -&gt; str:
     &#34;&#34;&#34;Get prefix from full path
 
     Given a full-length path to a plate, this will return the
@@ -269,7 +273,9 @@ def get_prefix_from_full_path(full_path):
     return prefix
 
 
-def get_variant_from_plate_list(plate_list, session):
+def get_variant_from_plate_list(
+    plate_list: List, session: sqlalchemy.orm.Session
+) -&gt; str:
     &#34;&#34;&#34;
     Fetch variant name from the LIMS database.
     This uses the plate barcodes within the plate_list which contain
@@ -324,7 +330,7 @@ def get_variant_from_plate_list(plate_list, session):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="plaque_assay.utils.get_dilution_from_384_well_label"><code class="name flex">
-<span>def <span class="ident">get_dilution_from_384_well_label</span></span>(<span>well)</span>
+<span>def <span class="ident">get_dilution_from_384_well_label</span></span>(<span>well: str) ‑> int</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get dilution integer given a well label</p>
@@ -345,7 +351,7 @@ of a 96-well plate stamped in quadrants, return the dilution integer
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_dilution_from_384_well_label(well):
+<pre><code class="python">def get_dilution_from_384_well_label(well: str) -&gt; int:
     &#34;&#34;&#34;Get dilution integer given a well label
 
     Given a 384-well plate constructed from 4 different diltuions
@@ -378,7 +384,7 @@ of a 96-well plate stamped in quadrants, return the dilution integer
 </details>
 </dd>
 <dt id="plaque_assay.utils.get_prefix_from_full_path"><code class="name flex">
-<span>def <span class="ident">get_prefix_from_full_path</span></span>(<span>full_path)</span>
+<span>def <span class="ident">get_prefix_from_full_path</span></span>(<span>full_path: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get prefix from full path</p>
@@ -398,7 +404,7 @@ prefix/barcode.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_prefix_from_full_path(full_path):
+<pre><code class="python">def get_prefix_from_full_path(full_path: str) -&gt; str:
     &#34;&#34;&#34;Get prefix from full path
 
     Given a full-length path to a plate, this will return the
@@ -421,7 +427,7 @@ prefix/barcode.</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.get_variant_from_plate_list"><code class="name flex">
-<span>def <span class="ident">get_variant_from_plate_list</span></span>(<span>plate_list, session)</span>
+<span>def <span class="ident">get_variant_from_plate_list</span></span>(<span>plate_list: List, session: sqlalchemy.orm.session.Session) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch variant name from the LIMS database.
@@ -450,7 +456,9 @@ in the LIMS serology database</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_variant_from_plate_list(plate_list, session):
+<pre><code class="python">def get_variant_from_plate_list(
+    plate_list: List, session: sqlalchemy.orm.Session
+) -&gt; str:
     &#34;&#34;&#34;
     Fetch variant name from the LIMS database.
     This uses the plate barcodes within the plate_list which contain
@@ -498,7 +506,7 @@ in the LIMS serology database</dd>
 </details>
 </dd>
 <dt id="plaque_assay.utils.int_to_result"><code class="name flex">
-<span>def <span class="ident">int_to_result</span></span>(<span>integer)</span>
+<span>def <span class="ident">int_to_result</span></span>(<span>integer: int) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>convert result integer to a string</p>
@@ -516,7 +524,7 @@ in the LIMS serology database</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def int_to_result(integer):
+<pre><code class="python">def int_to_result(integer: int) -&gt; str:
     &#34;&#34;&#34;convert result integer to a string
 
     Parameters
@@ -531,7 +539,7 @@ in the LIMS serology database</dd>
 </details>
 </dd>
 <dt id="plaque_assay.utils.is_even"><code class="name flex">
-<span>def <span class="ident">is_even</span></span>(<span>n)</span>
+<span>def <span class="ident">is_even</span></span>(<span>n: int) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"><p>is even</p>
@@ -549,7 +557,7 @@ in the LIMS serology database</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def is_even(n):
+<pre><code class="python">def is_even(n: int) -&gt; bool:
     &#34;&#34;&#34;is even
 
     Parameters
@@ -564,7 +572,7 @@ in the LIMS serology database</dd>
 </details>
 </dd>
 <dt id="plaque_assay.utils.is_odd"><code class="name flex">
-<span>def <span class="ident">is_odd</span></span>(<span>n)</span>
+<span>def <span class="ident">is_odd</span></span>(<span>n: int) ‑> bool</span>
 </code></dt>
 <dd>
 <div class="desc"><p>is odd</p>
@@ -582,7 +590,7 @@ in the LIMS serology database</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def is_odd(n):
+<pre><code class="python">def is_odd(n: int) -&gt; bool:
     &#34;&#34;&#34;is odd
 
     Parameters
@@ -597,7 +605,7 @@ in the LIMS serology database</dd>
 </details>
 </dd>
 <dt id="plaque_assay.utils.mock_384_barcode"><code class="name flex">
-<span>def <span class="ident">mock_384_barcode</span></span>(<span>existing_barcodes, wells)</span>
+<span>def <span class="ident">mock_384_barcode</span></span>(<span>existing_barcodes: List, wells: List) ‑> List</span>
 </code></dt>
 <dd>
 <div class="desc"><p>384 -&gt; 96 well plate barcodes</p>
@@ -619,7 +627,7 @@ coming from a 384-well plate</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def mock_384_barcode(existing_barcodes, wells):
+<pre><code class="python">def mock_384_barcode(existing_barcodes: List, wells: List) -&gt; List:
     &#34;&#34;&#34;384 -&gt; 96 well plate barcodes
 
     Create mock barcodes for the mock 96-well plates
@@ -646,7 +654,7 @@ coming from a 384-well plate</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.result_to_int"><code class="name flex">
-<span>def <span class="ident">result_to_int</span></span>(<span>result)</span>
+<span>def <span class="ident">result_to_int</span></span>(<span>result: str) ‑> int</span>
 </code></dt>
 <dd>
 <div class="desc"><p>convert result string to an integer</p>
@@ -664,7 +672,7 @@ coming from a 384-well plate</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def result_to_int(result):
+<pre><code class="python">def result_to_int(result: str) -&gt; int:
     &#34;&#34;&#34;convert result string to an integer
 
     Parameters
@@ -679,7 +687,7 @@ coming from a 384-well plate</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.row_col_to_well"><code class="name flex">
-<span>def <span class="ident">row_col_to_well</span></span>(<span>row, col)</span>
+<span>def <span class="ident">row_col_to_well</span></span>(<span>row: int, col: int) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>join row and column indices to well labels</p>
@@ -703,7 +711,7 @@ coming from a 384-well plate</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def row_col_to_well(row, col):
+<pre><code class="python">def row_col_to_well(row: int, col: int) -&gt; str:
     &#34;&#34;&#34;join row and column indices to well labels
 
     Parameters
@@ -728,7 +736,7 @@ coming from a 384-well plate</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.unpad_well"><code class="name flex">
-<span>def <span class="ident">unpad_well</span></span>(<span>well)</span>
+<span>def <span class="ident">unpad_well</span></span>(<span>well: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Remove zero-padding from well labels</p>
@@ -750,7 +758,7 @@ coming from a 384-well plate</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def unpad_well(well):
+<pre><code class="python">def unpad_well(well: str) -&gt; str:
     &#34;&#34;&#34;
     Remove zero-padding from well labels
 
@@ -773,7 +781,7 @@ coming from a 384-well plate</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.unpad_well_col"><code class="name flex">
-<span>def <span class="ident">unpad_well_col</span></span>(<span>well_col)</span>
+<span>def <span class="ident">unpad_well_col</span></span>(<span>well_col: Union[List, pandas.core.series.Series]) ‑> List</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Remove padding from an entire column of well labels</p>
@@ -791,7 +799,7 @@ coming from a 384-well plate</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def unpad_well_col(well_col):
+<pre><code class="python">def unpad_well_col(well_col: Union[List, pd.Series]) -&gt; List:
     &#34;&#34;&#34;Remove padding from an entire column of well labels
 
     Parameters
@@ -807,7 +815,7 @@ coming from a 384-well plate</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.well_384_to_96"><code class="name flex">
-<span>def <span class="ident">well_384_to_96</span></span>(<span>well)</span>
+<span>def <span class="ident">well_384_to_96</span></span>(<span>well: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert 384 well label to 96 well label.</p>
@@ -832,7 +840,7 @@ original 96-well plate.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def well_384_to_96(well):
+<pre><code class="python">def well_384_to_96(well: str) -&gt; str:
     &#34;&#34;&#34;Convert 384 well label to 96 well label.
 
     If a 384-well plate has been constructed by stamping out 4 96-well plates,
