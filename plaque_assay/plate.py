@@ -158,6 +158,34 @@ class Plate:
         df[new_colname] = df[feature] - background
         return df
 
+    def check_infection(self, infection: float) -> None:
+        """
+        Determines if infection rate of virus-only-wells is within
+        acceptable limts, flag as a plate failure if this is false.
+
+        Parameters
+        -----------
+        infection: float
+            infection rate of virus-only wells
+
+        Returns
+        -------
+        None
+            Adds a `plaque_assay.failure.PlateFailure` to
+            `self.plate_failures` if plate has failed.
+        """
+        lower_limit = qc_criteria.infection_rate_low
+        upper_limit = qc_criteria.infection_rate_high
+        if infection < lower_limit or infection > upper_limit:
+            reason = f"virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})"
+            self.plate_failed = True
+            failed_plate = failure.PlateFailure(
+                plate=self.barcode,
+                wells=";".join(VIRUS_ONLY_WELLS),
+                failure_reason=reason,
+            )
+            self.plate_failures.add(failed_plate)
+
     def calc_percentage_infected(self) -> None:
         """Calculate percentage infected.
 
@@ -170,20 +198,10 @@ class Plate:
         virus-only-wells is within acceptable limts, flag the plate if
         this is false.
         """
-        lower_limit = qc_criteria.infection_rate_low
-        upper_limit = qc_criteria.infection_rate_high
         feature = "Background Subtracted Plaque Area"
         virus_only_bool = self.df.Well.isin(VIRUS_ONLY_WELLS)
         infection = self.df[virus_only_bool][feature].median()
-        if infection < lower_limit or infection > upper_limit:
-            reason = f"virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})"
-            self.plate_failed = True
-            failed_plate = failure.PlateFailure(
-                plate=self.barcode,
-                wells=";".join(VIRUS_ONLY_WELLS),
-                failure_reason=reason,
-            )
-            self.plate_failures.add(failed_plate)
+        self.check_infection(infection)
         self.df["Percentage Infected"] = self.df[feature] / infection * 100
 
     def get_normalised_data(self) -> pd.DataFrame:
