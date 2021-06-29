@@ -30,109 +30,26 @@
 <pre><code class="python">&#34;&#34;&#34;
 Classes to hold information about plate and well failures.
 &#34;&#34;&#34;
-from typing import Dict, NamedTuple
+from typing import NamedTuple
 
 
-class PlateFailure:
-    &#34;&#34;&#34;
-    Attributes
-    -----------
-    plate : str
-    wells : list
-    reason : str
-
-    &#34;&#34;&#34;
-
-    def __init__(self, plate: str, wells: str, reason: str = &#34;&#34;):
-        self.plate = plate
-        self.wells = wells
-        self.reason = reason
-
-    def __str__(self):
-        return str(self.to_dict())
-
-    def __repr__(self):
-        return str(self.to_dict())
-
-    def to_dict(self) -&gt; Dict:
-        &#34;&#34;&#34;convert to dictionary&#34;&#34;&#34;
-        return {
-            &#34;type&#34;: &#34;plate_failure&#34;,
-            &#34;plate&#34;: self.plate,
-            &#34;wells&#34;: self.wells,
-            &#34;reason&#34;: self.reason,
-        }
+CELL_IMAGE_AREA_FAILURE_REASON = &#34;cell-image-region-area outside expected limits&#34;
+CELL_REGION_FAILURE_REASON = &#34;cell-region-area outside expected range&#34;
+DAPI_PLATE_FAILURE_REASON = &#34;possible plate fail - check DAPI plate image&#34;
 
 
-class InfectionPlateFailure(PlateFailure):
-    &#34;&#34;&#34;Plate failure due to virus-only infection median outside expected range&#34;&#34;&#34;
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
-class CellAreaPlateFailure(PlateFailure):
-    &#34;&#34;&#34;Plate failure due to cell-image-region-area outside expected limits&#34;&#34;&#34;
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.reason = &#34;cell-image-region-area outside expected limits&#34;
+class PlateFailure(NamedTuple):
+    plate: str
+    wells: str
+    failure_reason: str
+    failure_type: str = &#34;plate_failure&#34;
 
 
-class DAPIPlateFailure(PlateFailure):
-    &#34;&#34;&#34;Plate failure due to large number of DAPI images outside expected range&#34;&#34;&#34;
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.reason = &#34;possible plate fail - check DAPI plate image&#34;
-
-
-class WellFailure:
-    &#34;&#34;&#34;Well failure class
-
-    Attributes
-    -----------
-    well : str
-    plate : str
-    reason : str
-
-    Methods
-    -------
-    to_dict()
-        convert to dictionary
-    &#34;&#34;&#34;
-
-    def __init__(self, well: str, plate: str, reason: str):
-        self.well = well
-        self.plate = plate
-        self.reason = reason
-
-    def __str__(self):
-        return str(self.to_dict())
-
-    def __repr__(self):
-        return str(self.to_dict())
-
-    def to_dict(self) -&gt; Dict:
-        return {
-            &#34;type&#34;: &#34;well_failure&#34;,
-            &#34;plate&#34;: self.plate,
-            &#34;well&#34;: self.well,
-            &#34;reason&#34;: self.reason,
-        }
-
-
-class PlateFailures(NamedTuple):
-    pass
-
-
-class WellFailures(NamedTuple):
-    pass
-
-
-class AllFailures(NamedTuple):
-    plate_failures: PlateFailures
-    well_failures: WellFailures</code></pre>
+class WellFailure(NamedTuple):
+    well: str
+    plate: str
+    failure_reason: str
+    failure_type: str = &#34;well_failure&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -144,19 +61,21 @@ class AllFailures(NamedTuple):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="plaque_assay.failure.AllFailures"><code class="flex name class">
-<span>class <span class="ident">AllFailures</span></span>
-<span>(</span><span>plate_failures: <a title="plaque_assay.failure.PlateFailures" href="#plaque_assay.failure.PlateFailures">PlateFailures</a>, well_failures: <a title="plaque_assay.failure.WellFailures" href="#plaque_assay.failure.WellFailures">WellFailures</a>)</span>
+<dt id="plaque_assay.failure.PlateFailure"><code class="flex name class">
+<span>class <span class="ident">PlateFailure</span></span>
+<span>(</span><span>plate: str, wells: str, failure_reason: str, failure_type: str = 'plate_failure')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>AllFailures(plate_failures, well_failures)</p></div>
+<div class="desc"><p>PlateFailure(plate, wells, failure_reason, failure_type)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AllFailures(NamedTuple):
-    plate_failures: PlateFailures
-    well_failures: WellFailures</code></pre>
+<pre><code class="python">class PlateFailure(NamedTuple):
+    plate: str
+    wells: str
+    failure_reason: str
+    failure_type: str = &#34;plate_failure&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -164,293 +83,63 @@ class AllFailures(NamedTuple):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="plaque_assay.failure.AllFailures.plate_failures"><code class="name">var <span class="ident">plate_failures</span> : <a title="plaque_assay.failure.PlateFailures" href="#plaque_assay.failure.PlateFailures">PlateFailures</a></code></dt>
+<dt id="plaque_assay.failure.PlateFailure.failure_reason"><code class="name">var <span class="ident">failure_reason</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 2</p></div>
+</dd>
+<dt id="plaque_assay.failure.PlateFailure.failure_type"><code class="name">var <span class="ident">failure_type</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 3</p></div>
+</dd>
+<dt id="plaque_assay.failure.PlateFailure.plate"><code class="name">var <span class="ident">plate</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 0</p></div>
 </dd>
-<dt id="plaque_assay.failure.AllFailures.well_failures"><code class="name">var <span class="ident">well_failures</span> : <a title="plaque_assay.failure.WellFailures" href="#plaque_assay.failure.WellFailures">WellFailures</a></code></dt>
+<dt id="plaque_assay.failure.PlateFailure.wells"><code class="name">var <span class="ident">wells</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 1</p></div>
 </dd>
 </dl>
 </dd>
-<dt id="plaque_assay.failure.CellAreaPlateFailure"><code class="flex name class">
-<span>class <span class="ident">CellAreaPlateFailure</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Plate failure due to cell-image-region-area outside expected limits</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class CellAreaPlateFailure(PlateFailure):
-    &#34;&#34;&#34;Plate failure due to cell-image-region-area outside expected limits&#34;&#34;&#34;
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.reason = &#34;cell-image-region-area outside expected limits&#34;</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="plaque_assay.failure.PlateFailure" href="#plaque_assay.failure.PlateFailure">PlateFailure</a></li>
-</ul>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="plaque_assay.failure.PlateFailure" href="#plaque_assay.failure.PlateFailure">PlateFailure</a></b></code>:
-<ul class="hlist">
-<li><code><a title="plaque_assay.failure.PlateFailure.to_dict" href="#plaque_assay.failure.PlateFailure.to_dict">to_dict</a></code></li>
-</ul>
-</li>
-</ul>
-</dd>
-<dt id="plaque_assay.failure.DAPIPlateFailure"><code class="flex name class">
-<span>class <span class="ident">DAPIPlateFailure</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Plate failure due to large number of DAPI images outside expected range</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class DAPIPlateFailure(PlateFailure):
-    &#34;&#34;&#34;Plate failure due to large number of DAPI images outside expected range&#34;&#34;&#34;
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.reason = &#34;possible plate fail - check DAPI plate image&#34;</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="plaque_assay.failure.PlateFailure" href="#plaque_assay.failure.PlateFailure">PlateFailure</a></li>
-</ul>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="plaque_assay.failure.PlateFailure" href="#plaque_assay.failure.PlateFailure">PlateFailure</a></b></code>:
-<ul class="hlist">
-<li><code><a title="plaque_assay.failure.PlateFailure.to_dict" href="#plaque_assay.failure.PlateFailure.to_dict">to_dict</a></code></li>
-</ul>
-</li>
-</ul>
-</dd>
-<dt id="plaque_assay.failure.InfectionPlateFailure"><code class="flex name class">
-<span>class <span class="ident">InfectionPlateFailure</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Plate failure due to virus-only infection median outside expected range</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class InfectionPlateFailure(PlateFailure):
-    &#34;&#34;&#34;Plate failure due to virus-only infection median outside expected range&#34;&#34;&#34;
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="plaque_assay.failure.PlateFailure" href="#plaque_assay.failure.PlateFailure">PlateFailure</a></li>
-</ul>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="plaque_assay.failure.PlateFailure" href="#plaque_assay.failure.PlateFailure">PlateFailure</a></b></code>:
-<ul class="hlist">
-<li><code><a title="plaque_assay.failure.PlateFailure.to_dict" href="#plaque_assay.failure.PlateFailure.to_dict">to_dict</a></code></li>
-</ul>
-</li>
-</ul>
-</dd>
-<dt id="plaque_assay.failure.PlateFailure"><code class="flex name class">
-<span>class <span class="ident">PlateFailure</span></span>
-<span>(</span><span>plate: str, wells: str, reason: str = '')</span>
-</code></dt>
-<dd>
-<div class="desc"><h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>plate</code></strong> :&ensp;<code>str</code></dt>
-<dd>&nbsp;</dd>
-<dt><strong><code>wells</code></strong> :&ensp;<code>list</code></dt>
-<dd>&nbsp;</dd>
-<dt><strong><code>reason</code></strong> :&ensp;<code>str</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class PlateFailure:
-    &#34;&#34;&#34;
-    Attributes
-    -----------
-    plate : str
-    wells : list
-    reason : str
-
-    &#34;&#34;&#34;
-
-    def __init__(self, plate: str, wells: str, reason: str = &#34;&#34;):
-        self.plate = plate
-        self.wells = wells
-        self.reason = reason
-
-    def __str__(self):
-        return str(self.to_dict())
-
-    def __repr__(self):
-        return str(self.to_dict())
-
-    def to_dict(self) -&gt; Dict:
-        &#34;&#34;&#34;convert to dictionary&#34;&#34;&#34;
-        return {
-            &#34;type&#34;: &#34;plate_failure&#34;,
-            &#34;plate&#34;: self.plate,
-            &#34;wells&#34;: self.wells,
-            &#34;reason&#34;: self.reason,
-        }</code></pre>
-</details>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="plaque_assay.failure.CellAreaPlateFailure" href="#plaque_assay.failure.CellAreaPlateFailure">CellAreaPlateFailure</a></li>
-<li><a title="plaque_assay.failure.DAPIPlateFailure" href="#plaque_assay.failure.DAPIPlateFailure">DAPIPlateFailure</a></li>
-<li><a title="plaque_assay.failure.InfectionPlateFailure" href="#plaque_assay.failure.InfectionPlateFailure">InfectionPlateFailure</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="plaque_assay.failure.PlateFailure.to_dict"><code class="name flex">
-<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict</span>
-</code></dt>
-<dd>
-<div class="desc"><p>convert to dictionary</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; Dict:
-    &#34;&#34;&#34;convert to dictionary&#34;&#34;&#34;
-    return {
-        &#34;type&#34;: &#34;plate_failure&#34;,
-        &#34;plate&#34;: self.plate,
-        &#34;wells&#34;: self.wells,
-        &#34;reason&#34;: self.reason,
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="plaque_assay.failure.PlateFailures"><code class="flex name class">
-<span>class <span class="ident">PlateFailures</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>PlateFailures()</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class PlateFailures(NamedTuple):
-    pass</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.tuple</li>
-</ul>
-</dd>
 <dt id="plaque_assay.failure.WellFailure"><code class="flex name class">
 <span>class <span class="ident">WellFailure</span></span>
-<span>(</span><span>well: str, plate: str, reason: str)</span>
+<span>(</span><span>well: str, plate: str, failure_reason: str, failure_type: str = 'well_failure')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Well failure class</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>well</code></strong> :&ensp;<code>str</code></dt>
-<dd>&nbsp;</dd>
-<dt><strong><code>plate</code></strong> :&ensp;<code>str</code></dt>
-<dd>&nbsp;</dd>
-<dt><strong><code>reason</code></strong> :&ensp;<code>str</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="methods">Methods</h2>
-<p>to_dict()
-convert to dictionary</p></div>
+<div class="desc"><p>WellFailure(well, plate, failure_reason, failure_type)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class WellFailure:
-    &#34;&#34;&#34;Well failure class
-
-    Attributes
-    -----------
-    well : str
-    plate : str
-    reason : str
-
-    Methods
-    -------
-    to_dict()
-        convert to dictionary
-    &#34;&#34;&#34;
-
-    def __init__(self, well: str, plate: str, reason: str):
-        self.well = well
-        self.plate = plate
-        self.reason = reason
-
-    def __str__(self):
-        return str(self.to_dict())
-
-    def __repr__(self):
-        return str(self.to_dict())
-
-    def to_dict(self) -&gt; Dict:
-        return {
-            &#34;type&#34;: &#34;well_failure&#34;,
-            &#34;plate&#34;: self.plate,
-            &#34;well&#34;: self.well,
-            &#34;reason&#34;: self.reason,
-        }</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="plaque_assay.failure.WellFailure.to_dict"><code class="name flex">
-<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; Dict:
-    return {
-        &#34;type&#34;: &#34;well_failure&#34;,
-        &#34;plate&#34;: self.plate,
-        &#34;well&#34;: self.well,
-        &#34;reason&#34;: self.reason,
-    }</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="plaque_assay.failure.WellFailures"><code class="flex name class">
-<span>class <span class="ident">WellFailures</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>WellFailures()</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class WellFailures(NamedTuple):
-    pass</code></pre>
+<pre><code class="python">class WellFailure(NamedTuple):
+    well: str
+    plate: str
+    failure_reason: str
+    failure_type: str = &#34;well_failure&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.tuple</li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.failure.WellFailure.failure_reason"><code class="name">var <span class="ident">failure_reason</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 2</p></div>
+</dd>
+<dt id="plaque_assay.failure.WellFailure.failure_type"><code class="name">var <span class="ident">failure_type</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 3</p></div>
+</dd>
+<dt id="plaque_assay.failure.WellFailure.plate"><code class="name">var <span class="ident">plate</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 1</p></div>
+</dd>
+<dt id="plaque_assay.failure.WellFailure.well"><code class="name">var <span class="ident">well</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Alias for field number 0</p></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -469,38 +158,22 @@ convert to dictionary</p></div>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="plaque_assay.failure.AllFailures" href="#plaque_assay.failure.AllFailures">AllFailures</a></code></h4>
-<ul class="">
-<li><code><a title="plaque_assay.failure.AllFailures.plate_failures" href="#plaque_assay.failure.AllFailures.plate_failures">plate_failures</a></code></li>
-<li><code><a title="plaque_assay.failure.AllFailures.well_failures" href="#plaque_assay.failure.AllFailures.well_failures">well_failures</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="plaque_assay.failure.CellAreaPlateFailure" href="#plaque_assay.failure.CellAreaPlateFailure">CellAreaPlateFailure</a></code></h4>
-</li>
-<li>
-<h4><code><a title="plaque_assay.failure.DAPIPlateFailure" href="#plaque_assay.failure.DAPIPlateFailure">DAPIPlateFailure</a></code></h4>
-</li>
-<li>
-<h4><code><a title="plaque_assay.failure.InfectionPlateFailure" href="#plaque_assay.failure.InfectionPlateFailure">InfectionPlateFailure</a></code></h4>
-</li>
-<li>
 <h4><code><a title="plaque_assay.failure.PlateFailure" href="#plaque_assay.failure.PlateFailure">PlateFailure</a></code></h4>
 <ul class="">
-<li><code><a title="plaque_assay.failure.PlateFailure.to_dict" href="#plaque_assay.failure.PlateFailure.to_dict">to_dict</a></code></li>
+<li><code><a title="plaque_assay.failure.PlateFailure.failure_reason" href="#plaque_assay.failure.PlateFailure.failure_reason">failure_reason</a></code></li>
+<li><code><a title="plaque_assay.failure.PlateFailure.failure_type" href="#plaque_assay.failure.PlateFailure.failure_type">failure_type</a></code></li>
+<li><code><a title="plaque_assay.failure.PlateFailure.plate" href="#plaque_assay.failure.PlateFailure.plate">plate</a></code></li>
+<li><code><a title="plaque_assay.failure.PlateFailure.wells" href="#plaque_assay.failure.PlateFailure.wells">wells</a></code></li>
 </ul>
-</li>
-<li>
-<h4><code><a title="plaque_assay.failure.PlateFailures" href="#plaque_assay.failure.PlateFailures">PlateFailures</a></code></h4>
 </li>
 <li>
 <h4><code><a title="plaque_assay.failure.WellFailure" href="#plaque_assay.failure.WellFailure">WellFailure</a></code></h4>
 <ul class="">
-<li><code><a title="plaque_assay.failure.WellFailure.to_dict" href="#plaque_assay.failure.WellFailure.to_dict">to_dict</a></code></li>
+<li><code><a title="plaque_assay.failure.WellFailure.failure_reason" href="#plaque_assay.failure.WellFailure.failure_reason">failure_reason</a></code></li>
+<li><code><a title="plaque_assay.failure.WellFailure.failure_type" href="#plaque_assay.failure.WellFailure.failure_type">failure_type</a></code></li>
+<li><code><a title="plaque_assay.failure.WellFailure.plate" href="#plaque_assay.failure.WellFailure.plate">plate</a></code></li>
+<li><code><a title="plaque_assay.failure.WellFailure.well" href="#plaque_assay.failure.WellFailure.well">well</a></code></li>
 </ul>
-</li>
-<li>
-<h4><code><a title="plaque_assay.failure.WellFailures" href="#plaque_assay.failure.WellFailures">WellFailures</a></code></h4>
 </li>
 </ul>
 </li>

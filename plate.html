@@ -83,7 +83,7 @@ This also means that the well labels in this class have been converted from thei
 &#34;&#34;&#34;
 
 import os
-from typing import List, Any
+from typing import Set
 
 import pandas as pd
 
@@ -131,8 +131,8 @@ class Plate:
         assert df[&#34;Dilution&#34;].nunique() == 1
         self.dilution = df[&#34;Dilution&#34;].values[0]
         self.plate_failed = False
-        self.well_failures: List[Any] = []
-        self.plate_failures: List[Any] = []
+        self.well_failures: Set[failure.WellFailure] = set()
+        self.plate_failures: Set[failure.PlateFailure] = set()
         self.calc_percentage_infected()
         self.outside_image_area()
 
@@ -161,29 +161,30 @@ class Plate:
         if control_outliers.shape[0] &gt; 0:
             # plate failure due to control well failure
             self.plate_failed = True
-            self.plate_failures.append(
-                failure.CellAreaPlateFailure(
-                    plate=self.barcode, wells=control_outliers[&#34;Well&#34;].tolist()
-                )
+            failed_plate = failure.PlateFailure(
+                plate=self.barcode,
+                wells=&#34;;&#34;.join(control_outliers[&#34;Well&#34;].tolist()),
+                failure_reason=failure.CELL_IMAGE_AREA_FAILURE_REASON,
             )
+            self.plate_failures.add(failed_plate)
         if outliers.shape[0]:
             for _, row in outliers.iterrows():
-                self.well_failures.append(
-                    failure.WellFailure(
-                        well=row[&#34;Well&#34;],
-                        plate=self.barcode,
-                        reason=&#34;cell region area outside expected range&#34;,
-                    )
+                well_failure = failure.WellFailure(
+                    well=row[&#34;Well&#34;],
+                    plate=self.barcode,
+                    failure_reason=failure.CELL_REGION_FAILURE_REASON,
                 )
+                self.well_failures.add(well_failure)
             # if there&#39;s more than 8 failures for DAPI wells, then flag
             # as a possible plate failure
             if outliers.shape[0] &gt; 8:
                 # flag possible plate fail
-                self.plate_failures.append(
-                    failure.DAPIPlateFailure(
-                        plate=self.barcode, wells=outliers[&#34;Well&#34;].tolist()
-                    )
+                failed_plate = failure.PlateFailure(
+                    plate=self.barcode,
+                    wells=&#34;;&#34;.join(outliers[&#34;Well&#34;].tolist()),
+                    failure_reason=failure.DAPI_PLATE_FAILURE_REASON,
                 )
+                self.plate_failures.add(failed_plate)
 
     def subtract_plaque_area_background(self, df: pd.DataFrame) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Remove background from `plaque_area`.
@@ -210,6 +211,34 @@ class Plate:
         df[new_colname] = df[feature] - background
         return df
 
+    def check_infection(self, infection: float) -&gt; None:
+        &#34;&#34;&#34;
+        Determines if infection rate of virus-only-wells is within
+        acceptable limts, flag as a plate failure if this is false.
+
+        Parameters
+        -----------
+        infection: float
+            infection rate of virus-only wells
+
+        Returns
+        -------
+        None
+            Adds a `plaque_assay.failure.PlateFailure` to
+            `self.plate_failures` if plate has failed.
+        &#34;&#34;&#34;
+        lower_limit = qc_criteria.infection_rate_low
+        upper_limit = qc_criteria.infection_rate_high
+        if infection &lt; lower_limit or infection &gt; upper_limit:
+            reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
+            self.plate_failed = True
+            failed_plate = failure.PlateFailure(
+                plate=self.barcode,
+                wells=&#34;;&#34;.join(VIRUS_ONLY_WELLS),
+                failure_reason=reason,
+            )
+            self.plate_failures.add(failed_plate)
+
     def calc_percentage_infected(self) -&gt; None:
         &#34;&#34;&#34;Calculate percentage infected.
 
@@ -222,19 +251,10 @@ class Plate:
         virus-only-wells is within acceptable limts, flag the plate if
         this is false.
         &#34;&#34;&#34;
-        lower_limit = qc_criteria.infection_rate_low
-        upper_limit = qc_criteria.infection_rate_high
         feature = &#34;Background Subtracted Plaque Area&#34;
         virus_only_bool = self.df.Well.isin(VIRUS_ONLY_WELLS)
         infection = self.df[virus_only_bool][feature].median()
-        if infection &lt; lower_limit or infection &gt; upper_limit:
-            reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
-            self.plate_failed = True
-            self.plate_failures.append(
-                failure.InfectionPlateFailure(
-                    plate=self.barcode, wells=VIRUS_ONLY_WELLS, reason=reason
-                )
-            )
+        self.check_infection(infection)
         self.df[&#34;Percentage Infected&#34;] = self.df[feature] / infection * 100
 
     def get_normalised_data(self) -&gt; pd.DataFrame:
@@ -364,8 +384,8 @@ for one of more QC reasons.</dd>
         assert df[&#34;Dilution&#34;].nunique() == 1
         self.dilution = df[&#34;Dilution&#34;].values[0]
         self.plate_failed = False
-        self.well_failures: List[Any] = []
-        self.plate_failures: List[Any] = []
+        self.well_failures: Set[failure.WellFailure] = set()
+        self.plate_failures: Set[failure.PlateFailure] = set()
         self.calc_percentage_infected()
         self.outside_image_area()
 
@@ -394,29 +414,30 @@ for one of more QC reasons.</dd>
         if control_outliers.shape[0] &gt; 0:
             # plate failure due to control well failure
             self.plate_failed = True
-            self.plate_failures.append(
-                failure.CellAreaPlateFailure(
-                    plate=self.barcode, wells=control_outliers[&#34;Well&#34;].tolist()
-                )
+            failed_plate = failure.PlateFailure(
+                plate=self.barcode,
+                wells=&#34;;&#34;.join(control_outliers[&#34;Well&#34;].tolist()),
+                failure_reason=failure.CELL_IMAGE_AREA_FAILURE_REASON,
             )
+            self.plate_failures.add(failed_plate)
         if outliers.shape[0]:
             for _, row in outliers.iterrows():
-                self.well_failures.append(
-                    failure.WellFailure(
-                        well=row[&#34;Well&#34;],
-                        plate=self.barcode,
-                        reason=&#34;cell region area outside expected range&#34;,
-                    )
+                well_failure = failure.WellFailure(
+                    well=row[&#34;Well&#34;],
+                    plate=self.barcode,
+                    failure_reason=failure.CELL_REGION_FAILURE_REASON,
                 )
+                self.well_failures.add(well_failure)
             # if there&#39;s more than 8 failures for DAPI wells, then flag
             # as a possible plate failure
             if outliers.shape[0] &gt; 8:
                 # flag possible plate fail
-                self.plate_failures.append(
-                    failure.DAPIPlateFailure(
-                        plate=self.barcode, wells=outliers[&#34;Well&#34;].tolist()
-                    )
+                failed_plate = failure.PlateFailure(
+                    plate=self.barcode,
+                    wells=&#34;;&#34;.join(outliers[&#34;Well&#34;].tolist()),
+                    failure_reason=failure.DAPI_PLATE_FAILURE_REASON,
                 )
+                self.plate_failures.add(failed_plate)
 
     def subtract_plaque_area_background(self, df: pd.DataFrame) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Remove background from `plaque_area`.
@@ -443,6 +464,34 @@ for one of more QC reasons.</dd>
         df[new_colname] = df[feature] - background
         return df
 
+    def check_infection(self, infection: float) -&gt; None:
+        &#34;&#34;&#34;
+        Determines if infection rate of virus-only-wells is within
+        acceptable limts, flag as a plate failure if this is false.
+
+        Parameters
+        -----------
+        infection: float
+            infection rate of virus-only wells
+
+        Returns
+        -------
+        None
+            Adds a `plaque_assay.failure.PlateFailure` to
+            `self.plate_failures` if plate has failed.
+        &#34;&#34;&#34;
+        lower_limit = qc_criteria.infection_rate_low
+        upper_limit = qc_criteria.infection_rate_high
+        if infection &lt; lower_limit or infection &gt; upper_limit:
+            reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
+            self.plate_failed = True
+            failed_plate = failure.PlateFailure(
+                plate=self.barcode,
+                wells=&#34;;&#34;.join(VIRUS_ONLY_WELLS),
+                failure_reason=reason,
+            )
+            self.plate_failures.add(failed_plate)
+
     def calc_percentage_infected(self) -&gt; None:
         &#34;&#34;&#34;Calculate percentage infected.
 
@@ -455,19 +504,10 @@ for one of more QC reasons.</dd>
         virus-only-wells is within acceptable limts, flag the plate if
         this is false.
         &#34;&#34;&#34;
-        lower_limit = qc_criteria.infection_rate_low
-        upper_limit = qc_criteria.infection_rate_high
         feature = &#34;Background Subtracted Plaque Area&#34;
         virus_only_bool = self.df.Well.isin(VIRUS_ONLY_WELLS)
         infection = self.df[virus_only_bool][feature].median()
-        if infection &lt; lower_limit or infection &gt; upper_limit:
-            reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
-            self.plate_failed = True
-            self.plate_failures.append(
-                failure.InfectionPlateFailure(
-                    plate=self.barcode, wells=VIRUS_ONLY_WELLS, reason=reason
-                )
-            )
+        self.check_infection(infection)
         self.df[&#34;Percentage Infected&#34;] = self.df[feature] / infection * 100
 
     def get_normalised_data(self) -&gt; pd.DataFrame:
@@ -540,20 +580,61 @@ this is false.</p></div>
     virus-only-wells is within acceptable limts, flag the plate if
     this is false.
     &#34;&#34;&#34;
-    lower_limit = qc_criteria.infection_rate_low
-    upper_limit = qc_criteria.infection_rate_high
     feature = &#34;Background Subtracted Plaque Area&#34;
     virus_only_bool = self.df.Well.isin(VIRUS_ONLY_WELLS)
     infection = self.df[virus_only_bool][feature].median()
+    self.check_infection(infection)
+    self.df[&#34;Percentage Infected&#34;] = self.df[feature] / infection * 100</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.plate.Plate.check_infection"><code class="name flex">
+<span>def <span class="ident">check_infection</span></span>(<span>self, infection: float) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Determines if infection rate of virus-only-wells is within
+acceptable limts, flag as a plate failure if this is false.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>infection</code></strong> :&ensp;<code>float</code></dt>
+<dd>infection rate of virus-only wells</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>Adds a <code><a title="plaque_assay.failure.PlateFailure" href="failure.html#plaque_assay.failure.PlateFailure">PlateFailure</a></code> to
+<code>self.plate_failures</code> if plate has failed.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_infection(self, infection: float) -&gt; None:
+    &#34;&#34;&#34;
+    Determines if infection rate of virus-only-wells is within
+    acceptable limts, flag as a plate failure if this is false.
+
+    Parameters
+    -----------
+    infection: float
+        infection rate of virus-only wells
+
+    Returns
+    -------
+    None
+        Adds a `plaque_assay.failure.PlateFailure` to
+        `self.plate_failures` if plate has failed.
+    &#34;&#34;&#34;
+    lower_limit = qc_criteria.infection_rate_low
+    upper_limit = qc_criteria.infection_rate_high
     if infection &lt; lower_limit or infection &gt; upper_limit:
         reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
         self.plate_failed = True
-        self.plate_failures.append(
-            failure.InfectionPlateFailure(
-                plate=self.barcode, wells=VIRUS_ONLY_WELLS, reason=reason
-            )
+        failed_plate = failure.PlateFailure(
+            plate=self.barcode,
+            wells=&#34;;&#34;.join(VIRUS_ONLY_WELLS),
+            failure_reason=reason,
         )
-    self.df[&#34;Percentage Infected&#34;] = self.df[feature] / infection * 100</code></pre>
+        self.plate_failures.add(failed_plate)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.plate.Plate.get_normalised_data"><code class="name flex">
@@ -631,29 +712,30 @@ adds any failures to <code>well_failures</code>.</p></div>
     if control_outliers.shape[0] &gt; 0:
         # plate failure due to control well failure
         self.plate_failed = True
-        self.plate_failures.append(
-            failure.CellAreaPlateFailure(
-                plate=self.barcode, wells=control_outliers[&#34;Well&#34;].tolist()
-            )
+        failed_plate = failure.PlateFailure(
+            plate=self.barcode,
+            wells=&#34;;&#34;.join(control_outliers[&#34;Well&#34;].tolist()),
+            failure_reason=failure.CELL_IMAGE_AREA_FAILURE_REASON,
         )
+        self.plate_failures.add(failed_plate)
     if outliers.shape[0]:
         for _, row in outliers.iterrows():
-            self.well_failures.append(
-                failure.WellFailure(
-                    well=row[&#34;Well&#34;],
-                    plate=self.barcode,
-                    reason=&#34;cell region area outside expected range&#34;,
-                )
+            well_failure = failure.WellFailure(
+                well=row[&#34;Well&#34;],
+                plate=self.barcode,
+                failure_reason=failure.CELL_REGION_FAILURE_REASON,
             )
+            self.well_failures.add(well_failure)
         # if there&#39;s more than 8 failures for DAPI wells, then flag
         # as a possible plate failure
         if outliers.shape[0] &gt; 8:
             # flag possible plate fail
-            self.plate_failures.append(
-                failure.DAPIPlateFailure(
-                    plate=self.barcode, wells=outliers[&#34;Well&#34;].tolist()
-                )
-            )</code></pre>
+            failed_plate = failure.PlateFailure(
+                plate=self.barcode,
+                wells=&#34;;&#34;.join(outliers[&#34;Well&#34;].tolist()),
+                failure_reason=failure.DAPI_PLATE_FAILURE_REASON,
+            )
+            self.plate_failures.add(failed_plate)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.plate.Plate.save_normalised_data"><code class="name flex">
@@ -760,6 +842,7 @@ as "Background Subtracted Plaque Area"</p>
 <h4><code><a title="plaque_assay.plate.Plate" href="#plaque_assay.plate.Plate">Plate</a></code></h4>
 <ul class="">
 <li><code><a title="plaque_assay.plate.Plate.calc_percentage_infected" href="#plaque_assay.plate.Plate.calc_percentage_infected">calc_percentage_infected</a></code></li>
+<li><code><a title="plaque_assay.plate.Plate.check_infection" href="#plaque_assay.plate.Plate.check_infection">check_infection</a></code></li>
 <li><code><a title="plaque_assay.plate.Plate.get_normalised_data" href="#plaque_assay.plate.Plate.get_normalised_data">get_normalised_data</a></code></li>
 <li><code><a title="plaque_assay.plate.Plate.outside_image_area" href="#plaque_assay.plate.Plate.outside_image_area">outside_image_area</a></code></li>
 <li><code><a title="plaque_assay.plate.Plate.save_normalised_data" href="#plaque_assay.plate.Plate.save_normalised_data">save_normalised_data</a></code></li>

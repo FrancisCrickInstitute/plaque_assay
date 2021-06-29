@@ -37,7 +37,7 @@ Class to encapsulate all plates and samples.
 import logging
 import os
 from collections import defaultdict
-from typing import Dict, List, Union, Any
+from typing import Dict, List, Any
 
 import pandas as pd
 
@@ -96,33 +96,6 @@ class Experiment:
             sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
-    def get_failures_as_json(self) -&gt; Dict[str, Union[List, Dict]]:
-        &#34;&#34;&#34;Return failures as a dictionary.
-
-        Returns
-        -------
-        dict
-        &#34;&#34;&#34;
-        well_failures = []
-        plate_failures = {}
-        for plate_name, plate_object in self.plates:
-            # plate failures
-            if plate_object.plate_failed:
-                plate_failures_as_dict = [
-                    i.to_dict() for i in plate_object.plate_failures
-                ]
-                plate_failures[plate_name] = plate_failures_as_dict
-            # well failures
-            # convert WellFailure objects to dictionaries
-            well_failures_as_dict = [i.to_dict() for i in plate_object.well_failures]
-            well_failures.extend(well_failures_as_dict)
-        # failures in the Sample object are actually failures of the
-        # positive control wells
-        for _, sample_object in self.samples:
-            sample_failures_as_dict = [i.to_dict() for i in sample_object.failures]
-            well_failures.extend(sample_failures_as_dict)
-        return {&#34;plate_failures&#34;: plate_failures, &#34;well_failures&#34;: well_failures}
-
     def get_failures_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return failures a dataframe
 
@@ -130,40 +103,12 @@ class Experiment:
         --------
         pandas.DataFrame
         &#34;&#34;&#34;
-        failures_dict = self.get_failures_as_json()
-        types = []
-        plates = []
-        wells = []
-        reasons = []
-        # go through plate failures first as have to join multiple wells into a string
-        plate_failures = failures_dict[&#34;plate_failures&#34;]
-        for plate_list in plate_failures.values():
-            plate = plate_list[0]  # it&#39;s a single-element list
-            types.append(plate[&#34;type&#34;])
-            plates.append(plate[&#34;plate&#34;])
-            wells.append(&#34;;&#34;.join(plate[&#34;wells&#34;]))
-            reasons.append(plate[&#34;reason&#34;])
-            logging.warning(
-                &#34;plate %s failed due to %s&#34;, plate[&#34;plate&#34;], plate[&#34;reason&#34;]
-            )
-        # go through well failures
-        well_failures = failures_dict[&#34;well_failures&#34;]
-        for well_failure in well_failures:
-            logging.warning(
-                &#34;well %s failed due to %s&#34;, well_failure[&#34;well&#34;], well_failure[&#34;reason&#34;]
-            )
-            types.append(well_failure[&#34;type&#34;])
-            plates.append(well_failure[&#34;plate&#34;])
-            wells.append(well_failure[&#34;well&#34;])
-            reasons.append(well_failure[&#34;reason&#34;])
-        df = pd.DataFrame(
-            {
-                &#34;failure_type&#34;: types,
-                &#34;plate&#34;: plates,
-                &#34;well&#34;: wells,
-                &#34;failure_reason&#34;: reasons,
-            }
-        )
+        failures_list = []
+        for _, plate_object in self.plates:
+            if plate_object.plate_failed:
+                failures_list.extend(plate_object.plate_failures)
+            failures_list.extend(plate_object.well_failures)
+        df = pd.DataFrame(failures_list)
         df[&#34;experiment&#34;] = self.experiment_name
         df[&#34;variant&#34;] = self.variant
         return df
@@ -429,33 +374,6 @@ class Experiment:
             sample_dict[name] = Sample(name, sample_df, self.variant)
         return sample_dict
 
-    def get_failures_as_json(self) -&gt; Dict[str, Union[List, Dict]]:
-        &#34;&#34;&#34;Return failures as a dictionary.
-
-        Returns
-        -------
-        dict
-        &#34;&#34;&#34;
-        well_failures = []
-        plate_failures = {}
-        for plate_name, plate_object in self.plates:
-            # plate failures
-            if plate_object.plate_failed:
-                plate_failures_as_dict = [
-                    i.to_dict() for i in plate_object.plate_failures
-                ]
-                plate_failures[plate_name] = plate_failures_as_dict
-            # well failures
-            # convert WellFailure objects to dictionaries
-            well_failures_as_dict = [i.to_dict() for i in plate_object.well_failures]
-            well_failures.extend(well_failures_as_dict)
-        # failures in the Sample object are actually failures of the
-        # positive control wells
-        for _, sample_object in self.samples:
-            sample_failures_as_dict = [i.to_dict() for i in sample_object.failures]
-            well_failures.extend(sample_failures_as_dict)
-        return {&#34;plate_failures&#34;: plate_failures, &#34;well_failures&#34;: well_failures}
-
     def get_failures_as_dataframe(self) -&gt; pd.DataFrame:
         &#34;&#34;&#34;Return failures a dataframe
 
@@ -463,40 +381,12 @@ class Experiment:
         --------
         pandas.DataFrame
         &#34;&#34;&#34;
-        failures_dict = self.get_failures_as_json()
-        types = []
-        plates = []
-        wells = []
-        reasons = []
-        # go through plate failures first as have to join multiple wells into a string
-        plate_failures = failures_dict[&#34;plate_failures&#34;]
-        for plate_list in plate_failures.values():
-            plate = plate_list[0]  # it&#39;s a single-element list
-            types.append(plate[&#34;type&#34;])
-            plates.append(plate[&#34;plate&#34;])
-            wells.append(&#34;;&#34;.join(plate[&#34;wells&#34;]))
-            reasons.append(plate[&#34;reason&#34;])
-            logging.warning(
-                &#34;plate %s failed due to %s&#34;, plate[&#34;plate&#34;], plate[&#34;reason&#34;]
-            )
-        # go through well failures
-        well_failures = failures_dict[&#34;well_failures&#34;]
-        for well_failure in well_failures:
-            logging.warning(
-                &#34;well %s failed due to %s&#34;, well_failure[&#34;well&#34;], well_failure[&#34;reason&#34;]
-            )
-            types.append(well_failure[&#34;type&#34;])
-            plates.append(well_failure[&#34;plate&#34;])
-            wells.append(well_failure[&#34;well&#34;])
-            reasons.append(well_failure[&#34;reason&#34;])
-        df = pd.DataFrame(
-            {
-                &#34;failure_type&#34;: types,
-                &#34;plate&#34;: plates,
-                &#34;well&#34;: wells,
-                &#34;failure_reason&#34;: reasons,
-            }
-        )
+        failures_list = []
+        for _, plate_object in self.plates:
+            if plate_object.plate_failed:
+                failures_list.extend(plate_object.plate_failures)
+            failures_list.extend(plate_object.well_failures)
+        df = pd.DataFrame(failures_list)
         df[&#34;experiment&#34;] = self.experiment_name
         df[&#34;variant&#34;] = self.variant
         return df
@@ -724,85 +614,15 @@ def samples(self):
     --------
     pandas.DataFrame
     &#34;&#34;&#34;
-    failures_dict = self.get_failures_as_json()
-    types = []
-    plates = []
-    wells = []
-    reasons = []
-    # go through plate failures first as have to join multiple wells into a string
-    plate_failures = failures_dict[&#34;plate_failures&#34;]
-    for plate_list in plate_failures.values():
-        plate = plate_list[0]  # it&#39;s a single-element list
-        types.append(plate[&#34;type&#34;])
-        plates.append(plate[&#34;plate&#34;])
-        wells.append(&#34;;&#34;.join(plate[&#34;wells&#34;]))
-        reasons.append(plate[&#34;reason&#34;])
-        logging.warning(
-            &#34;plate %s failed due to %s&#34;, plate[&#34;plate&#34;], plate[&#34;reason&#34;]
-        )
-    # go through well failures
-    well_failures = failures_dict[&#34;well_failures&#34;]
-    for well_failure in well_failures:
-        logging.warning(
-            &#34;well %s failed due to %s&#34;, well_failure[&#34;well&#34;], well_failure[&#34;reason&#34;]
-        )
-        types.append(well_failure[&#34;type&#34;])
-        plates.append(well_failure[&#34;plate&#34;])
-        wells.append(well_failure[&#34;well&#34;])
-        reasons.append(well_failure[&#34;reason&#34;])
-    df = pd.DataFrame(
-        {
-            &#34;failure_type&#34;: types,
-            &#34;plate&#34;: plates,
-            &#34;well&#34;: wells,
-            &#34;failure_reason&#34;: reasons,
-        }
-    )
+    failures_list = []
+    for _, plate_object in self.plates:
+        if plate_object.plate_failed:
+            failures_list.extend(plate_object.plate_failures)
+        failures_list.extend(plate_object.well_failures)
+    df = pd.DataFrame(failures_list)
     df[&#34;experiment&#34;] = self.experiment_name
     df[&#34;variant&#34;] = self.variant
     return df</code></pre>
-</details>
-</dd>
-<dt id="plaque_assay.experiment.Experiment.get_failures_as_json"><code class="name flex">
-<span>def <span class="ident">get_failures_as_json</span></span>(<span>self) ‑> Dict[str, Union[List, Dict]]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Return failures as a dictionary.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>dict</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_failures_as_json(self) -&gt; Dict[str, Union[List, Dict]]:
-    &#34;&#34;&#34;Return failures as a dictionary.
-
-    Returns
-    -------
-    dict
-    &#34;&#34;&#34;
-    well_failures = []
-    plate_failures = {}
-    for plate_name, plate_object in self.plates:
-        # plate failures
-        if plate_object.plate_failed:
-            plate_failures_as_dict = [
-                i.to_dict() for i in plate_object.plate_failures
-            ]
-            plate_failures[plate_name] = plate_failures_as_dict
-        # well failures
-        # convert WellFailure objects to dictionaries
-        well_failures_as_dict = [i.to_dict() for i in plate_object.well_failures]
-        well_failures.extend(well_failures_as_dict)
-    # failures in the Sample object are actually failures of the
-    # positive control wells
-    for _, sample_object in self.samples:
-        sample_failures_as_dict = [i.to_dict() for i in sample_object.failures]
-        well_failures.extend(sample_failures_as_dict)
-    return {&#34;plate_failures&#34;: plate_failures, &#34;well_failures&#34;: well_failures}</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.experiment.Experiment.get_model_parameters"><code class="name flex">
@@ -1170,7 +990,6 @@ per plate.</dd>
 <h4><code><a title="plaque_assay.experiment.Experiment" href="#plaque_assay.experiment.Experiment">Experiment</a></code></h4>
 <ul class="">
 <li><code><a title="plaque_assay.experiment.Experiment.get_failures_as_dataframe" href="#plaque_assay.experiment.Experiment.get_failures_as_dataframe">get_failures_as_dataframe</a></code></li>
-<li><code><a title="plaque_assay.experiment.Experiment.get_failures_as_json" href="#plaque_assay.experiment.Experiment.get_failures_as_json">get_failures_as_json</a></code></li>
 <li><code><a title="plaque_assay.experiment.Experiment.get_model_parameters" href="#plaque_assay.experiment.Experiment.get_model_parameters">get_model_parameters</a></code></li>
 <li><code><a title="plaque_assay.experiment.Experiment.get_normalised_data" href="#plaque_assay.experiment.Experiment.get_normalised_data">get_normalised_data</a></code></li>
 <li><code><a title="plaque_assay.experiment.Experiment.get_percentage_infected_dataframe" href="#plaque_assay.experiment.Experiment.get_percentage_infected_dataframe">get_percentage_infected_dataframe</a></code></li>

@@ -159,10 +159,9 @@ class Sample:
         lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
         upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
         if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+            reason = f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;
             positive_control_failure = failure.WellFailure(
-                well=self.sample_name,
-                plate=&#34;DILUTION SERIES&#34;,
-                reason=f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;,
+                well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
             )
             self.failures.append(positive_control_failure)
 
@@ -199,7 +198,7 @@ class Sample:
             duplicate_failure = failure.WellFailure(
                 well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
-                reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
+                failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
             )
             self.failures.append(duplicate_failure)
 
@@ -220,7 +219,7 @@ class Sample:
             model_fit_failure = failure.WellFailure(
                 well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
-                reason=&#34;failed to fit model to data points&#34;,
+                failure_reason=&#34;failed to fit model to data points&#34;,
             )
             self.failures.append(model_fit_failure)
 
@@ -455,10 +454,9 @@ via fitting a curve.</dd>
         lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
         upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
         if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+            reason = f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;
             positive_control_failure = failure.WellFailure(
-                well=self.sample_name,
-                plate=&#34;DILUTION SERIES&#34;,
-                reason=f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;,
+                well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
             )
             self.failures.append(positive_control_failure)
 
@@ -495,7 +493,7 @@ via fitting a curve.</dd>
             duplicate_failure = failure.WellFailure(
                 well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
-                reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
+                failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
             )
             self.failures.append(duplicate_failure)
 
@@ -516,7 +514,7 @@ via fitting a curve.</dd>
             model_fit_failure = failure.WellFailure(
                 well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
-                reason=&#34;failed to fit model to data points&#34;,
+                failure_reason=&#34;failed to fit model to data points&#34;,
             )
             self.failures.append(model_fit_failure)
 
@@ -684,7 +682,7 @@ a QC well failure.</p>
         duplicate_failure = failure.WellFailure(
             well=self.sample_name,
             plate=&#34;DILUTION SERIES&#34;,
-            reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
+            failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
         )
         self.failures.append(duplicate_failure)</code></pre>
 </details>
@@ -722,7 +720,7 @@ a QC well failure.</p>
         model_fit_failure = failure.WellFailure(
             well=self.sample_name,
             plate=&#34;DILUTION SERIES&#34;,
-            reason=&#34;failed to fit model to data points&#34;,
+            failure_reason=&#34;failed to fit model to data points&#34;,
         )
         self.failures.append(model_fit_failure)</code></pre>
 </details>
@@ -775,10 +773,9 @@ If it's outside this range it's flagged as a well failure.</p>
     lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
     upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
     if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
+        reason = f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;
         positive_control_failure = failure.WellFailure(
-            well=self.sample_name,
-            plate=&#34;DILUTION SERIES&#34;,
-            reason=f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;,
+            well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
         )
         self.failures.append(positive_control_failure)</code></pre>
 </details>
