@@ -31,7 +31,7 @@
 module docstring
 &#34;&#34;&#34;
 import logging
-from typing import List, Any
+from typing import List, Union, Set
 
 from . import stats
 from . import failure
@@ -68,11 +68,12 @@ class Sample:
     data : pd.DataFrame
         Dataframe containing results filtered to a single sample. Containing
         2 columns: `dilution` and `value`.
-    failures : list
-        List containing potential `failures.WellFailures`. These include reasons
+    failures : set
+        set containing potential `failures.WellFailures`. These include reasons
         such as:
         - invalid IC50 value if the sample is a positive control
         - failing to fit a model
+        - model with mean squared error &gt; 150
         - discordant replicate values
     is_positive_control : bool
         Whether or not the sample is a positive control or not.
@@ -95,7 +96,7 @@ class Sample:
         self.sample_name = sample_name
         self.data = data
         self.variant = variant
-        self.failures: List[Any] = []
+        self.failures: Set[Union[failure.WellFailure, failure.PlateFailure]] = set()
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
         self.check_positive_control()
@@ -132,6 +133,7 @@ class Sample:
         )
         self.model_params = model_results.model_params
         self.mean_squared_error = model_results.mean_squared_error
+        self.check_for_model_mse_failure()
 
     def check_positive_control(self) -&gt; None:
         &#34;&#34;&#34;
@@ -163,7 +165,7 @@ class Sample:
             positive_control_failure = failure.WellFailure(
                 well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
             )
-            self.failures.append(positive_control_failure)
+            self.failures.add(positive_control_failure)
 
     def check_duplicate_differences(self) -&gt; None:
         &#34;&#34;&#34;
@@ -200,7 +202,7 @@ class Sample:
                 plate=&#34;DILUTION SERIES&#34;,
                 failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
             )
-            self.failures.append(duplicate_failure)
+            self.failures.add(duplicate_failure)
 
     def check_for_model_fit_failure(self) -&gt; None:
         &#34;&#34;&#34;
@@ -221,7 +223,31 @@ class Sample:
                 plate=&#34;DILUTION SERIES&#34;,
                 failure_reason=&#34;failed to fit model to data points&#34;,
             )
-            self.failures.append(model_fit_failure)
+            self.failures.add(model_fit_failure)
+
+    def check_for_model_mse_failure(self, limit=150) -&gt; None:
+        &#34;&#34;&#34;
+        If mean squared error of the model is greater than `limit`,
+        then flag as a well failure
+
+        Parameters
+        -----------
+        limit: float or int
+
+        Returns
+        --------
+        None
+            Possibly adds `plaque_assay.failure.WellFailure`
+            to `self.failures`.
+        &#34;&#34;&#34;
+        if self.mean_squared_error is not None:
+            if self.mean_squared_error &gt; limit:
+                model_mse_failure = failure.WellFailure(
+                    well=self.sample_name,
+                    plate=&#34;DILUTION SERIES&#34;,
+                    failure_reason=f&#34;model MSE &gt; {limit} ({self.mean_squared_error:.3f})&#34;,
+                )
+                self.failures.add(model_mse_failure)
 
     def plot(self) -&gt; List:
         &#34;&#34;&#34;
@@ -313,11 +339,12 @@ Which is used to calculate the IC50 and detect and failures for the sample.
 <dt><strong><code>data</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
 <dd>Dataframe containing results filtered to a single sample. Containing
 2 columns: <code>dilution</code> and <code>value</code>.</dd>
-<dt><strong><code>failures</code></strong> :&ensp;<code>list</code></dt>
-<dd>List containing potential <code>failures.WellFailures</code>. These include reasons
+<dt><strong><code>failures</code></strong> :&ensp;<code>set</code></dt>
+<dd>set containing potential <code>failures.WellFailures</code>. These include reasons
 such as:
 - invalid IC50 value if the sample is a positive control
 - failing to fit a model
+- model with mean squared error &gt; 150
 - discordant replicate values</dd>
 <dt><strong><code>is_positive_control</code></strong> :&ensp;<code>bool</code></dt>
 <dd>Whether or not the sample is a positive control or not.</dd>
@@ -363,11 +390,12 @@ via fitting a curve.</dd>
     data : pd.DataFrame
         Dataframe containing results filtered to a single sample. Containing
         2 columns: `dilution` and `value`.
-    failures : list
-        List containing potential `failures.WellFailures`. These include reasons
+    failures : set
+        set containing potential `failures.WellFailures`. These include reasons
         such as:
         - invalid IC50 value if the sample is a positive control
         - failing to fit a model
+        - model with mean squared error &gt; 150
         - discordant replicate values
     is_positive_control : bool
         Whether or not the sample is a positive control or not.
@@ -390,7 +418,7 @@ via fitting a curve.</dd>
         self.sample_name = sample_name
         self.data = data
         self.variant = variant
-        self.failures: List[Any] = []
+        self.failures: Set[Union[failure.WellFailure, failure.PlateFailure]] = set()
         self.calc_ic50()
         self.is_positive_control = sample_name in POSITIVE_CONTROL_WELLS
         self.check_positive_control()
@@ -427,6 +455,7 @@ via fitting a curve.</dd>
         )
         self.model_params = model_results.model_params
         self.mean_squared_error = model_results.mean_squared_error
+        self.check_for_model_mse_failure()
 
     def check_positive_control(self) -&gt; None:
         &#34;&#34;&#34;
@@ -458,7 +487,7 @@ via fitting a curve.</dd>
             positive_control_failure = failure.WellFailure(
                 well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
             )
-            self.failures.append(positive_control_failure)
+            self.failures.add(positive_control_failure)
 
     def check_duplicate_differences(self) -&gt; None:
         &#34;&#34;&#34;
@@ -495,7 +524,7 @@ via fitting a curve.</dd>
                 plate=&#34;DILUTION SERIES&#34;,
                 failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
             )
-            self.failures.append(duplicate_failure)
+            self.failures.add(duplicate_failure)
 
     def check_for_model_fit_failure(self) -&gt; None:
         &#34;&#34;&#34;
@@ -516,7 +545,31 @@ via fitting a curve.</dd>
                 plate=&#34;DILUTION SERIES&#34;,
                 failure_reason=&#34;failed to fit model to data points&#34;,
             )
-            self.failures.append(model_fit_failure)
+            self.failures.add(model_fit_failure)
+
+    def check_for_model_mse_failure(self, limit=150) -&gt; None:
+        &#34;&#34;&#34;
+        If mean squared error of the model is greater than `limit`,
+        then flag as a well failure
+
+        Parameters
+        -----------
+        limit: float or int
+
+        Returns
+        --------
+        None
+            Possibly adds `plaque_assay.failure.WellFailure`
+            to `self.failures`.
+        &#34;&#34;&#34;
+        if self.mean_squared_error is not None:
+            if self.mean_squared_error &gt; limit:
+                model_mse_failure = failure.WellFailure(
+                    well=self.sample_name,
+                    plate=&#34;DILUTION SERIES&#34;,
+                    failure_reason=f&#34;model MSE &gt; {limit} ({self.mean_squared_error:.3f})&#34;,
+                )
+                self.failures.add(model_mse_failure)
 
     def plot(self) -&gt; List:
         &#34;&#34;&#34;
@@ -627,7 +680,8 @@ if a model has been used to calculate the IC50.</p>
         self.ic50 if self.ic50 &gt; 0 else utils.int_to_result(self.ic50)
     )
     self.model_params = model_results.model_params
-    self.mean_squared_error = model_results.mean_squared_error</code></pre>
+    self.mean_squared_error = model_results.mean_squared_error
+    self.check_for_model_mse_failure()</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_duplicate_differences"><code class="name flex">
@@ -684,7 +738,7 @@ a QC well failure.</p>
             plate=&#34;DILUTION SERIES&#34;,
             failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
         )
-        self.failures.append(duplicate_failure)</code></pre>
+        self.failures.add(duplicate_failure)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_for_model_fit_failure"><code class="name flex">
@@ -722,7 +776,53 @@ a QC well failure.</p>
             plate=&#34;DILUTION SERIES&#34;,
             failure_reason=&#34;failed to fit model to data points&#34;,
         )
-        self.failures.append(model_fit_failure)</code></pre>
+        self.failures.add(model_fit_failure)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.sample.Sample.check_for_model_mse_failure"><code class="name flex">
+<span>def <span class="ident">check_for_model_mse_failure</span></span>(<span>self, limit=150) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If mean squared error of the model is greater than <code>limit</code>,
+then flag as a well failure</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>limit</code></strong> :&ensp;<code>float</code> or <code>int</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>Possibly adds <code><a title="plaque_assay.failure.WellFailure" href="failure.html#plaque_assay.failure.WellFailure">WellFailure</a></code>
+to <code>self.failures</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_for_model_mse_failure(self, limit=150) -&gt; None:
+    &#34;&#34;&#34;
+    If mean squared error of the model is greater than `limit`,
+    then flag as a well failure
+
+    Parameters
+    -----------
+    limit: float or int
+
+    Returns
+    --------
+    None
+        Possibly adds `plaque_assay.failure.WellFailure`
+        to `self.failures`.
+    &#34;&#34;&#34;
+    if self.mean_squared_error is not None:
+        if self.mean_squared_error &gt; limit:
+            model_mse_failure = failure.WellFailure(
+                well=self.sample_name,
+                plate=&#34;DILUTION SERIES&#34;,
+                failure_reason=f&#34;model MSE &gt; {limit} ({self.mean_squared_error:.3f})&#34;,
+            )
+            self.failures.add(model_mse_failure)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_positive_control"><code class="name flex">
@@ -777,7 +877,7 @@ If it's outside this range it's flagged as a well failure.</p>
         positive_control_failure = failure.WellFailure(
             well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
         )
-        self.failures.append(positive_control_failure)</code></pre>
+        self.failures.add(positive_control_failure)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.plot"><code class="name flex">
@@ -877,6 +977,7 @@ here for convenience when using <code><a title="plaque_assay" href="index.html">
 <li><code><a title="plaque_assay.sample.Sample.calc_ic50" href="#plaque_assay.sample.Sample.calc_ic50">calc_ic50</a></code></li>
 <li><code><a title="plaque_assay.sample.Sample.check_duplicate_differences" href="#plaque_assay.sample.Sample.check_duplicate_differences">check_duplicate_differences</a></code></li>
 <li><code><a title="plaque_assay.sample.Sample.check_for_model_fit_failure" href="#plaque_assay.sample.Sample.check_for_model_fit_failure">check_for_model_fit_failure</a></code></li>
+<li><code><a title="plaque_assay.sample.Sample.check_for_model_mse_failure" href="#plaque_assay.sample.Sample.check_for_model_mse_failure">check_for_model_mse_failure</a></code></li>
 <li><code><a title="plaque_assay.sample.Sample.check_positive_control" href="#plaque_assay.sample.Sample.check_positive_control">check_positive_control</a></code></li>
 <li><code><a title="plaque_assay.sample.Sample.plot" href="#plaque_assay.sample.Sample.plot">plot</a></code></li>
 </ul>
