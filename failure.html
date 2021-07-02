@@ -40,7 +40,7 @@ DAPI_PLATE_FAILURE_REASON = &#34;possible plate fail - check DAPI plate image&#3
 
 class PlateFailure(NamedTuple):
     plate: str
-    wells: str
+    well: str
     failure_reason: str
     failure_type: str = &#34;plate_failure&#34;
 
@@ -63,17 +63,17 @@ class WellFailure(NamedTuple):
 <dl>
 <dt id="plaque_assay.failure.PlateFailure"><code class="flex name class">
 <span>class <span class="ident">PlateFailure</span></span>
-<span>(</span><span>plate: str, wells: str, failure_reason: str, failure_type: str = 'plate_failure')</span>
+<span>(</span><span>plate: str, well: str, failure_reason: str, failure_type: str = 'plate_failure')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>PlateFailure(plate, wells, failure_reason, failure_type)</p></div>
+<div class="desc"><p>PlateFailure(plate, well, failure_reason, failure_type)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PlateFailure(NamedTuple):
     plate: str
-    wells: str
+    well: str
     failure_reason: str
     failure_type: str = &#34;plate_failure&#34;</code></pre>
 </details>
@@ -95,7 +95,7 @@ class WellFailure(NamedTuple):
 <dd>
 <div class="desc"><p>Alias for field number 0</p></div>
 </dd>
-<dt id="plaque_assay.failure.PlateFailure.wells"><code class="name">var <span class="ident">wells</span> : str</code></dt>
+<dt id="plaque_assay.failure.PlateFailure.well"><code class="name">var <span class="ident">well</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 1</p></div>
 </dd>
@@ -163,7 +163,7 @@ class WellFailure(NamedTuple):
 <li><code><a title="plaque_assay.failure.PlateFailure.failure_reason" href="#plaque_assay.failure.PlateFailure.failure_reason">failure_reason</a></code></li>
 <li><code><a title="plaque_assay.failure.PlateFailure.failure_type" href="#plaque_assay.failure.PlateFailure.failure_type">failure_type</a></code></li>
 <li><code><a title="plaque_assay.failure.PlateFailure.plate" href="#plaque_assay.failure.PlateFailure.plate">plate</a></code></li>
-<li><code><a title="plaque_assay.failure.PlateFailure.wells" href="#plaque_assay.failure.PlateFailure.wells">wells</a></code></li>
+<li><code><a title="plaque_assay.failure.PlateFailure.well" href="#plaque_assay.failure.PlateFailure.well">well</a></code></li>
 </ul>
 </li>
 <li>
