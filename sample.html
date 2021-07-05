@@ -133,7 +133,7 @@ class Sample:
         )
         self.model_params = model_results.model_params
         self.mean_squared_error = model_results.mean_squared_error
-        self.check_for_model_mse_failure()
+        self.check_for_model_mse_failure(qc_criteria.mse_upper_limit)
 
     def check_positive_control(self) -&gt; None:
         &#34;&#34;&#34;
@@ -225,14 +225,14 @@ class Sample:
             )
             self.failures.add(model_fit_failure)
 
-    def check_for_model_mse_failure(self, limit=150) -&gt; None:
+    def check_for_model_mse_failure(self, mse_upper_limit: Union[int, float]) -&gt; None:
         &#34;&#34;&#34;
         If mean squared error of the model is greater than `limit`,
         then flag as a well failure
 
         Parameters
         -----------
-        limit: float or int
+        mse_upper_limit: float or int
 
         Returns
         --------
@@ -241,11 +241,11 @@ class Sample:
             to `self.failures`.
         &#34;&#34;&#34;
         if self.mean_squared_error is not None:
-            if self.mean_squared_error &gt; limit:
+            if self.mean_squared_error &gt; mse_upper_limit:
                 model_mse_failure = failure.WellFailure(
                     well=self.sample_name,
                     plate=&#34;DILUTION SERIES&#34;,
-                    failure_reason=f&#34;model MSE &gt; {limit} ({self.mean_squared_error:.3f})&#34;,
+                    failure_reason=f&#34;model MSE &gt; {mse_upper_limit} ({self.mean_squared_error:.3f})&#34;,
                 )
                 self.failures.add(model_mse_failure)
 
@@ -455,7 +455,7 @@ via fitting a curve.</dd>
         )
         self.model_params = model_results.model_params
         self.mean_squared_error = model_results.mean_squared_error
-        self.check_for_model_mse_failure()
+        self.check_for_model_mse_failure(qc_criteria.mse_upper_limit)
 
     def check_positive_control(self) -&gt; None:
         &#34;&#34;&#34;
@@ -547,14 +547,14 @@ via fitting a curve.</dd>
             )
             self.failures.add(model_fit_failure)
 
-    def check_for_model_mse_failure(self, limit=150) -&gt; None:
+    def check_for_model_mse_failure(self, mse_upper_limit: Union[int, float]) -&gt; None:
         &#34;&#34;&#34;
         If mean squared error of the model is greater than `limit`,
         then flag as a well failure
 
         Parameters
         -----------
-        limit: float or int
+        mse_upper_limit: float or int
 
         Returns
         --------
@@ -563,11 +563,11 @@ via fitting a curve.</dd>
             to `self.failures`.
         &#34;&#34;&#34;
         if self.mean_squared_error is not None:
-            if self.mean_squared_error &gt; limit:
+            if self.mean_squared_error &gt; mse_upper_limit:
                 model_mse_failure = failure.WellFailure(
                     well=self.sample_name,
                     plate=&#34;DILUTION SERIES&#34;,
-                    failure_reason=f&#34;model MSE &gt; {limit} ({self.mean_squared_error:.3f})&#34;,
+                    failure_reason=f&#34;model MSE &gt; {mse_upper_limit} ({self.mean_squared_error:.3f})&#34;,
                 )
                 self.failures.add(model_mse_failure)
 
@@ -681,7 +681,7 @@ if a model has been used to calculate the IC50.</p>
     )
     self.model_params = model_results.model_params
     self.mean_squared_error = model_results.mean_squared_error
-    self.check_for_model_mse_failure()</code></pre>
+    self.check_for_model_mse_failure(qc_criteria.mse_upper_limit)</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_duplicate_differences"><code class="name flex">
@@ -780,14 +780,14 @@ a QC well failure.</p>
 </details>
 </dd>
 <dt id="plaque_assay.sample.Sample.check_for_model_mse_failure"><code class="name flex">
-<span>def <span class="ident">check_for_model_mse_failure</span></span>(<span>self, limit=150) ‑> NoneType</span>
+<span>def <span class="ident">check_for_model_mse_failure</span></span>(<span>self, mse_upper_limit: Union[int, float]) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>If mean squared error of the model is greater than <code>limit</code>,
 then flag as a well failure</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>limit</code></strong> :&ensp;<code>float</code> or <code>int</code></dt>
+<dt><strong><code>mse_upper_limit</code></strong> :&ensp;<code>float</code> or <code>int</code></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -800,14 +800,14 @@ to <code>self.failures</code>.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def check_for_model_mse_failure(self, limit=150) -&gt; None:
+<pre><code class="python">def check_for_model_mse_failure(self, mse_upper_limit: Union[int, float]) -&gt; None:
     &#34;&#34;&#34;
     If mean squared error of the model is greater than `limit`,
     then flag as a well failure
 
     Parameters
     -----------
-    limit: float or int
+    mse_upper_limit: float or int
 
     Returns
     --------
@@ -816,11 +816,11 @@ to <code>self.failures</code>.</dd>
         to `self.failures`.
     &#34;&#34;&#34;
     if self.mean_squared_error is not None:
-        if self.mean_squared_error &gt; limit:
+        if self.mean_squared_error &gt; mse_upper_limit:
             model_mse_failure = failure.WellFailure(
                 well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
-                failure_reason=f&#34;model MSE &gt; {limit} ({self.mean_squared_error:.3f})&#34;,
+                failure_reason=f&#34;model MSE &gt; {mse_upper_limit} ({self.mean_squared_error:.3f})&#34;,
             )
             self.failures.add(model_mse_failure)</code></pre>
 </details>
