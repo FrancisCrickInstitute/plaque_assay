@@ -230,8 +230,8 @@ class Plate:
             `self.plate_failures` if plate has failed.
         &#34;&#34;&#34;
         infection_limits = qc_criteria.infection_rate[self.variant]
-        lower_limit = infection_limits[&#34;infection_rate_low&#34;]
-        upper_limit = infection_limits[&#34;infection_rate_high&#34;]
+        lower_limit = infection_limits[&#34;low&#34;]
+        upper_limit = infection_limits[&#34;high&#34;]
         if infection &lt; lower_limit or infection &gt; upper_limit:
             reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
             self.plate_failed = True
@@ -486,8 +486,8 @@ for one of more QC reasons.</dd>
             `self.plate_failures` if plate has failed.
         &#34;&#34;&#34;
         infection_limits = qc_criteria.infection_rate[self.variant]
-        lower_limit = infection_limits[&#34;infection_rate_low&#34;]
-        upper_limit = infection_limits[&#34;infection_rate_high&#34;]
+        lower_limit = infection_limits[&#34;low&#34;]
+        upper_limit = infection_limits[&#34;high&#34;]
         if infection &lt; lower_limit or infection &gt; upper_limit:
             reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
             self.plate_failed = True
@@ -631,8 +631,8 @@ acceptable limts, flag as a plate failure if this is false.</p>
         `self.plate_failures` if plate has failed.
     &#34;&#34;&#34;
     infection_limits = qc_criteria.infection_rate[self.variant]
-    lower_limit = infection_limits[&#34;infection_rate_low&#34;]
-    upper_limit = infection_limits[&#34;infection_rate_high&#34;]
+    lower_limit = infection_limits[&#34;low&#34;]
+    upper_limit = infection_limits[&#34;high&#34;]
     if infection &lt; lower_limit or infection &gt; upper_limit:
         reason = f&#34;virus-only infection median ({infection:3f}) outside range: ({lower_limit}, {upper_limit})&#34;
         self.plate_failed = True

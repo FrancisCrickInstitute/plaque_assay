@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>plaque_assay.data API documentation</title>
-<meta name="description" content="Data I/O" />
+<title>plaque_assay.db_uploader API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,172 +19,21 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>plaque_assay.data</code></h1>
+<h1 class="title">Module <code>plaque_assay.db_uploader</code></h1>
 </header>
 <section id="section-intro">
-<p>Data I/O</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;
-Data I/O
-&#34;&#34;&#34;
-
-
+<pre><code class="python">import logging
 from datetime import datetime, timezone
-import logging
-import os
-from typing import List
 
 import pandas as pd
 import numpy as np
 
-from . import utils
-from . import consts
-from . import db_models
-
-
-def read_data_from_list(plate_list: List) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Read in data from plate list and assign dilution values by well position.
-
-    Notes
-    ------
-    This will mock the data so the 4 dilutions on a single 384-well
-    plate are re-labelled to appear from 4 different 96 well plates.
-
-    Parameters
-    ----------
-    plate_list : list
-
-    Returns:
-    ---------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    dataframes = []
-    barcodes = []
-    for path in plate_list:
-        df = pd.read_csv(
-            # NOTE: might not always be Evaluation1
-            os.path.join(path, &#34;Evaluation1/PlateResults.txt&#34;),
-            skiprows=8,
-            sep=&#34;\t&#34;,
-        )
-        plate_barcode = path.split(os.sep)[-1].split(&#34;__&#34;)[0]
-        barcodes.append(plate_barcode)
-        logging.info(&#34;plate barcode detected as %s&#34;, plate_barcode)
-        well_labels = []
-        for row, col in df[[&#34;Row&#34;, &#34;Column&#34;]].itertuples(index=False):
-            well_labels.append(utils.row_col_to_well(row, col))
-        df[&#34;Well&#34;] = well_labels
-        df[&#34;Plate_barcode&#34;] = plate_barcode
-        # Empty wells with no background produce NaNs rather than 0 in the
-        # image analysis, which causes missing data for truely complete
-        # inhbition. So we replace NaNs with 0 in the measurement columns we
-        # use.
-        fillna_cols = [&#34;Normalised Plaque area&#34;, &#34;Normalised Plaque intensity&#34;]
-        for colname in fillna_cols:
-            df[colname] = df[colname].fillna(0)
-        dataframes.append(df)
-    df_concat = pd.concat(dataframes)
-    # NOTE: mock barcodes before changing wells
-    df_concat[&#34;Plate_barcode&#34;] = utils.mock_384_barcode(
-        existing_barcodes=df_concat[&#34;Plate_barcode&#34;], wells=df_concat[&#34;Well&#34;]
-    )
-    # mock wells
-    df_concat[&#34;Well&#34;] = [utils.well_384_to_96(i) for i in df_concat[&#34;Well&#34;]]
-    df_concat[&#34;PlateNum&#34;] = [int(i[1]) for i in df_concat[&#34;Plate_barcode&#34;]]
-    df_concat[&#34;Dilution&#34;] = [consts.plate_mapping[i] for i in df_concat[&#34;PlateNum&#34;]]
-    logging.debug(&#34;input data shape: %s&#34;, df_concat.shape)
-    return df_concat
-
-
-def get_plate_list(data_dir: str) -&gt; List:
-    &#34;&#34;&#34;Get paths to plate directories
-
-    Parameters
-    ----------
-    data_dir : str
-        path to the directory containing the plate sub-directories
-
-    Returns
-    -------
-    list
-        list of 2 paths to plate directories
-    &#34;&#34;&#34;
-    n_expected_plates = 2
-    plate_list = [os.path.join(data_dir, i) for i in os.listdir(data_dir)]
-    if len(plate_list) == n_expected_plates:
-        logging.debug(&#34;plate list detected: %s&#34;, plate_list)
-    else:
-        logging.error(
-            &#34;Did not detect %s plates, detected %s :&#34;,
-            n_expected_plates,
-            len(plate_list),
-        )
-    return plate_list
-
-
-def read_data_from_directory(data_dir: str) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Read actual barcoded plate directory
-
-    This gets a plate list from `data_dir`, and then
-    reads in data from the plate list into a single
-    DataFrame.
-
-    Parameters
-    -----------
-    data_dir : str
-
-    Returns
-    -------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    plate_list = get_plate_list(data_dir)
-    return read_data_from_list(plate_list)
-
-
-def read_indexfiles_from_list(plate_list: List) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Read indexfiles from a plate list
-
-    Parameters
-    ------------
-    plate_list : list
-        list of paths to plate directories
-
-    Returns
-    -------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    dataframes = []
-    for path in plate_list:
-        df = pd.read_csv(os.path.join(path, &#34;indexfile.txt&#34;), sep=&#34;\t&#34;)
-        plate_barcode = path.split(os.sep)[-1].split(&#34;__&#34;)[0]
-        df[&#34;Plate_barcode&#34;] = plate_barcode
-        dataframes.append(df)
-    df_concat = pd.concat(dataframes)
-    # remove annoying empty &#34;Unnamed: 16&#34; column
-    to_rm = [col for col in df_concat.columns if col.startswith(&#34;Unnamed:&#34;)]
-    df_concat.drop(to_rm, axis=1, inplace=True)
-    if len(to_rm) &gt; 0:
-        logging.info(&#34;removed columns: %s from concatenated indexfiles&#34;, to_rm)
-    logging.debug(&#34;indexfile shape: %s&#34;, df_concat.shape)
-    return df_concat
-
-
-def read_indexfiles_from_directory(data_dir: str) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Return dataframe of indexfiles from a directory containing plates.
-
-    Parameters
-    -----------
-    data_dir : str
-
-    Returns
-    --------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    plate_list = get_plate_list(data_dir)
-    return read_indexfiles_from_list(plate_list)
+from plaque_assay import db_models
+from plaque_assay import utils
 
 
 class DatabaseUploader:
@@ -559,254 +408,11 @@ class DatabaseUploader:
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="plaque_assay.data.get_plate_list"><code class="name flex">
-<span>def <span class="ident">get_plate_list</span></span>(<span>data_dir: str) ‑> List</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get paths to plate directories</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_dir</code></strong> :&ensp;<code>str</code></dt>
-<dd>path to the directory containing the plate sub-directories</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>list</code></dt>
-<dd>list of 2 paths to plate directories</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_plate_list(data_dir: str) -&gt; List:
-    &#34;&#34;&#34;Get paths to plate directories
-
-    Parameters
-    ----------
-    data_dir : str
-        path to the directory containing the plate sub-directories
-
-    Returns
-    -------
-    list
-        list of 2 paths to plate directories
-    &#34;&#34;&#34;
-    n_expected_plates = 2
-    plate_list = [os.path.join(data_dir, i) for i in os.listdir(data_dir)]
-    if len(plate_list) == n_expected_plates:
-        logging.debug(&#34;plate list detected: %s&#34;, plate_list)
-    else:
-        logging.error(
-            &#34;Did not detect %s plates, detected %s :&#34;,
-            n_expected_plates,
-            len(plate_list),
-        )
-    return plate_list</code></pre>
-</details>
-</dd>
-<dt id="plaque_assay.data.read_data_from_directory"><code class="name flex">
-<span>def <span class="ident">read_data_from_directory</span></span>(<span>data_dir: str) ‑> pandas.core.frame.DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Read actual barcoded plate directory</p>
-<p>This gets a plate list from <code>data_dir</code>, and then
-reads in data from the plate list into a single
-DataFrame.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_dir</code></strong> :&ensp;<code>str</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>pandas.DataFrame</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_data_from_directory(data_dir: str) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Read actual barcoded plate directory
-
-    This gets a plate list from `data_dir`, and then
-    reads in data from the plate list into a single
-    DataFrame.
-
-    Parameters
-    -----------
-    data_dir : str
-
-    Returns
-    -------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    plate_list = get_plate_list(data_dir)
-    return read_data_from_list(plate_list)</code></pre>
-</details>
-</dd>
-<dt id="plaque_assay.data.read_data_from_list"><code class="name flex">
-<span>def <span class="ident">read_data_from_list</span></span>(<span>plate_list: List) ‑> pandas.core.frame.DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Read in data from plate list and assign dilution values by well position.</p>
-<h2 id="notes">Notes</h2>
-<p>This will mock the data so the 4 dilutions on a single 384-well
-plate are re-labelled to appear from 4 different 96 well plates.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>plate_list</code></strong> :&ensp;<code>list</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="returns">Returns:</h2>
-<p>pandas.DataFrame</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_data_from_list(plate_list: List) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Read in data from plate list and assign dilution values by well position.
-
-    Notes
-    ------
-    This will mock the data so the 4 dilutions on a single 384-well
-    plate are re-labelled to appear from 4 different 96 well plates.
-
-    Parameters
-    ----------
-    plate_list : list
-
-    Returns:
-    ---------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    dataframes = []
-    barcodes = []
-    for path in plate_list:
-        df = pd.read_csv(
-            # NOTE: might not always be Evaluation1
-            os.path.join(path, &#34;Evaluation1/PlateResults.txt&#34;),
-            skiprows=8,
-            sep=&#34;\t&#34;,
-        )
-        plate_barcode = path.split(os.sep)[-1].split(&#34;__&#34;)[0]
-        barcodes.append(plate_barcode)
-        logging.info(&#34;plate barcode detected as %s&#34;, plate_barcode)
-        well_labels = []
-        for row, col in df[[&#34;Row&#34;, &#34;Column&#34;]].itertuples(index=False):
-            well_labels.append(utils.row_col_to_well(row, col))
-        df[&#34;Well&#34;] = well_labels
-        df[&#34;Plate_barcode&#34;] = plate_barcode
-        # Empty wells with no background produce NaNs rather than 0 in the
-        # image analysis, which causes missing data for truely complete
-        # inhbition. So we replace NaNs with 0 in the measurement columns we
-        # use.
-        fillna_cols = [&#34;Normalised Plaque area&#34;, &#34;Normalised Plaque intensity&#34;]
-        for colname in fillna_cols:
-            df[colname] = df[colname].fillna(0)
-        dataframes.append(df)
-    df_concat = pd.concat(dataframes)
-    # NOTE: mock barcodes before changing wells
-    df_concat[&#34;Plate_barcode&#34;] = utils.mock_384_barcode(
-        existing_barcodes=df_concat[&#34;Plate_barcode&#34;], wells=df_concat[&#34;Well&#34;]
-    )
-    # mock wells
-    df_concat[&#34;Well&#34;] = [utils.well_384_to_96(i) for i in df_concat[&#34;Well&#34;]]
-    df_concat[&#34;PlateNum&#34;] = [int(i[1]) for i in df_concat[&#34;Plate_barcode&#34;]]
-    df_concat[&#34;Dilution&#34;] = [consts.plate_mapping[i] for i in df_concat[&#34;PlateNum&#34;]]
-    logging.debug(&#34;input data shape: %s&#34;, df_concat.shape)
-    return df_concat</code></pre>
-</details>
-</dd>
-<dt id="plaque_assay.data.read_indexfiles_from_directory"><code class="name flex">
-<span>def <span class="ident">read_indexfiles_from_directory</span></span>(<span>data_dir: str) ‑> pandas.core.frame.DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Return dataframe of indexfiles from a directory containing plates.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_dir</code></strong> :&ensp;<code>str</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>pandas.DataFrame</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_indexfiles_from_directory(data_dir: str) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Return dataframe of indexfiles from a directory containing plates.
-
-    Parameters
-    -----------
-    data_dir : str
-
-    Returns
-    --------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    plate_list = get_plate_list(data_dir)
-    return read_indexfiles_from_list(plate_list)</code></pre>
-</details>
-</dd>
-<dt id="plaque_assay.data.read_indexfiles_from_list"><code class="name flex">
-<span>def <span class="ident">read_indexfiles_from_list</span></span>(<span>plate_list: List) ‑> pandas.core.frame.DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Read indexfiles from a plate list</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>plate_list</code></strong> :&ensp;<code>list</code></dt>
-<dd>list of paths to plate directories</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>pandas.DataFrame</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_indexfiles_from_list(plate_list: List) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Read indexfiles from a plate list
-
-    Parameters
-    ------------
-    plate_list : list
-        list of paths to plate directories
-
-    Returns
-    -------
-    pandas.DataFrame
-    &#34;&#34;&#34;
-    dataframes = []
-    for path in plate_list:
-        df = pd.read_csv(os.path.join(path, &#34;indexfile.txt&#34;), sep=&#34;\t&#34;)
-        plate_barcode = path.split(os.sep)[-1].split(&#34;__&#34;)[0]
-        df[&#34;Plate_barcode&#34;] = plate_barcode
-        dataframes.append(df)
-    df_concat = pd.concat(dataframes)
-    # remove annoying empty &#34;Unnamed: 16&#34; column
-    to_rm = [col for col in df_concat.columns if col.startswith(&#34;Unnamed:&#34;)]
-    df_concat.drop(to_rm, axis=1, inplace=True)
-    if len(to_rm) &gt; 0:
-        logging.info(&#34;removed columns: %s from concatenated indexfiles&#34;, to_rm)
-    logging.debug(&#34;indexfile shape: %s&#34;, df_concat.shape)
-    return df_concat</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="plaque_assay.data.DatabaseUploader"><code class="flex name class">
+<dt id="plaque_assay.db_uploader.DatabaseUploader"><code class="flex name class">
 <span>class <span class="ident">DatabaseUploader</span></span>
 <span>(</span><span>session)</span>
 </code></dt>
@@ -1188,7 +794,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="plaque_assay.data.DatabaseUploader.already_uploaded"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.already_uploaded"><code class="name flex">
 <span>def <span class="ident">already_uploaded</span></span>(<span>self, workflow_id: int, variant: str) ‑> bool</span>
 </code></dt>
 <dd>
@@ -1242,7 +848,7 @@ variant, rather than each of the several results tables.</p>
     return result is not None</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.commit"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.commit"><code class="name flex">
 <span>def <span class="ident">commit</span></span>(<span>self) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1256,7 +862,7 @@ variant, rather than each of the several results tables.</p>
     self.session.commit()</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.is_final_upload"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.is_final_upload"><code class="name flex">
 <span>def <span class="ident">is_final_upload</span></span>(<span>self, workflow_id: int) ‑> bool</span>
 </code></dt>
 <dd>
@@ -1349,14 +955,14 @@ workflow_tracking LIMS database table.</dd>
     return is_final</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.update_workflow_tracking"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.update_workflow_tracking"><code class="name flex">
 <span>def <span class="ident">update_workflow_tracking</span></span>(<span>self, workflow_id: int) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Update workflow_tracking table to indicate all variants for
 a workflow have been uploaded.</p>
 <p>This doesn't check that a workflow is complete, that is handled
-by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#plaque_assay.data.DatabaseUploader.is_final_upload">DatabaseUploader.is_final_upload()</a></code>.</p>
+by <code><a title="plaque_assay.db_uploader.DatabaseUploader.is_final_upload" href="#plaque_assay.db_uploader.DatabaseUploader.is_final_upload">DatabaseUploader.is_final_upload()</a></code>.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>workflow_id</code></strong> :&ensp;<code>int</code></dt>
@@ -1404,7 +1010,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
     # fmt: on</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.upload_failures"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.upload_failures"><code class="name flex">
 <span>def <span class="ident">upload_failures</span></span>(<span>self, failures: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1443,7 +1049,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
         )</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.upload_final_results"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.upload_final_results"><code class="name flex">
 <span>def <span class="ident">upload_final_results</span></span>(<span>self, results: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1491,7 +1097,7 @@ by <code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#pl
     )</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.upload_indexfiles"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.upload_indexfiles"><code class="name flex">
 <span>def <span class="ident">upload_indexfiles</span></span>(<span>self, indexfiles_dataset: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1565,7 +1171,7 @@ column is added.</p>
         )</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.upload_model_parameters"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.upload_model_parameters"><code class="name flex">
 <span>def <span class="ident">upload_model_parameters</span></span>(<span>self, model_parameters: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1605,7 +1211,7 @@ column is added.</p>
     )</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.upload_normalised_results"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.upload_normalised_results"><code class="name flex">
 <span>def <span class="ident">upload_normalised_results</span></span>(<span>self, norm_results: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1666,7 +1272,7 @@ metadata, into the LIMS serology database.</p>
     )</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.upload_plate_results"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.upload_plate_results"><code class="name flex">
 <span>def <span class="ident">upload_plate_results</span></span>(<span>self, plate_results_dataset: pandas.core.frame.DataFrame) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1740,7 +1346,7 @@ renamed, some columns moved, some metadata columns added.</p>
     )</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.data.DatabaseUploader.upload_reporter_plate_status"><code class="name flex">
+<dt id="plaque_assay.db_uploader.DatabaseUploader.upload_reporter_plate_status"><code class="name flex">
 <span>def <span class="ident">upload_reporter_plate_status</span></span>(<span>self, workflow_id: int, variant: str) ‑> NoneType</span>
 </code></dt>
 <dd>
@@ -1799,31 +1405,22 @@ reporter decision (pass, fail).</p>
 <li><code><a title="plaque_assay" href="index.html">plaque_assay</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="plaque_assay.data.get_plate_list" href="#plaque_assay.data.get_plate_list">get_plate_list</a></code></li>
-<li><code><a title="plaque_assay.data.read_data_from_directory" href="#plaque_assay.data.read_data_from_directory">read_data_from_directory</a></code></li>
-<li><code><a title="plaque_assay.data.read_data_from_list" href="#plaque_assay.data.read_data_from_list">read_data_from_list</a></code></li>
-<li><code><a title="plaque_assay.data.read_indexfiles_from_directory" href="#plaque_assay.data.read_indexfiles_from_directory">read_indexfiles_from_directory</a></code></li>
-<li><code><a title="plaque_assay.data.read_indexfiles_from_list" href="#plaque_assay.data.read_indexfiles_from_list">read_indexfiles_from_list</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="plaque_assay.data.DatabaseUploader" href="#plaque_assay.data.DatabaseUploader">DatabaseUploader</a></code></h4>
+<h4><code><a title="plaque_assay.db_uploader.DatabaseUploader" href="#plaque_assay.db_uploader.DatabaseUploader">DatabaseUploader</a></code></h4>
 <ul class="">
-<li><code><a title="plaque_assay.data.DatabaseUploader.already_uploaded" href="#plaque_assay.data.DatabaseUploader.already_uploaded">already_uploaded</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.commit" href="#plaque_assay.data.DatabaseUploader.commit">commit</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.is_final_upload" href="#plaque_assay.data.DatabaseUploader.is_final_upload">is_final_upload</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.update_workflow_tracking" href="#plaque_assay.data.DatabaseUploader.update_workflow_tracking">update_workflow_tracking</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.upload_failures" href="#plaque_assay.data.DatabaseUploader.upload_failures">upload_failures</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.upload_final_results" href="#plaque_assay.data.DatabaseUploader.upload_final_results">upload_final_results</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.upload_indexfiles" href="#plaque_assay.data.DatabaseUploader.upload_indexfiles">upload_indexfiles</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.upload_model_parameters" href="#plaque_assay.data.DatabaseUploader.upload_model_parameters">upload_model_parameters</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.upload_normalised_results" href="#plaque_assay.data.DatabaseUploader.upload_normalised_results">upload_normalised_results</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.upload_plate_results" href="#plaque_assay.data.DatabaseUploader.upload_plate_results">upload_plate_results</a></code></li>
-<li><code><a title="plaque_assay.data.DatabaseUploader.upload_reporter_plate_status" href="#plaque_assay.data.DatabaseUploader.upload_reporter_plate_status">upload_reporter_plate_status</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.already_uploaded" href="#plaque_assay.db_uploader.DatabaseUploader.already_uploaded">already_uploaded</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.commit" href="#plaque_assay.db_uploader.DatabaseUploader.commit">commit</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.is_final_upload" href="#plaque_assay.db_uploader.DatabaseUploader.is_final_upload">is_final_upload</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.update_workflow_tracking" href="#plaque_assay.db_uploader.DatabaseUploader.update_workflow_tracking">update_workflow_tracking</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.upload_failures" href="#plaque_assay.db_uploader.DatabaseUploader.upload_failures">upload_failures</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.upload_final_results" href="#plaque_assay.db_uploader.DatabaseUploader.upload_final_results">upload_final_results</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.upload_indexfiles" href="#plaque_assay.db_uploader.DatabaseUploader.upload_indexfiles">upload_indexfiles</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.upload_model_parameters" href="#plaque_assay.db_uploader.DatabaseUploader.upload_model_parameters">upload_model_parameters</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.upload_normalised_results" href="#plaque_assay.db_uploader.DatabaseUploader.upload_normalised_results">upload_normalised_results</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.upload_plate_results" href="#plaque_assay.db_uploader.DatabaseUploader.upload_plate_results">upload_plate_results</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.upload_reporter_plate_status" href="#plaque_assay.db_uploader.DatabaseUploader.upload_reporter_plate_status">upload_reporter_plate_status</a></code></li>
 </ul>
 </li>
 </ul>

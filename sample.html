@@ -30,7 +30,6 @@
 <pre><code class="python">&#34;&#34;&#34;
 module docstring
 &#34;&#34;&#34;
-import logging
 from typing import List, Union, Set
 
 from . import stats
@@ -152,11 +151,6 @@ class Sample:
         None
         &#34;&#34;&#34;
         if not self.is_positive_control:
-            return None
-        if qc_criteria.positive_control_ic50.get(self.variant) is None:
-            # no positive control IC50 QC criteria defined for this variant
-            # so don&#39;t flag anything.
-            logging.warning(f&#34;No QC criteria defined for this variant {self.variant}&#34;)
             return None
         lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
         upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
@@ -474,11 +468,6 @@ via fitting a curve.</dd>
         None
         &#34;&#34;&#34;
         if not self.is_positive_control:
-            return None
-        if qc_criteria.positive_control_ic50.get(self.variant) is None:
-            # no positive control IC50 QC criteria defined for this variant
-            # so don&#39;t flag anything.
-            logging.warning(f&#34;No QC criteria defined for this variant {self.variant}&#34;)
             return None
         lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
         upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]
@@ -864,11 +853,6 @@ If it's outside this range it's flagged as a well failure.</p>
     None
     &#34;&#34;&#34;
     if not self.is_positive_control:
-        return None
-    if qc_criteria.positive_control_ic50.get(self.variant) is None:
-        # no positive control IC50 QC criteria defined for this variant
-        # so don&#39;t flag anything.
-        logging.warning(f&#34;No QC criteria defined for this variant {self.variant}&#34;)
         return None
     lower_limit = qc_criteria.positive_control_ic50[self.variant][&#34;low&#34;]
     upper_limit = qc_criteria.positive_control_ic50[self.variant][&#34;high&#34;]

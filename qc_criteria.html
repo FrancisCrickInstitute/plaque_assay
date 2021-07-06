@@ -31,16 +31,15 @@ from typing import DefaultDict, Dict
 import numpy as np
 
 
-&#34;&#34;&#34;
-1. Calculate median of “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
-   for all wells of all plates
-
-2. Identify wells where “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
-   is &lt; 65% or &gt; 150% of the median calculated in step 1.
-       a. Flag these wells as a list for ‘well fail’
-       b. If any of these wells are A6:H6 and A12:H12, flag ‘control well fail’
-       c. If &gt;8 wells fail, flag ‘possible plate fail – check DAPI plate image’
-&#34;&#34;&#34;
+# 1. Calculate median of “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
+#   for all wells of all plates
+#
+# 2. Identify wells where “Cells - Image Region Area [¬µm¬≤] - Mean per Well”
+#   is &lt; 65% or &gt; 150% of the median calculated in step 1.
+#       a. Flag these wells as a list for ‘well fail’
+#       b. If any of these wells are A6:H6 and A12:H12, flag ‘control well fail’
+#       c. If &gt;8 wells fail, flag ‘possible plate fail – check DAPI plate image’
+#
 # Identify wells where &#34;Cells - Image Region Area [µm²] - Mean per Well&#34;
 # is &lt; 65% or &gt; 150% of the median calculated in &#34;calc_median_all_plates()&#34;
 # - return these wells as a list
@@ -48,52 +47,48 @@ import numpy as np
 low_cells_image_region_area_low = 0.6
 low_cells_image_region_area_high = 1.5
 
-&#34;&#34;&#34;
-3. Calculate median of “Normalised Plaque Area” for no virus wells which are
-   F12, G12, H12.
 
-4. Subtract median calculated in step 3 from the “Normalised Plaque Area” for
-   each well and save as “Background Subtracted Plaque Area”
-
-5. Calculate median of “Background Subtracted Plaque Area” for virus only wells
-   which are B6:G6 and A12:C12.
-       a. If median calculated is &lt; 0.4 or &gt;0.8 then display this value and
-          flag ‘plate fail due to infection outside optimal range’.
-&#34;&#34;&#34;
+# 3. Calculate median of “Normalised Plaque Area” for no virus wells which are
+#   F12, G12, H12.
+#
+# 4. Subtract median calculated in step 3 from the “Normalised Plaque Area” for
+#   each well and save as “Background Subtracted Plaque Area”
+#
+# 5. Calculate median of “Background Subtracted Plaque Area” for virus only wells
+#   which are B6:G6 and A12:C12.
+#       a. If median calculated is &lt; 0.4 or &gt;0.8 then display this value and
+#          flag ‘plate fail due to infection outside optimal range’.
 # Acceptable infection rate, which is calculated as the median
 # &#34;Background Subtracted Plaque Area&#34; of the virus-only-wells
 # The plate get&#39;s flagged is this is out of the expected limits.
 # set the standard limits for variants
-infection_rate: DefaultDict[str, Dict] = defaultdict(
-    lambda: {&#34;infection_rate_low&#34;: 0.4, &#34;infection_rate_high&#34;: 0.8}
-)
+infection_rate: DefaultDict[str, Dict] = defaultdict(lambda: {&#34;low&#34;: 0.4, &#34;high&#34;: 0.8})
 # variant-specific limits:
 # B1351 infection rate should always be greater than 0.65
-infection_rate[&#34;B1351&#34;] = {&#34;infection_rate_low&#34;: 0.65, &#34;infection_rate_high&#34;: np.inf}
+infection_rate[&#34;B1351&#34;] = {&#34;low&#34;: 0.65, &#34;high&#34;: np.inf}
 
-&#34;&#34;&#34;
-6. Divide each well’s “Background Subtracted Plaque Area” by the median calculated
-   in step 5 to get “Percentage Infected”.
 
-7. Calculated dilution where “Percentage Infected” for a particular well would be 0.5 or 50% (IC50).
-    a. If no inhibition at any dilution, then return ‘no inhibition’
-    b. If &gt; 50% inhibition at 1:2560 dilution, return ‘complete inhibition’
-    c. If between 40-50% inhibition at 1:40, return ‘weak inhibition’
-
-8. Check IC50 for control wells A6, H6, D12, and E12.
-    a. If IC50 is not between variant-specific range, then flag “positive control IC50 outside
-       expected range”.
-&#34;&#34;&#34;
+# 6. Divide each well’s “Background Subtracted Plaque Area” by the median calculated
+#   in step 5 to get “Percentage Infected”.
+#
+# 7. Calculated dilution where “Percentage Infected” for a particular well would be 0.5 or 50% (IC50).
+#    a. If no inhibition at any dilution, then return ‘no inhibition’
+#    b. If &gt; 50% inhibition at 1:2560 dilution, return ‘complete inhibition’
+#    c. If between 40-50% inhibition at 1:40, return ‘weak inhibition’
+#
+# 8. Check IC50 for control wells A6, H6, D12, and E12.
+#    a. If IC50 is not between variant-specific range, then flag “positive control IC50 outside
+#       expected range”.
+#
 # If this sample is a postitive control, then determine
 # if the IC50 value is between specified values. Otherwise it&#39;s an
 # failure.
-positive_control_ic50 = {
-    &#34;England2&#34;: {&#34;low&#34;: 400, &#34;high&#34;: 1200},
-    &#34;B117&#34;: {&#34;low&#34;: 250, &#34;high&#34;: 600},
-    &#34;B1351&#34;: {&#34;low&#34;: 400, &#34;high&#34;: 1200},
-    &#34;FCI_003&#34;: {&#34;low&#34;: 400, &#34;high&#34;: 1200},
-    &#34;B.1.617.2 (India)&#34;: {&#34;low&#34;: 900, &#34;high&#34;: np.inf},
-}
+positive_control_ic50: DefaultDict[str, Dict] = defaultdict(
+    lambda: {&#34;low&#34;: 400, &#34;high&#34;: 1200}
+)
+# variant-specific limits
+positive_control_ic50[&#34;B117&#34;] = {&#34;low&#34;: 250, &#34;high&#34;: 600}
+positive_control_ic50[&#34;B.1.617.2 (India)&#34;] = {&#34;low&#34;: 900, &#34;high&#34;: np.inf}
 
 
 # the difference between replicates in &#34;percentage infected&#34;
@@ -110,28 +105,6 @@ mse_upper_limit = 150</code></pre>
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-variables">Global variables</h2>
-<dl>
-<dt id="plaque_assay.qc_criteria.low_cells_image_region_area_high"><code class="name">var <span class="ident">low_cells_image_region_area_high</span></code></dt>
-<dd>
-<div class="desc"><ol>
-<li>
-<p>Calculate median of “Normalised Plaque Area” for no virus wells which are
-F12, G12, H12.</p>
-</li>
-<li>
-<p>Subtract median calculated in step 3 from the “Normalised Plaque Area” for
-each well and save as “Background Subtracted Plaque Area”</p>
-</li>
-<li>
-<p>Calculate median of “Background Subtracted Plaque Area” for virus only wells
-which are B6:G6 and A12:C12.
-a. If median calculated is &lt; 0.4 or &gt;0.8 then display this value and
-flag ‘plate fail due to infection outside optimal range’.</p>
-</li>
-</ol></div>
-</dd>
-</dl>
 </section>
 <section>
 </section>
@@ -147,11 +120,6 @@ flag ‘plate fail due to infection outside optimal range’.</p>
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="plaque_assay" href="index.html">plaque_assay</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-variables">Global variables</a></h3>
-<ul class="">
-<li><code><a title="plaque_assay.qc_criteria.low_cells_image_region_area_high" href="#plaque_assay.qc_criteria.low_cells_image_region_area_high">low_cells_image_region_area_high</a></code></li>
 </ul>
 </li>
 </ul>
