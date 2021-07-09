@@ -108,6 +108,8 @@ class Experiment:
             if plate_object.plate_failed:
                 failures_list.extend(plate_object.plate_failures)
             failures_list.extend(plate_object.well_failures)
+        for _, sample_object in self.samples:
+            failures_list.extend(sample_object.failures)
         df = pd.DataFrame(failures_list)
         df[&#34;experiment&#34;] = self.experiment_name
         df[&#34;variant&#34;] = self.variant
@@ -386,6 +388,8 @@ class Experiment:
             if plate_object.plate_failed:
                 failures_list.extend(plate_object.plate_failures)
             failures_list.extend(plate_object.well_failures)
+        for _, sample_object in self.samples:
+            failures_list.extend(sample_object.failures)
         df = pd.DataFrame(failures_list)
         df[&#34;experiment&#34;] = self.experiment_name
         df[&#34;variant&#34;] = self.variant
@@ -619,6 +623,8 @@ def samples(self):
         if plate_object.plate_failed:
             failures_list.extend(plate_object.plate_failures)
         failures_list.extend(plate_object.well_failures)
+    for _, sample_object in self.samples:
+        failures_list.extend(sample_object.failures)
     df = pd.DataFrame(failures_list)
     df[&#34;experiment&#34;] = self.experiment_name
     df[&#34;variant&#34;] = self.variant
