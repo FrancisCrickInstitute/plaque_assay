@@ -171,8 +171,8 @@ class Plate:
         if outliers.shape[0]:
             for _, row in outliers.iterrows():
                 well_failure = failure.WellFailure(
-                    well=row[&#34;Well&#34;],
                     plate=self.barcode,
+                    well=row[&#34;Well&#34;],
                     failure_reason=failure.CELL_REGION_FAILURE_REASON,
                 )
                 self.well_failures.add(well_failure)
@@ -433,8 +433,8 @@ for one of more QC reasons.</dd>
         if outliers.shape[0]:
             for _, row in outliers.iterrows():
                 well_failure = failure.WellFailure(
-                    well=row[&#34;Well&#34;],
                     plate=self.barcode,
+                    well=row[&#34;Well&#34;],
                     failure_reason=failure.CELL_REGION_FAILURE_REASON,
                 )
                 self.well_failures.add(well_failure)
@@ -740,8 +740,8 @@ adds any failures to <code>well_failures</code>.</p></div>
     if outliers.shape[0]:
         for _, row in outliers.iterrows():
             well_failure = failure.WellFailure(
-                well=row[&#34;Well&#34;],
                 plate=self.barcode,
+                well=row[&#34;Well&#34;],
                 failure_reason=failure.CELL_REGION_FAILURE_REASON,
             )
             self.well_failures.add(well_failure)

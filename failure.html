@@ -46,8 +46,8 @@ class PlateFailure(NamedTuple):
 
 
 class WellFailure(NamedTuple):
-    well: str
     plate: str
+    well: str
     failure_reason: str
     failure_type: str = &#34;well_failure&#34;</code></pre>
 </details>
@@ -103,17 +103,17 @@ class WellFailure(NamedTuple):
 </dd>
 <dt id="plaque_assay.failure.WellFailure"><code class="flex name class">
 <span>class <span class="ident">WellFailure</span></span>
-<span>(</span><span>well: str, plate: str, failure_reason: str, failure_type: str = 'well_failure')</span>
+<span>(</span><span>plate: str, well: str, failure_reason: str, failure_type: str = 'well_failure')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>WellFailure(well, plate, failure_reason, failure_type)</p></div>
+<div class="desc"><p>WellFailure(plate, well, failure_reason, failure_type)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WellFailure(NamedTuple):
-    well: str
     plate: str
+    well: str
     failure_reason: str
     failure_type: str = &#34;well_failure&#34;</code></pre>
 </details>
@@ -133,11 +133,11 @@ class WellFailure(NamedTuple):
 </dd>
 <dt id="plaque_assay.failure.WellFailure.plate"><code class="name">var <span class="ident">plate</span> : str</code></dt>
 <dd>
-<div class="desc"><p>Alias for field number 1</p></div>
+<div class="desc"><p>Alias for field number 0</p></div>
 </dd>
 <dt id="plaque_assay.failure.WellFailure.well"><code class="name">var <span class="ident">well</span> : str</code></dt>
 <dd>
-<div class="desc"><p>Alias for field number 0</p></div>
+<div class="desc"><p>Alias for field number 1</p></div>
 </dd>
 </dl>
 </dd>

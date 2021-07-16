@@ -157,7 +157,7 @@ class Sample:
         if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
             reason = f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;
             positive_control_failure = failure.WellFailure(
-                well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
+                plate=&#34;DILUTION SERIES&#34;, well=self.sample_name, failure_reason=reason,
             )
             self.failures.add(positive_control_failure)
 
@@ -192,8 +192,8 @@ class Sample:
         if failed_count &gt;= 2:
             # is a well failure
             duplicate_failure = failure.WellFailure(
-                well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
+                well=self.sample_name,
                 failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
             )
             self.failures.add(duplicate_failure)
@@ -213,8 +213,8 @@ class Sample:
         &#34;&#34;&#34;
         if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
             model_fit_failure = failure.WellFailure(
-                well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
+                well=self.sample_name,
                 failure_reason=&#34;failed to fit model to data points&#34;,
             )
             self.failures.add(model_fit_failure)
@@ -237,8 +237,8 @@ class Sample:
         if self.mean_squared_error is not None:
             if self.mean_squared_error &gt; mse_upper_limit:
                 model_mse_failure = failure.WellFailure(
-                    well=self.sample_name,
                     plate=&#34;DILUTION SERIES&#34;,
+                    well=self.sample_name,
                     failure_reason=f&#34;model MSE &gt; {mse_upper_limit} ({self.mean_squared_error:.3f})&#34;,
                 )
                 self.failures.add(model_mse_failure)
@@ -474,7 +474,7 @@ via fitting a curve.</dd>
         if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
             reason = f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;
             positive_control_failure = failure.WellFailure(
-                well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
+                plate=&#34;DILUTION SERIES&#34;, well=self.sample_name, failure_reason=reason,
             )
             self.failures.add(positive_control_failure)
 
@@ -509,8 +509,8 @@ via fitting a curve.</dd>
         if failed_count &gt;= 2:
             # is a well failure
             duplicate_failure = failure.WellFailure(
-                well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
+                well=self.sample_name,
                 failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
             )
             self.failures.add(duplicate_failure)
@@ -530,8 +530,8 @@ via fitting a curve.</dd>
         &#34;&#34;&#34;
         if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
             model_fit_failure = failure.WellFailure(
-                well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
+                well=self.sample_name,
                 failure_reason=&#34;failed to fit model to data points&#34;,
             )
             self.failures.add(model_fit_failure)
@@ -554,8 +554,8 @@ via fitting a curve.</dd>
         if self.mean_squared_error is not None:
             if self.mean_squared_error &gt; mse_upper_limit:
                 model_mse_failure = failure.WellFailure(
-                    well=self.sample_name,
                     plate=&#34;DILUTION SERIES&#34;,
+                    well=self.sample_name,
                     failure_reason=f&#34;model MSE &gt; {mse_upper_limit} ({self.mean_squared_error:.3f})&#34;,
                 )
                 self.failures.add(model_mse_failure)
@@ -723,8 +723,8 @@ a QC well failure.</p>
     if failed_count &gt;= 2:
         # is a well failure
         duplicate_failure = failure.WellFailure(
-            well=self.sample_name,
             plate=&#34;DILUTION SERIES&#34;,
+            well=self.sample_name,
             failure_reason=f&#34;2 or more duplicates differ by &gt;= {difference_threshold} % infected&#34;,
         )
         self.failures.add(duplicate_failure)</code></pre>
@@ -761,8 +761,8 @@ a QC well failure.</p>
     &#34;&#34;&#34;
     if self.ic50_pretty == &#34;failed to fit model&#34; or self.ic50 == -999:
         model_fit_failure = failure.WellFailure(
-            well=self.sample_name,
             plate=&#34;DILUTION SERIES&#34;,
+            well=self.sample_name,
             failure_reason=&#34;failed to fit model to data points&#34;,
         )
         self.failures.add(model_fit_failure)</code></pre>
@@ -807,8 +807,8 @@ to <code>self.failures</code>.</dd>
     if self.mean_squared_error is not None:
         if self.mean_squared_error &gt; mse_upper_limit:
             model_mse_failure = failure.WellFailure(
-                well=self.sample_name,
                 plate=&#34;DILUTION SERIES&#34;,
+                well=self.sample_name,
                 failure_reason=f&#34;model MSE &gt; {mse_upper_limit} ({self.mean_squared_error:.3f})&#34;,
             )
             self.failures.add(model_mse_failure)</code></pre>
@@ -859,7 +859,7 @@ If it's outside this range it's flagged as a well failure.</p>
     if self.ic50 &lt; lower_limit or self.ic50 &gt; upper_limit:
         reason = f&#34;positive control failure. IC50 = {self.ic50_pretty} not in range ({lower_limit}, {upper_limit})&#34;
         positive_control_failure = failure.WellFailure(
-            well=self.sample_name, plate=&#34;DILUTION SERIES&#34;, failure_reason=reason,
+            plate=&#34;DILUTION SERIES&#34;, well=self.sample_name, failure_reason=reason,
         )
         self.failures.add(positive_control_failure)</code></pre>
 </details>
