@@ -181,9 +181,15 @@ class Plate:
             if outliers.shape[0] &gt; 8:
                 # flag possible plate fail
                 self.plate_failed = True
+                # if there&#39;s too many wells then this string wont
+                # fit in the NE_failed_results.well column which
+                # is varchar(45)
+                well_names = &#34;;&#34;.join(outliers[&#34;Well&#34;])
+                if len(well_names) &gt;= 45:
+                    well_names = &#34;multiple wells (&gt;8)&#34;
                 failed_plate = failure.PlateFailure(
                     plate=self.barcode,
-                    well=&#34;;&#34;.join(outliers[&#34;Well&#34;]),
+                    well=well_names,
                     failure_reason=failure.DAPI_PLATE_FAILURE_REASON,
                 )
                 self.plate_failures.add(failed_plate)
@@ -437,9 +443,15 @@ for one of more QC reasons.</dd>
             if outliers.shape[0] &gt; 8:
                 # flag possible plate fail
                 self.plate_failed = True
+                # if there&#39;s too many wells then this string wont
+                # fit in the NE_failed_results.well column which
+                # is varchar(45)
+                well_names = &#34;;&#34;.join(outliers[&#34;Well&#34;])
+                if len(well_names) &gt;= 45:
+                    well_names = &#34;multiple wells (&gt;8)&#34;
                 failed_plate = failure.PlateFailure(
                     plate=self.barcode,
-                    well=&#34;;&#34;.join(outliers[&#34;Well&#34;]),
+                    well=well_names,
                     failure_reason=failure.DAPI_PLATE_FAILURE_REASON,
                 )
                 self.plate_failures.add(failed_plate)
@@ -738,9 +750,15 @@ adds any failures to <code>well_failures</code>.</p></div>
         if outliers.shape[0] &gt; 8:
             # flag possible plate fail
             self.plate_failed = True
+            # if there&#39;s too many wells then this string wont
+            # fit in the NE_failed_results.well column which
+            # is varchar(45)
+            well_names = &#34;;&#34;.join(outliers[&#34;Well&#34;])
+            if len(well_names) &gt;= 45:
+                well_names = &#34;multiple wells (&gt;8)&#34;
             failed_plate = failure.PlateFailure(
                 plate=self.barcode,
-                well=&#34;;&#34;.join(outliers[&#34;Well&#34;]),
+                well=well_names,
                 failure_reason=failure.DAPI_PLATE_FAILURE_REASON,
             )
             self.plate_failures.add(failed_plate)</code></pre>
