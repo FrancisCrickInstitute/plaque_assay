@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>plaque_assay.main API documentation</title>
-<meta name="description" content="Main `run()` function to launch the analysis." />
+<meta name="description" content="Main `run()` function to launch the analysis and `run_titration()` for
+the titration analysis." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +23,15 @@
 <h1 class="title">Module <code>plaque_assay.main</code></h1>
 </header>
 <section id="section-intro">
-<p>Main <code><a title="plaque_assay.main.run" href="#plaque_assay.main.run">run()</a></code> function to launch the analysis.</p>
+<p>Main <code><a title="plaque_assay.main.run" href="#plaque_assay.main.run">run()</a></code> function to launch the analysis and <code><a title="plaque_assay.main.run_titration" href="#plaque_assay.main.run_titration">run_titration()</a></code> for
+the titration analysis.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Main `run()` function to launch the analysis.
+Main `run()` function to launch the analysis and `run_titration()` for
+the titration analysis.
 &#34;&#34;&#34;
 
 
@@ -38,6 +41,7 @@ from typing import List
 import sqlalchemy
 
 from plaque_assay.experiment import Experiment
+from plaque_assay.titration import Titration
 from plaque_assay.errors import AlreadyUploadedError, DatabaseCredentialError
 from . import ingest
 from . import db_uploader
@@ -144,6 +148,48 @@ def run(plate_list: List[str]) -&gt; None:
     lims_db.upload_reporter_plate_status(workflow_id, variant)
     if lims_db.is_final_upload(workflow_id):
         lims_db.update_workflow_tracking(workflow_id)
+    lims_db.commit()
+
+
+def run_titration(plate_list: List[str]) -&gt; None:
+    &#34;&#34;&#34;Run titration analysis.
+
+    This runs the titration analysis on a pair of plates, given that the 2
+    plates are replicates for a single workflow_id and variant. The results
+    will upload the results in the LIMS database.
+
+    Parameters
+    ------------
+    plate_list : list
+        List of paths to the plate directories to analyse. This will be 2 plates
+        for the 2 replicates for a single workflow and variant. These plates&#39;
+        barcodes should start with &#34;T&#34;.
+
+    Returns
+    ----------
+    None
+
+    Raises
+    -------
+    AlreadyUploadedError
+        This exception is raised if the given workflow and variant
+        are already present in the LIMS serology database.
+    &#34;&#34;&#34;
+    engine = create_engine(test=False)
+    Session = sqlalchemy.orm.sessionmaker(bind=engine)
+    session = Session()
+    lims_db = db_uploader.DatabaseUploader(session)
+    titration_dataframe = ingest.read_titration_data_from_list(plate_list)
+    variant = utils.get_variant_from_plate_list(plate_list, session, titration=True)
+    titration = Titration(titration_dataframe, variant=variant)
+    workflow_id = titration.workflow_id
+    if lims_db.already_uploaded(workflow_id, variant, titration=True):
+        raise AlreadyUploadedError(
+            f&#34;(titration) workflow_id:{workflow_id} variant:{variant} already have results in the database&#34;
+        )
+    titration_results = titration.get_titration_results()
+    lims_db.upload_titration_results(titration_results)
+    lims_db.update_titration_workflow_tracking(workflow_id, variant)
     lims_db.commit()</code></pre>
 </details>
 </section>
@@ -239,7 +285,7 @@ environment. These credentials are:
 </details>
 </dd>
 <dt id="plaque_assay.main.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>plate_list: List[str]) ‑> NoneType</span>
+<span>def <span class="ident">run</span></span>(<span>plate_list: List[str]) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Run analysis pipeline.</p>
@@ -322,6 +368,78 @@ are already present in the LIMS serology database.</dd>
     lims_db.commit()</code></pre>
 </details>
 </dd>
+<dt id="plaque_assay.main.run_titration"><code class="name flex">
+<span>def <span class="ident">run_titration</span></span>(<span>plate_list: List[str]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Run titration analysis.</p>
+<p>This runs the titration analysis on a pair of plates, given that the 2
+plates are replicates for a single workflow_id and variant. The results
+will upload the results in the LIMS database.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>plate_list</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of paths to the plate directories to analyse. This will be 2 plates
+for the 2 replicates for a single workflow and variant. These plates'
+barcodes should start with "T".</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>AlreadyUploadedError</code></dt>
+<dd>This exception is raised if the given workflow and variant
+are already present in the LIMS serology database.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run_titration(plate_list: List[str]) -&gt; None:
+    &#34;&#34;&#34;Run titration analysis.
+
+    This runs the titration analysis on a pair of plates, given that the 2
+    plates are replicates for a single workflow_id and variant. The results
+    will upload the results in the LIMS database.
+
+    Parameters
+    ------------
+    plate_list : list
+        List of paths to the plate directories to analyse. This will be 2 plates
+        for the 2 replicates for a single workflow and variant. These plates&#39;
+        barcodes should start with &#34;T&#34;.
+
+    Returns
+    ----------
+    None
+
+    Raises
+    -------
+    AlreadyUploadedError
+        This exception is raised if the given workflow and variant
+        are already present in the LIMS serology database.
+    &#34;&#34;&#34;
+    engine = create_engine(test=False)
+    Session = sqlalchemy.orm.sessionmaker(bind=engine)
+    session = Session()
+    lims_db = db_uploader.DatabaseUploader(session)
+    titration_dataframe = ingest.read_titration_data_from_list(plate_list)
+    variant = utils.get_variant_from_plate_list(plate_list, session, titration=True)
+    titration = Titration(titration_dataframe, variant=variant)
+    workflow_id = titration.workflow_id
+    if lims_db.already_uploaded(workflow_id, variant, titration=True):
+        raise AlreadyUploadedError(
+            f&#34;(titration) workflow_id:{workflow_id} variant:{variant} already have results in the database&#34;
+        )
+    titration_results = titration.get_titration_results()
+    lims_db.upload_titration_results(titration_results)
+    lims_db.update_titration_workflow_tracking(workflow_id, variant)
+    lims_db.commit()</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -343,13 +461,14 @@ are already present in the LIMS serology database.</dd>
 <li><code><a title="plaque_assay.main.create_engine" href="#plaque_assay.main.create_engine">create_engine</a></code></li>
 <li><code><a title="plaque_assay.main.create_local_engine" href="#plaque_assay.main.create_local_engine">create_local_engine</a></code></li>
 <li><code><a title="plaque_assay.main.run" href="#plaque_assay.main.run">run</a></code></li>
+<li><code><a title="plaque_assay.main.run_titration" href="#plaque_assay.main.run_titration">run_titration</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

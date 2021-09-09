@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>plaque_assay.db_models API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -210,7 +210,33 @@ class NE_reporter_plate_status(Base):
     status = sql.Column(sql.String(45), nullable=False)
     reporter = sql.Column(sql.String(45))
     updated_at = sql.Column(sql.TIMESTAMP)
-    reason = sql.Column(sql.TEXT)</code></pre>
+    reason = sql.Column(sql.TEXT)
+
+
+class NE_virus_titration_results(Base):
+    __tablename__ = &#34;NE_virus_titration_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    dilution = sql.Column(sql.Integer, nullable=False)
+    ic50 = sql.Column(sql.DECIMAL(30, 15))
+    status = sql.Column(sql.String(45))
+    mean_squared_error = sql.Column(sql.DECIMAL(20, 15))
+    median_virus_only_plaque_area = sql.Column(sql.DECIMAL(20, 15))
+    variant = sql.Column(sql.String(45), nullable=False)
+    workflow_id = sql.Column(sql.Integer, nullable=False)
+
+
+class NE_titration_workflow_tracking(Base):
+    __tablename__ = &#34;NE_titration_workflow_tracking&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    variant = sql.Column(sql.String(45))
+    plate_1 = sql.Column(sql.String(45))
+    plate_2 = sql.Column(sql.String(45))
+    virus_batch_no = sql.Column(sql.String(45))
+    start_date = sql.Column(sql.TIMESTAMP, nullable=False)
+    end_date = sql.Column(sql.TIMESTAMP)
+    complete_operator = sql.Column(sql.String(45))
+    status = sql.Column(sql.String(45))
+    workflow_id = sql.Column(sql.Integer, nullable=False)</code></pre>
 </details>
 </section>
 <section>
@@ -2464,6 +2490,406 @@ for example, any mapped columns or relationships.</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking"><code class="flex name class">
+<span>class <span class="ident">NE_titration_workflow_tracking</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_titration_workflow_tracking(Base):
+    __tablename__ = &#34;NE_titration_workflow_tracking&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    variant = sql.Column(sql.String(45))
+    plate_1 = sql.Column(sql.String(45))
+    plate_2 = sql.Column(sql.String(45))
+    virus_batch_no = sql.Column(sql.String(45))
+    start_date = sql.Column(sql.TIMESTAMP, nullable=False)
+    end_date = sql.Column(sql.TIMESTAMP)
+    complete_operator = sql.Column(sql.String(45))
+    status = sql.Column(sql.String(45))
+    workflow_id = sql.Column(sql.Integer, nullable=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.complete_operator"><code class="name">var <span class="ident">complete_operator</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.end_date"><code class="name">var <span class="ident">end_date</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.plate_1"><code class="name">var <span class="ident">plate_1</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.plate_2"><code class="name">var <span class="ident">plate_2</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.start_date"><code class="name">var <span class="ident">start_date</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.status"><code class="name">var <span class="ident">status</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.virus_batch_no"><code class="name">var <span class="ident">virus_batch_no</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_titration_workflow_tracking.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results"><code class="flex name class">
+<span>class <span class="ident">NE_virus_titration_results</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The base class of the class hierarchy.</p>
+<p>When called, it accepts no arguments and returns a new featureless
+instance that has no instance attributes and cannot be given any.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NE_virus_titration_results(Base):
+    __tablename__ = &#34;NE_virus_titration_results&#34;
+    id = sql.Column(sql.Integer, primary_key=True)
+    dilution = sql.Column(sql.Integer, nullable=False)
+    ic50 = sql.Column(sql.DECIMAL(30, 15))
+    status = sql.Column(sql.String(45))
+    mean_squared_error = sql.Column(sql.DECIMAL(20, 15))
+    median_virus_only_plaque_area = sql.Column(sql.DECIMAL(20, 15))
+    variant = sql.Column(sql.String(45), nullable=False)
+    workflow_id = sql.Column(sql.Integer, nullable=False)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.ext.declarative.api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.dilution"><code class="name">var <span class="ident">dilution</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.ic50"><code class="name">var <span class="ident">ic50</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.mean_squared_error"><code class="name">var <span class="ident">mean_squared_error</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.median_virus_only_plaque_area"><code class="name">var <span class="ident">median_virus_only_plaque_area</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.status"><code class="name">var <span class="ident">status</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.variant"><code class="name">var <span class="ident">variant</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.db_models.NE_virus_titration_results.workflow_id"><code class="name">var <span class="ident">workflow_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        return self.impl.get(instance_state(instance), dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="plaque_assay.db_models.NE_workflow_tracking"><code class="flex name class">
 <span>class <span class="ident">NE_workflow_tracking</span></span>
 <span>(</span><span>**kwargs)</span>
@@ -3023,6 +3449,34 @@ for example, any mapped columns or relationships.</p></div>
 </ul>
 </li>
 <li>
+<h4><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking" href="#plaque_assay.db_models.NE_titration_workflow_tracking">NE_titration_workflow_tracking</a></code></h4>
+<ul class="two-column">
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.complete_operator" href="#plaque_assay.db_models.NE_titration_workflow_tracking.complete_operator">complete_operator</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.end_date" href="#plaque_assay.db_models.NE_titration_workflow_tracking.end_date">end_date</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.id" href="#plaque_assay.db_models.NE_titration_workflow_tracking.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.plate_1" href="#plaque_assay.db_models.NE_titration_workflow_tracking.plate_1">plate_1</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.plate_2" href="#plaque_assay.db_models.NE_titration_workflow_tracking.plate_2">plate_2</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.start_date" href="#plaque_assay.db_models.NE_titration_workflow_tracking.start_date">start_date</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.status" href="#plaque_assay.db_models.NE_titration_workflow_tracking.status">status</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.variant" href="#plaque_assay.db_models.NE_titration_workflow_tracking.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.virus_batch_no" href="#plaque_assay.db_models.NE_titration_workflow_tracking.virus_batch_no">virus_batch_no</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_titration_workflow_tracking.workflow_id" href="#plaque_assay.db_models.NE_titration_workflow_tracking.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="plaque_assay.db_models.NE_virus_titration_results" href="#plaque_assay.db_models.NE_virus_titration_results">NE_virus_titration_results</a></code></h4>
+<ul class="">
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.dilution" href="#plaque_assay.db_models.NE_virus_titration_results.dilution">dilution</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.ic50" href="#plaque_assay.db_models.NE_virus_titration_results.ic50">ic50</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.id" href="#plaque_assay.db_models.NE_virus_titration_results.id">id</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.mean_squared_error" href="#plaque_assay.db_models.NE_virus_titration_results.mean_squared_error">mean_squared_error</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.median_virus_only_plaque_area" href="#plaque_assay.db_models.NE_virus_titration_results.median_virus_only_plaque_area">median_virus_only_plaque_area</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.status" href="#plaque_assay.db_models.NE_virus_titration_results.status">status</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.variant" href="#plaque_assay.db_models.NE_virus_titration_results.variant">variant</a></code></li>
+<li><code><a title="plaque_assay.db_models.NE_virus_titration_results.workflow_id" href="#plaque_assay.db_models.NE_virus_titration_results.workflow_id">workflow_id</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="plaque_assay.db_models.NE_workflow_tracking" href="#plaque_assay.db_models.NE_workflow_tracking">NE_workflow_tracking</a></code></h4>
 <ul class="">
 <li><code><a title="plaque_assay.db_models.NE_workflow_tracking.assay_plate_type" href="#plaque_assay.db_models.NE_workflow_tracking.assay_plate_type">assay_plate_type</a></code></li>
@@ -3052,7 +3506,7 @@ for example, any mapped columns or relationships.</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

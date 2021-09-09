@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>plaque_assay.stats API documentation</title>
 <meta name="description" content="Stats and number crunching functions." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -405,7 +405,7 @@ def hampel(x: np.array, k: int, t0: int = 3) -&gt; List:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="plaque_assay.stats.calc_heuristics_curve"><code class="name flex">
-<span>def <span class="ident">calc_heuristics_curve</span></span>(<span>name: str, x: <built-in function array>, y: <built-in function array>, threshold: Union[int, float], weak_threshold: Union[int, float]) ‑> Union[int, NoneType]</span>
+<span>def <span class="ident">calc_heuristics_curve</span></span>(<span>name: str, x: <built-in function array>, y: <built-in function array>, threshold: Union[int, float], weak_threshold: Union[int, float]) ‑> Optional[int]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>heuristics based on the model fit where we cannot calculate the intercept
@@ -479,7 +479,7 @@ Otherwise returns a negative integer code.</dd>
 </details>
 </dd>
 <dt id="plaque_assay.stats.calc_heuristics_dilutions"><code class="name flex">
-<span>def <span class="ident">calc_heuristics_dilutions</span></span>(<span>group: pandas.core.frame.DataFrame, threshold: Union[int, float], weak_threshold: Union[int, float]) ‑> Union[int, float, NoneType]</span>
+<span>def <span class="ident">calc_heuristics_dilutions</span></span>(<span>group: pandas.core.frame.DataFrame, threshold: Union[int, float], weak_threshold: Union[int, float]) ‑> Union[int, float, None]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Simple heuristics based on the values without model fitting</p>
@@ -760,7 +760,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.find_intersect_on_curve"><code class="name flex">
-<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min: Union[int, float], x_max: Union[int, float], curve: <built-in function array>, intersect: Union[int, float] = 50) ‑> Union[<a title="plaque_assay.stats.Intersect" href="#plaque_assay.stats.Intersect">Intersect</a>, NoneType]</span>
+<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min: Union[int, float], x_max: Union[int, float], curve: <built-in function array>, intersect: Union[int, float] = 50) ‑> Optional[<a title="plaque_assay.stats.Intersect" href="#plaque_assay.stats.Intersect">Intersect</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Find intersect of two curves.</p>
@@ -821,7 +821,7 @@ TODO: solve this mathematically</p>
 </details>
 </dd>
 <dt id="plaque_assay.stats.hampel"><code class="name flex">
-<span>def <span class="ident">hampel</span></span>(<span>x: <built-in function array>, k: int, t0: int = 3) ‑> List</span>
+<span>def <span class="ident">hampel</span></span>(<span>x: <built-in function array>, k: int, t0: int = 3) ‑> List[~T]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Hampel's outlier test</p>
@@ -1038,7 +1038,7 @@ and the estimated values.</p>
 </dd>
 <dt id="plaque_assay.stats.ModelResults"><code class="flex name class">
 <span>class <span class="ident">ModelResults</span></span>
-<span>(</span><span>fit_method: str, result: Union[int, float], model_params: Union[<a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a>, NoneType], mean_squared_error: Union[float, NoneType])</span>
+<span>(</span><span>fit_method: str, result: Union[int, float], model_params: Optional[<a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a>], mean_squared_error: Optional[float])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>ModelResults(fit_method, result, model_params, mean_squared_error)</p></div>
@@ -1062,11 +1062,11 @@ and the estimated values.</p>
 <dd>
 <div class="desc"><p>Alias for field number 0</p></div>
 </dd>
-<dt id="plaque_assay.stats.ModelResults.mean_squared_error"><code class="name">var <span class="ident">mean_squared_error</span> : Union[float, NoneType]</code></dt>
+<dt id="plaque_assay.stats.ModelResults.mean_squared_error"><code class="name">var <span class="ident">mean_squared_error</span> : Optional[float]</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 3</p></div>
 </dd>
-<dt id="plaque_assay.stats.ModelResults.model_params"><code class="name">var <span class="ident">model_params</span> : Union[<a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a>, NoneType]</code></dt>
+<dt id="plaque_assay.stats.ModelResults.model_params"><code class="name">var <span class="ident">model_params</span> : Optional[<a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a>]</code></dt>
 <dd>
 <div class="desc"><p>Alias for field number 2</p></div>
 </dd>
@@ -1136,7 +1136,7 @@ and the estimated values.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

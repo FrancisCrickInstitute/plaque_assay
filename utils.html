@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>plaque_assay.utils API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -29,12 +29,14 @@
 <pre><code class="python">import os
 import string
 import math
-from typing import List, Union
+from typing import List, Union, Optional
 
 import pandas as pd
 import sqlalchemy
 
 from .db_models import NE_available_strains
+from .errors import VariantLookupError
+from . import consts
 
 
 RESULT_TO_INT = {
@@ -274,7 +276,7 @@ def get_prefix_from_full_path(full_path: str) -&gt; str:
 
 
 def get_variant_from_plate_list(
-    plate_list: List, session: sqlalchemy.orm.Session
+    plate_list: List, session: sqlalchemy.orm.Session, titration: bool = False
 ) -&gt; str:
     &#34;&#34;&#34;
     Fetch variant name from the LIMS database.
@@ -296,13 +298,18 @@ def get_variant_from_plate_list(
 
     Raises
     -------
-    RuntimeError
+    plaque_assay.errors.VariantError
         if plate barcode prefixes to not mach any known variant
         in the LIMS serology database
     &#34;&#34;&#34;
     # get both prefixes from the plate_list
     assert len(plate_list) == 2, &#34;expected plate_list to have 2 paths&#34;
     prefixes = [get_prefix_from_full_path(i) for i in plate_list]
+    if titration:
+        # titration plates start with T rather than S
+        # swap T for S at beginning i.e &#34;T01&#34; -&gt; &#34;S01&#34;
+        # so they match those in NE_available_strains
+        prefixes = [i.replace(&#34;T&#34;, &#34;S&#34;) for i in prefixes]
     prefix_1, prefix_2 = sorted(prefixes)
     # query table to return variant name (mutant_strain) for entry matching
     # both the plate barcode prefixes
@@ -315,11 +322,43 @@ def get_variant_from_plate_list(
         .first()
     )
     if len(return_val) != 1:
-        raise RuntimeError(
+        raise VariantLookupError(
             &#34;plate barcode prefixes do not match any known variants in the &#34;,
             f&#34;LIMS database: {prefixes}&#34;,
         )
-    return return_val.mutant_strain</code></pre>
+    return return_val.mutant_strain
+
+
+def titration_pos_control_dilution(well) -&gt; Optional[int]:
+    &#34;&#34;&#34;
+    Get dilution number from well label.
+    NOTE: this is not the virus dilution factor which is positioned in pairs
+          of columns, but the 4 dilutions within each dilution factor used
+          to contruct the concentration-response curve.
+
+               1 | 2
+             +-------+
+    H (even) | 4 | 2 |
+    -------- +---+---+
+    I (odd)  | 3 | 1 |
+             +---+---+
+    &#34;&#34;&#34;
+    if well not in consts.TITRATION_POSITIVE_CONTROL_WELLS:
+        return None
+    row_int = ord(well[0]) - 64
+    col_int = int(well[1:])
+    # positive control rows as H and I
+    # as integers H = 8 = even
+    #             I = 9 = odd
+    if is_odd(row_int) and is_odd(col_int):
+        return 3
+    if is_odd(row_int) and is_even(col_int):
+        return 1
+    if is_even(row_int) and is_odd(col_int):
+        return 4
+    if is_even(row_int) and is_even(col_int):
+        return 2
+    return None</code></pre>
 </details>
 </section>
 <section>
@@ -427,7 +466,7 @@ prefix/barcode.</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.get_variant_from_plate_list"><code class="name flex">
-<span>def <span class="ident">get_variant_from_plate_list</span></span>(<span>plate_list: List, session: sqlalchemy.orm.session.Session) ‑> str</span>
+<span>def <span class="ident">get_variant_from_plate_list</span></span>(<span>plate_list: List[~T], session: sqlalchemy.orm.session.Session, titration: bool = False) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch variant name from the LIMS database.
@@ -448,7 +487,7 @@ table in the LIMS database.</p>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><code>RuntimeError</code></dt>
+<dt><code>plaque_assay.errors.VariantError</code></dt>
 <dd>if plate barcode prefixes to not mach any known variant
 in the LIMS serology database</dd>
 </dl></div>
@@ -457,7 +496,7 @@ in the LIMS serology database</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_variant_from_plate_list(
-    plate_list: List, session: sqlalchemy.orm.Session
+    plate_list: List, session: sqlalchemy.orm.Session, titration: bool = False
 ) -&gt; str:
     &#34;&#34;&#34;
     Fetch variant name from the LIMS database.
@@ -479,13 +518,18 @@ in the LIMS serology database</dd>
 
     Raises
     -------
-    RuntimeError
+    plaque_assay.errors.VariantError
         if plate barcode prefixes to not mach any known variant
         in the LIMS serology database
     &#34;&#34;&#34;
     # get both prefixes from the plate_list
     assert len(plate_list) == 2, &#34;expected plate_list to have 2 paths&#34;
     prefixes = [get_prefix_from_full_path(i) for i in plate_list]
+    if titration:
+        # titration plates start with T rather than S
+        # swap T for S at beginning i.e &#34;T01&#34; -&gt; &#34;S01&#34;
+        # so they match those in NE_available_strains
+        prefixes = [i.replace(&#34;T&#34;, &#34;S&#34;) for i in prefixes]
     prefix_1, prefix_2 = sorted(prefixes)
     # query table to return variant name (mutant_strain) for entry matching
     # both the plate barcode prefixes
@@ -498,7 +542,7 @@ in the LIMS serology database</dd>
         .first()
     )
     if len(return_val) != 1:
-        raise RuntimeError(
+        raise VariantLookupError(
             &#34;plate barcode prefixes do not match any known variants in the &#34;,
             f&#34;LIMS database: {prefixes}&#34;,
         )
@@ -605,7 +649,7 @@ in the LIMS serology database</dd>
 </details>
 </dd>
 <dt id="plaque_assay.utils.mock_384_barcode"><code class="name flex">
-<span>def <span class="ident">mock_384_barcode</span></span>(<span>existing_barcodes: List, wells: List) ‑> List</span>
+<span>def <span class="ident">mock_384_barcode</span></span>(<span>existing_barcodes: List[~T], wells: List[~T]) ‑> List[~T]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>384 -&gt; 96 well plate barcodes</p>
@@ -735,6 +779,58 @@ coming from a 384-well plate</p>
     return f&#34;{row_str}{col:02}&#34;</code></pre>
 </details>
 </dd>
+<dt id="plaque_assay.utils.titration_pos_control_dilution"><code class="name flex">
+<span>def <span class="ident">titration_pos_control_dilution</span></span>(<span>well) ‑> Optional[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get dilution number from well label.
+NOTE: this is not the virus dilution factor which is positioned in pairs
+of columns, but the 4 dilutions within each dilution factor used
+to contruct the concentration-response curve.</p>
+<pre><code>       1 | 2
+     +-------+
+</code></pre>
+<p>H (even) | 4 | 2 |
+-------- +&mdash;+&mdash;+
+I (odd)
+| 3 | 1 |
++&mdash;+&mdash;+</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def titration_pos_control_dilution(well) -&gt; Optional[int]:
+    &#34;&#34;&#34;
+    Get dilution number from well label.
+    NOTE: this is not the virus dilution factor which is positioned in pairs
+          of columns, but the 4 dilutions within each dilution factor used
+          to contruct the concentration-response curve.
+
+               1 | 2
+             +-------+
+    H (even) | 4 | 2 |
+    -------- +---+---+
+    I (odd)  | 3 | 1 |
+             +---+---+
+    &#34;&#34;&#34;
+    if well not in consts.TITRATION_POSITIVE_CONTROL_WELLS:
+        return None
+    row_int = ord(well[0]) - 64
+    col_int = int(well[1:])
+    # positive control rows as H and I
+    # as integers H = 8 = even
+    #             I = 9 = odd
+    if is_odd(row_int) and is_odd(col_int):
+        return 3
+    if is_odd(row_int) and is_even(col_int):
+        return 1
+    if is_even(row_int) and is_odd(col_int):
+        return 4
+    if is_even(row_int) and is_even(col_int):
+        return 2
+    return None</code></pre>
+</details>
+</dd>
 <dt id="plaque_assay.utils.unpad_well"><code class="name flex">
 <span>def <span class="ident">unpad_well</span></span>(<span>well: str) ‑> str</span>
 </code></dt>
@@ -781,7 +877,7 @@ coming from a 384-well plate</p>
 </details>
 </dd>
 <dt id="plaque_assay.utils.unpad_well_col"><code class="name flex">
-<span>def <span class="ident">unpad_well_col</span></span>(<span>well_col: Union[List, pandas.core.series.Series]) ‑> List</span>
+<span>def <span class="ident">unpad_well_col</span></span>(<span>well_col: Union[List[~T], pandas.core.series.Series]) ‑> List[~T]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Remove padding from an entire column of well labels</p>
@@ -895,6 +991,7 @@ original 96-well plate.</p>
 <li><code><a title="plaque_assay.utils.mock_384_barcode" href="#plaque_assay.utils.mock_384_barcode">mock_384_barcode</a></code></li>
 <li><code><a title="plaque_assay.utils.result_to_int" href="#plaque_assay.utils.result_to_int">result_to_int</a></code></li>
 <li><code><a title="plaque_assay.utils.row_col_to_well" href="#plaque_assay.utils.row_col_to_well">row_col_to_well</a></code></li>
+<li><code><a title="plaque_assay.utils.titration_pos_control_dilution" href="#plaque_assay.utils.titration_pos_control_dilution">titration_pos_control_dilution</a></code></li>
 <li><code><a title="plaque_assay.utils.unpad_well" href="#plaque_assay.utils.unpad_well">unpad_well</a></code></li>
 <li><code><a title="plaque_assay.utils.unpad_well_col" href="#plaque_assay.utils.unpad_well_col">unpad_well_col</a></code></li>
 <li><code><a title="plaque_assay.utils.well_384_to_96" href="#plaque_assay.utils.well_384_to_96">well_384_to_96</a></code></li>
@@ -904,7 +1001,7 @@ original 96-well plate.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>

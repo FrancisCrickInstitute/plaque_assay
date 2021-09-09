@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="generator" content="pdoc 0.10.0" />
 <title>plaque_assay.ingest API documentation</title>
 <meta name="description" content="Data I/O" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -181,7 +181,61 @@ def read_indexfiles_from_directory(data_dir: str) -&gt; pd.DataFrame:
     pandas.DataFrame
     &#34;&#34;&#34;
     plate_list = get_plate_list(data_dir)
-    return read_indexfiles_from_list(plate_list)</code></pre>
+    return read_indexfiles_from_list(plate_list)
+
+
+def read_titration_data_from_list(plate_list: List[str]) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Read in titration data from a plate_list,
+    assigns dilution and sample info based on well position.
+
+    Parameters
+    -----------
+    plate_list: list
+
+    Returns
+    --------
+    pd.DataFrame
+    &#34;&#34;&#34;
+    dataframes = []
+    for path in plate_list:
+        df = pd.read_csv(
+            # NOTE: might not always be Evaluation1
+            os.path.join(path, &#34;Evaluation1/PlateResults.txt&#34;),
+            skiprows=8,
+            sep=&#34;\t&#34;,
+        )
+        plate_barcode = path.split(os.sep)[-1].split(&#34;__&#34;)[0]
+        logging.info(&#34;plate barcode detected as %s&#34;, plate_barcode)
+        well_labels = []
+        for row, col in df[[&#34;Row&#34;, &#34;Column&#34;]].itertuples(index=False):
+            well_labels.append(utils.row_col_to_well(row, col))
+        df[&#34;Well&#34;] = well_labels
+        df[&#34;Plate_barcode&#34;] = plate_barcode
+        # Empty wells with no background produce NaNs rather than 0 in the
+        # image analysis, which causes missing data for truely complete
+        # inhbition. So we replace NaNs with 0 in the measurement columns we
+        # use.
+        fillna_cols = [&#34;Normalised Plaque area&#34;, &#34;Normalised Plaque intensity&#34;]
+        for colname in fillna_cols:
+            df[colname] = df[colname].fillna(0)
+        dataframes.append(df)
+    df_concat = pd.concat(dataframes)
+    # remove empty wells
+    df_concat = df_concat[~df_concat[&#34;Well&#34;].isin(consts.TITRATION_EMPTY_WELLS)]
+    # sample dilutions (1-4)
+    dilution_int = [
+        utils.titration_pos_control_dilution(well) for well in df_concat[&#34;Well&#34;]
+    ]
+    # sample dilutions (40-2560)
+    sample_dilution = [consts.plate_mapping.get(i) if i else None for i in dilution_int]
+    df_concat[&#34;Dilution&#34;] = sample_dilution
+    # virus dilution factors (2-64)
+    virus_dilutions = []
+    for col_int in df_concat[&#34;Column&#34;]:
+        virus_dilution = consts.TITRATION_COLUMN_DILUTION_MAPPING.get(col_int)
+        virus_dilutions.append(virus_dilution)
+    df_concat[&#34;Virus_dilution_factor&#34;] = virus_dilutions
+    return df_concat</code></pre>
 </details>
 </section>
 <section>
@@ -192,7 +246,7 @@ def read_indexfiles_from_directory(data_dir: str) -&gt; pd.DataFrame:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="plaque_assay.ingest.get_plate_list"><code class="name flex">
-<span>def <span class="ident">get_plate_list</span></span>(<span>data_dir: str) ‑> List</span>
+<span>def <span class="ident">get_plate_list</span></span>(<span>data_dir: str) ‑> List[~T]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get paths to plate directories</p>
@@ -278,7 +332,7 @@ DataFrame.</p>
 </details>
 </dd>
 <dt id="plaque_assay.ingest.read_data_from_list"><code class="name flex">
-<span>def <span class="ident">read_data_from_list</span></span>(<span>plate_list: List) ‑> pandas.core.frame.DataFrame</span>
+<span>def <span class="ident">read_data_from_list</span></span>(<span>plate_list: List[~T]) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Read in data from plate list and assign dilution values by well position.</p>
@@ -385,7 +439,7 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
 </details>
 </dd>
 <dt id="plaque_assay.ingest.read_indexfiles_from_list"><code class="name flex">
-<span>def <span class="ident">read_indexfiles_from_list</span></span>(<span>plate_list: List) ‑> pandas.core.frame.DataFrame</span>
+<span>def <span class="ident">read_indexfiles_from_list</span></span>(<span>plate_list: List[~T]) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Read indexfiles from a plate list</p>
@@ -431,6 +485,80 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
     return df_concat</code></pre>
 </details>
 </dd>
+<dt id="plaque_assay.ingest.read_titration_data_from_list"><code class="name flex">
+<span>def <span class="ident">read_titration_data_from_list</span></span>(<span>plate_list: List[str]) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read in titration data from a plate_list,
+assigns dilution and sample info based on well position.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>plate_list</code></strong> :&ensp;<code>list</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>pd.DataFrame</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_titration_data_from_list(plate_list: List[str]) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Read in titration data from a plate_list,
+    assigns dilution and sample info based on well position.
+
+    Parameters
+    -----------
+    plate_list: list
+
+    Returns
+    --------
+    pd.DataFrame
+    &#34;&#34;&#34;
+    dataframes = []
+    for path in plate_list:
+        df = pd.read_csv(
+            # NOTE: might not always be Evaluation1
+            os.path.join(path, &#34;Evaluation1/PlateResults.txt&#34;),
+            skiprows=8,
+            sep=&#34;\t&#34;,
+        )
+        plate_barcode = path.split(os.sep)[-1].split(&#34;__&#34;)[0]
+        logging.info(&#34;plate barcode detected as %s&#34;, plate_barcode)
+        well_labels = []
+        for row, col in df[[&#34;Row&#34;, &#34;Column&#34;]].itertuples(index=False):
+            well_labels.append(utils.row_col_to_well(row, col))
+        df[&#34;Well&#34;] = well_labels
+        df[&#34;Plate_barcode&#34;] = plate_barcode
+        # Empty wells with no background produce NaNs rather than 0 in the
+        # image analysis, which causes missing data for truely complete
+        # inhbition. So we replace NaNs with 0 in the measurement columns we
+        # use.
+        fillna_cols = [&#34;Normalised Plaque area&#34;, &#34;Normalised Plaque intensity&#34;]
+        for colname in fillna_cols:
+            df[colname] = df[colname].fillna(0)
+        dataframes.append(df)
+    df_concat = pd.concat(dataframes)
+    # remove empty wells
+    df_concat = df_concat[~df_concat[&#34;Well&#34;].isin(consts.TITRATION_EMPTY_WELLS)]
+    # sample dilutions (1-4)
+    dilution_int = [
+        utils.titration_pos_control_dilution(well) for well in df_concat[&#34;Well&#34;]
+    ]
+    # sample dilutions (40-2560)
+    sample_dilution = [consts.plate_mapping.get(i) if i else None for i in dilution_int]
+    df_concat[&#34;Dilution&#34;] = sample_dilution
+    # virus dilution factors (2-64)
+    virus_dilutions = []
+    for col_int in df_concat[&#34;Column&#34;]:
+        virus_dilution = consts.TITRATION_COLUMN_DILUTION_MAPPING.get(col_int)
+        virus_dilutions.append(virus_dilution)
+    df_concat[&#34;Virus_dilution_factor&#34;] = virus_dilutions
+    return df_concat</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -454,13 +582,14 @@ plate are re-labelled to appear from 4 different 96 well plates.</p>
 <li><code><a title="plaque_assay.ingest.read_data_from_list" href="#plaque_assay.ingest.read_data_from_list">read_data_from_list</a></code></li>
 <li><code><a title="plaque_assay.ingest.read_indexfiles_from_directory" href="#plaque_assay.ingest.read_indexfiles_from_directory">read_indexfiles_from_directory</a></code></li>
 <li><code><a title="plaque_assay.ingest.read_indexfiles_from_list" href="#plaque_assay.ingest.read_indexfiles_from_list">read_indexfiles_from_list</a></code></li>
+<li><code><a title="plaque_assay.ingest.read_titration_data_from_list" href="#plaque_assay.ingest.read_titration_data_from_list">read_titration_data_from_list</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
 </footer>
 </body>
 </html>
