@@ -53,25 +53,26 @@ TITRATION_VIRUS_ONLY_ROWS = (
     &#34;D&#34;,
     &#34;E&#34;,
     &#34;F&#34;,
-    &#34;G&#34;,
+    &#34;I&#34;,
     &#34;J&#34;,
     &#34;K&#34;,
     &#34;L&#34;,
     &#34;M&#34;,
     &#34;N&#34;,
+    &#34;O&#34;,
 )
 
 TITRATION_VIRUS_ONLY_WELLS = [
     f&#34;{row}{col:02}&#34; for row in TITRATION_VIRUS_ONLY_ROWS for col in range(1, 13)
 ]
 
-TITRATION_NO_VIRUS_ROWS = [&#34;O&#34;, &#34;P&#34;]
+TITRATION_NO_VIRUS_ROWS = [&#34;P&#34;]
 
 TITRATION_NO_VIRUS_WELLS = set(
     f&#34;{row}{col:02}&#34; for row in TITRATION_NO_VIRUS_ROWS for col in range(1, 13)
 )
 
-TITRATION_POSITIVE_CONTROL_ROWS = [&#34;H&#34;, &#34;I&#34;]
+TITRATION_POSITIVE_CONTROL_ROWS = [&#34;G&#34;, &#34;H&#34;]
 
 TITRATION_POSITIVE_CONTROL_WELLS = [
     f&#34;{row}{col:02}&#34; for row in TITRATION_POSITIVE_CONTROL_ROWS for col in range(1, 13)
