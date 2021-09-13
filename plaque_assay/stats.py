@@ -15,6 +15,11 @@ from . import utils
 Numeric = Union[int, float]
 
 
+class Intersect(NamedTuple):
+    x: Numeric
+    y: Numeric
+
+
 class ModelParams(NamedTuple):
     top: float
     bottom: float
@@ -69,6 +74,36 @@ def dr_4(
     # to a fractional power, this stops it spamming up the logs
     with np.errstate(invalid="ignore"):
         return (bottom - top) / (1 + (x / ec50) ** hill_slope)
+
+
+
+def find_intersect_on_curve(
+    x_min: Numeric, x_max: Numeric, curve: np.array, intersect: Numeric = 50
+) -> Optional[Intersect]:
+    """Find intersect of two curves.
+    Really hacky way of finding intersect of two curves,
+    used for QC purposes.
+    In this case one of the curves is just a horizontal line where y = 50.
+    Parameters
+    ----------
+    x_min : numeric
+    x_max : numeric
+    curve : array-like
+    intersect : numeric
+    Returns
+    --------
+    Intersect or None
+    """
+    x = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
+    line = np.full(x.shape, intersect)
+    idx = np.argwhere(np.diff(np.sign(line - curve))).flatten()
+    if len(idx) > 1:
+        logging.error(f"Found more than 1 intersect. len = {len(idx)}")
+        return None
+    # we have a numpy array of length 1, so just get the value
+    idx = idx[0]
+    return Intersect(x[idx], curve[idx])
+
 
 
 def find_y_intercept(
@@ -300,6 +335,14 @@ def calc_model_results(
                             result,
                         )
                         result = utils.result_to_int("weak inhibition")
+                except (IndexError, RuntimeError, ValueError) as e:
+                    logging.error("during model fitting: %s", e)
+                    result = utils.result_to_int("failed to fit model")
+                try:
+                    ok_intersect = find_intersect_on_curve(x_min, x_max, y_fitted)
+                    if not ok_intersect:
+                        model_params = None
+                        result = utils.result_to_int("failed to fit model")
                 except (IndexError, RuntimeError, ValueError) as e:
                     logging.error("during model fitting: %s", e)
                     result = utils.result_to_int("failed to fit model")
