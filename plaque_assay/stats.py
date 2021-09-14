@@ -76,7 +76,6 @@ def dr_4(
         return (bottom - top) / (1 + (x / ec50) ** hill_slope)
 
 
-
 def find_intersect_on_curve(
     x_min: Numeric, x_max: Numeric, curve: np.array, intersect: Numeric = 50
 ) -> Optional[Intersect]:
@@ -103,7 +102,6 @@ def find_intersect_on_curve(
     # we have a numpy array of length 1, so just get the value
     idx = idx[0]
     return Intersect(x[idx], curve[idx])
-
 
 
 def find_y_intercept(

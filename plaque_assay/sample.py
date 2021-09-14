@@ -246,11 +246,7 @@ class Sample:
                 intersect = stats.find_y_intercept(*self.model_params)
                 if intersect:
                     plt.plot(
-                        1.0 / intersect,
-                        50,
-                        marker="P",
-                        color="black",
-                        zorder=999,
+                        1.0 / intersect, 50, marker="P", color="black", zorder=999,
                     )
             except RuntimeError:
                 pass
