@@ -44,11 +44,6 @@ from . import utils
 Numeric = Union[int, float]
 
 
-class Intersect(NamedTuple):
-    x: Numeric
-    y: Numeric
-
-
 class ModelParams(NamedTuple):
     top: float
     bottom: float
@@ -105,36 +100,46 @@ def dr_4(
         return (bottom - top) / (1 + (x / ec50) ** hill_slope)
 
 
-def find_intersect_on_curve(
+def curve_error(
     x_min: Numeric, x_max: Numeric, curve: np.array, intersect: Numeric = 50
-) -&gt; Optional[Intersect]:
+):
     &#34;&#34;&#34;Find intersect of two curves.
-
     Really hacky way of finding intersect of two curves,
-    used for finding dilution where percentage infection is 50%.
+    used for QC purposes.
     In this case one of the curves is just a horizontal line where y = 50.
-    TODO: solve this mathematically
-
     Parameters
     ----------
     x_min : numeric
     x_max : numeric
     curve : array-like
     intersect : numeric
-
     Returns
     --------
-    Intersect or None
+    ????
     &#34;&#34;&#34;
     x = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
     line = np.full(x.shape, intersect)
     idx = np.argwhere(np.diff(np.sign(line - curve))).flatten()
-    if len(idx) &gt; 1:
-        logging.error(f&#34;Found more than 1 intersect. len = {len(idx)}&#34;)
-        return None
-    # we have a numpy array of length 1, so just get the value
-    idx = idx[0]
-    return Intersect(x[idx], curve[idx])
+    if len(idx) != 1:
+        return True
+    try:
+        _ = idx[0]
+    except (IndexError, ValueError):
+        return True
+    return False
+
+
+def find_y_intercept(
+    top: float, bottom: float, ec50: float, hillslope: float, y: float = 50.0
+) -&gt; float:
+    &#34;&#34;&#34;
+    Psuedo-IC50 value.
+
+    Used to find the dilution where percentage infection is 50%.
+    NOTE: top and bottom parameters are named incorrectly on purpose
+    to mirror the incorrectly named database columns.
+    &#34;&#34;&#34;
+    return ec50 * (((bottom - top) / (y - top)) - 1 ** (1 / hillslope))
 
 
 def non_linear_model(x: Numeric, y: Numeric, func: Callable = dr_4) -&gt; ModelParams:
@@ -345,12 +350,7 @@ def calc_model_results(
                 result = curve_heuristics
             else:
                 try:
-                    intersect = find_intersect_on_curve(x_min, x_max, y_fitted)
-                    if intersect:
-                        result = 1 / intersect.x
-                    else:
-                        model_params = None
-                        result = utils.result_to_int(&#34;failed to fit model&#34;)
+                    result = 1.0 / find_y_intercept(*model_params)
                     if result &lt; 1 / x.max():
                         logging.info(
                             &#34;%s IC50 of %s less than lowest dilution, weak inhibition&#34;,
@@ -358,8 +358,11 @@ def calc_model_results(
                             result,
                         )
                         result = utils.result_to_int(&#34;weak inhibition&#34;)
-                except (IndexError, RuntimeError) as e:
-                    logging.error(&#34;during model fitting: %s&#34;, e)
+                except (IndexError, RuntimeError, ValueError) as err:
+                    logging.error(&#34;during model fitting: %s&#34;, err)
+                    result = utils.result_to_int(&#34;failed to fit model&#34;)
+                if curve_error(x_min, x_max, y_fitted):
+                    logging.error(&#34;error caused when finding intersect at y=50&#34;)
                     result = utils.result_to_int(&#34;failed to fit model&#34;)
     logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
     return ModelResults(fit_method, result, model_params, mean_squared_error)
@@ -645,12 +648,7 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
                 result = curve_heuristics
             else:
                 try:
-                    intersect = find_intersect_on_curve(x_min, x_max, y_fitted)
-                    if intersect:
-                        result = 1 / intersect.x
-                    else:
-                        model_params = None
-                        result = utils.result_to_int(&#34;failed to fit model&#34;)
+                    result = 1.0 / find_y_intercept(*model_params)
                     if result &lt; 1 / x.max():
                         logging.info(
                             &#34;%s IC50 of %s less than lowest dilution, weak inhibition&#34;,
@@ -658,11 +656,69 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
                             result,
                         )
                         result = utils.result_to_int(&#34;weak inhibition&#34;)
-                except (IndexError, RuntimeError) as e:
-                    logging.error(&#34;during model fitting: %s&#34;, e)
+                except (IndexError, RuntimeError, ValueError) as err:
+                    logging.error(&#34;during model fitting: %s&#34;, err)
+                    result = utils.result_to_int(&#34;failed to fit model&#34;)
+                if curve_error(x_min, x_max, y_fitted):
+                    logging.error(&#34;error caused when finding intersect at y=50&#34;)
                     result = utils.result_to_int(&#34;failed to fit model&#34;)
     logging.debug(&#34;well %s fitted with method %s&#34;, name, fit_method)
     return ModelResults(fit_method, result, model_params, mean_squared_error)</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.stats.curve_error"><code class="name flex">
+<span>def <span class="ident">curve_error</span></span>(<span>x_min: Union[int, float], x_max: Union[int, float], curve: <built-in function array>, intersect: Union[int, float] = 50)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find intersect of two curves.
+Really hacky way of finding intersect of two curves,
+used for QC purposes.
+In this case one of the curves is just a horizontal line where y = 50.
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>x_min</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>x_max</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>curve</code></strong> :&ensp;<code>array-like</code></dt>
+<dd>&nbsp;</dd>
+<dt><strong><code>intersect</code></strong> :&ensp;<code>numeric</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>????</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def curve_error(
+    x_min: Numeric, x_max: Numeric, curve: np.array, intersect: Numeric = 50
+):
+    &#34;&#34;&#34;Find intersect of two curves.
+    Really hacky way of finding intersect of two curves,
+    used for QC purposes.
+    In this case one of the curves is just a horizontal line where y = 50.
+    Parameters
+    ----------
+    x_min : numeric
+    x_max : numeric
+    curve : array-like
+    intersect : numeric
+    Returns
+    --------
+    ????
+    &#34;&#34;&#34;
+    x = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
+    line = np.full(x.shape, intersect)
+    idx = np.argwhere(np.diff(np.sign(line - curve))).flatten()
+    if len(idx) != 1:
+        return True
+    try:
+        _ = idx[0]
+    except (IndexError, ValueError):
+        return True
+    return False</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.stats.dr_3"><code class="name flex">
@@ -759,65 +815,29 @@ Then calculate the value based on the intercept where the curve = threshold.</p>
         return (bottom - top) / (1 + (x / ec50) ** hill_slope)</code></pre>
 </details>
 </dd>
-<dt id="plaque_assay.stats.find_intersect_on_curve"><code class="name flex">
-<span>def <span class="ident">find_intersect_on_curve</span></span>(<span>x_min: Union[int, float], x_max: Union[int, float], curve: <built-in function array>, intersect: Union[int, float] = 50) ‑> Optional[<a title="plaque_assay.stats.Intersect" href="#plaque_assay.stats.Intersect">Intersect</a>]</span>
+<dt id="plaque_assay.stats.find_y_intercept"><code class="name flex">
+<span>def <span class="ident">find_y_intercept</span></span>(<span>top: float, bottom: float, ec50: float, hillslope: float, y: float = 50.0) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Find intersect of two curves.</p>
-<p>Really hacky way of finding intersect of two curves,
-used for finding dilution where percentage infection is 50%.
-In this case one of the curves is just a horizontal line where y = 50.
-TODO: solve this mathematically</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>x_min</code></strong> :&ensp;<code>numeric</code></dt>
-<dd>&nbsp;</dd>
-<dt><strong><code>x_max</code></strong> :&ensp;<code>numeric</code></dt>
-<dd>&nbsp;</dd>
-<dt><strong><code>curve</code></strong> :&ensp;<code>array-like</code></dt>
-<dd>&nbsp;</dd>
-<dt><strong><code>intersect</code></strong> :&ensp;<code>numeric</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code><a title="plaque_assay.stats.Intersect" href="#plaque_assay.stats.Intersect">Intersect</a></code> or <code>None</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
+<div class="desc"><p>Psuedo-IC50 value.</p>
+<p>Used to find the dilution where percentage infection is 50%.
+NOTE: top and bottom parameters are named incorrectly on purpose
+to mirror the incorrectly named database columns.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def find_intersect_on_curve(
-    x_min: Numeric, x_max: Numeric, curve: np.array, intersect: Numeric = 50
-) -&gt; Optional[Intersect]:
-    &#34;&#34;&#34;Find intersect of two curves.
-
-    Really hacky way of finding intersect of two curves,
-    used for finding dilution where percentage infection is 50%.
-    In this case one of the curves is just a horizontal line where y = 50.
-    TODO: solve this mathematically
-
-    Parameters
-    ----------
-    x_min : numeric
-    x_max : numeric
-    curve : array-like
-    intersect : numeric
-
-    Returns
-    --------
-    Intersect or None
+<pre><code class="python">def find_y_intercept(
+    top: float, bottom: float, ec50: float, hillslope: float, y: float = 50.0
+) -&gt; float:
     &#34;&#34;&#34;
-    x = np.logspace(np.log10(x_min), np.log10(x_max), 10000)
-    line = np.full(x.shape, intersect)
-    idx = np.argwhere(np.diff(np.sign(line - curve))).flatten()
-    if len(idx) &gt; 1:
-        logging.error(f&#34;Found more than 1 intersect. len = {len(idx)}&#34;)
-        return None
-    # we have a numpy array of length 1, so just get the value
-    idx = idx[0]
-    return Intersect(x[idx], curve[idx])</code></pre>
+    Psuedo-IC50 value.
+
+    Used to find the dilution where percentage infection is 50%.
+    NOTE: top and bottom parameters are named incorrectly on purpose
+    to mirror the incorrectly named database columns.
+    &#34;&#34;&#34;
+    return ec50 * (((bottom - top) / (y - top)) - 1 ** (1 / hillslope))</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.stats.hampel"><code class="name flex">
@@ -966,36 +986,6 @@ and the estimated values.</p>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="plaque_assay.stats.Intersect"><code class="flex name class">
-<span>class <span class="ident">Intersect</span></span>
-<span>(</span><span>x: Union[int, float], y: Union[int, float])</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Intersect(x, y)</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Intersect(NamedTuple):
-    x: Numeric
-    y: Numeric</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.tuple</li>
-</ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="plaque_assay.stats.Intersect.x"><code class="name">var <span class="ident">x</span> : Union[int, float]</code></dt>
-<dd>
-<div class="desc"><p>Alias for field number 0</p></div>
-</dd>
-<dt id="plaque_assay.stats.Intersect.y"><code class="name">var <span class="ident">y</span> : Union[int, float]</code></dt>
-<dd>
-<div class="desc"><p>Alias for field number 1</p></div>
-</dd>
-</dl>
-</dd>
 <dt id="plaque_assay.stats.ModelParams"><code class="flex name class">
 <span>class <span class="ident">ModelParams</span></span>
 <span>(</span><span>top: float, bottom: float, ec50: float, hill_slope: float)</span>
@@ -1095,9 +1085,10 @@ and the estimated values.</p>
 <li><code><a title="plaque_assay.stats.calc_heuristics_curve" href="#plaque_assay.stats.calc_heuristics_curve">calc_heuristics_curve</a></code></li>
 <li><code><a title="plaque_assay.stats.calc_heuristics_dilutions" href="#plaque_assay.stats.calc_heuristics_dilutions">calc_heuristics_dilutions</a></code></li>
 <li><code><a title="plaque_assay.stats.calc_model_results" href="#plaque_assay.stats.calc_model_results">calc_model_results</a></code></li>
+<li><code><a title="plaque_assay.stats.curve_error" href="#plaque_assay.stats.curve_error">curve_error</a></code></li>
 <li><code><a title="plaque_assay.stats.dr_3" href="#plaque_assay.stats.dr_3">dr_3</a></code></li>
 <li><code><a title="plaque_assay.stats.dr_4" href="#plaque_assay.stats.dr_4">dr_4</a></code></li>
-<li><code><a title="plaque_assay.stats.find_intersect_on_curve" href="#plaque_assay.stats.find_intersect_on_curve">find_intersect_on_curve</a></code></li>
+<li><code><a title="plaque_assay.stats.find_y_intercept" href="#plaque_assay.stats.find_y_intercept">find_y_intercept</a></code></li>
 <li><code><a title="plaque_assay.stats.hampel" href="#plaque_assay.stats.hampel">hampel</a></code></li>
 <li><code><a title="plaque_assay.stats.model_mse" href="#plaque_assay.stats.model_mse">model_mse</a></code></li>
 <li><code><a title="plaque_assay.stats.non_linear_model" href="#plaque_assay.stats.non_linear_model">non_linear_model</a></code></li>
@@ -1105,13 +1096,6 @@ and the estimated values.</p>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="plaque_assay.stats.Intersect" href="#plaque_assay.stats.Intersect">Intersect</a></code></h4>
-<ul class="">
-<li><code><a title="plaque_assay.stats.Intersect.x" href="#plaque_assay.stats.Intersect.x">x</a></code></li>
-<li><code><a title="plaque_assay.stats.Intersect.y" href="#plaque_assay.stats.Intersect.y">y</a></code></li>
-</ul>
-</li>
 <li>
 <h4><code><a title="plaque_assay.stats.ModelParams" href="#plaque_assay.stats.ModelParams">ModelParams</a></code></h4>
 <ul class="">
