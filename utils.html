@@ -329,6 +329,26 @@ def get_variant_from_plate_list(
     return return_val.mutant_strain
 
 
+def get_workflow_id_from_plate_list(plate_list: List[str]) -&gt; int:
+    &#34;&#34;&#34;
+    Fetch workflow_id from the plate list
+
+    Parameters
+    ----------
+    plate_list: list
+        list o 2 full-length paths to plate directories
+
+    Returns
+    -------
+    int
+        workflow_id
+    &#34;&#34;&#34;
+    assert len(plate_list) == 2, &#34;expected plate_list to have 2 paths&#34;
+    prefixes = [get_prefix_from_full_path(i) for i in plate_list]
+    assert len(set(prefixes)) == 1, &#34;expecting identical workflow_ids&#34;
+    return int(prefixes[0])
+
+
 def titration_pos_control_dilution(well) -&gt; Optional[int]:
     &#34;&#34;&#34;
     Get dilution number from well label.
@@ -547,6 +567,45 @@ in the LIMS serology database</dd>
             f&#34;LIMS database: {prefixes}&#34;,
         )
     return return_val.mutant_strain</code></pre>
+</details>
+</dd>
+<dt id="plaque_assay.utils.get_workflow_id_from_plate_list"><code class="name flex">
+<span>def <span class="ident">get_workflow_id_from_plate_list</span></span>(<span>plate_list: List[str]) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch workflow_id from the plate list</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>plate_list</code></strong> :&ensp;<code>list</code></dt>
+<dd>list o 2 full-length paths to plate directories</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>workflow_id</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_workflow_id_from_plate_list(plate_list: List[str]) -&gt; int:
+    &#34;&#34;&#34;
+    Fetch workflow_id from the plate list
+
+    Parameters
+    ----------
+    plate_list: list
+        list o 2 full-length paths to plate directories
+
+    Returns
+    -------
+    int
+        workflow_id
+    &#34;&#34;&#34;
+    assert len(plate_list) == 2, &#34;expected plate_list to have 2 paths&#34;
+    prefixes = [get_prefix_from_full_path(i) for i in plate_list]
+    assert len(set(prefixes)) == 1, &#34;expecting identical workflow_ids&#34;
+    return int(prefixes[0])</code></pre>
 </details>
 </dd>
 <dt id="plaque_assay.utils.int_to_result"><code class="name flex">
@@ -985,6 +1044,7 @@ original 96-well plate.</p>
 <li><code><a title="plaque_assay.utils.get_dilution_from_384_well_label" href="#plaque_assay.utils.get_dilution_from_384_well_label">get_dilution_from_384_well_label</a></code></li>
 <li><code><a title="plaque_assay.utils.get_prefix_from_full_path" href="#plaque_assay.utils.get_prefix_from_full_path">get_prefix_from_full_path</a></code></li>
 <li><code><a title="plaque_assay.utils.get_variant_from_plate_list" href="#plaque_assay.utils.get_variant_from_plate_list">get_variant_from_plate_list</a></code></li>
+<li><code><a title="plaque_assay.utils.get_workflow_id_from_plate_list" href="#plaque_assay.utils.get_workflow_id_from_plate_list">get_workflow_id_from_plate_list</a></code></li>
 <li><code><a title="plaque_assay.utils.int_to_result" href="#plaque_assay.utils.int_to_result">int_to_result</a></code></li>
 <li><code><a title="plaque_assay.utils.is_even" href="#plaque_assay.utils.is_even">is_even</a></code></li>
 <li><code><a title="plaque_assay.utils.is_odd" href="#plaque_assay.utils.is_odd">is_odd</a></code></li>

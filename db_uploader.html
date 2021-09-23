@@ -48,6 +48,22 @@ class DatabaseUploader:
     def __init__(self, session):
         self.session = session
 
+    @staticmethod
+    def fix_for_mysql(df: pd.DataFrame) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Replace NaN and inf values with None, as these cannot be used
+        with MySQL and None values are converted to null
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+
+        Returns
+        --------
+        pd.DataFrame
+        &#34;&#34;&#34;
+        return df.replace({np.inf: None, -np.inf: None}).replace({np.nan: None})
+
     def commit(self) -&gt; None:
         &#34;&#34;&#34;commit data to LIMS serology database&#34;&#34;&#34;
         self.session.commit()
@@ -195,8 +211,7 @@ class DatabaseUploader:
         plate_results_dataset[&#34;well&#34;] = utils.unpad_well_col(
             plate_results_dataset[&#34;well&#34;]
         )
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        plate_results_dataset = plate_results_dataset.replace({np.nan: None})
+        plate_results_dataset = self.fix_for_mysql(plate_results_dataset)
         self.session.bulk_insert_mappings(
             db_models.NE_raw_results, plate_results_dataset.to_dict(orient=&#34;records&#34;)
         )
@@ -243,8 +258,7 @@ class DatabaseUploader:
         # get workflow ID
         workflow_id = [int(i[3:]) for i in indexfiles_dataset[&#34;plate_barcode&#34;]]
         indexfiles_dataset[&#34;workflow_id&#34;] = workflow_id
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        indexfiles_dataset = indexfiles_dataset.replace({np.nan: None})
+        indexfiles_dataset = self.fix_for_mysql(indexfiles_dataset)
         for i in range(0, len(indexfiles_dataset), 1000):
             df_slice = indexfiles_dataset.iloc[i : i + 1000]
             self.session.bulk_insert_mappings(
@@ -283,8 +297,7 @@ class DatabaseUploader:
         assert len(set(workflow_id)) == 1
         norm_results[&#34;workflow_id&#34;] = workflow_id
         norm_results[&#34;well&#34;] = utils.unpad_well_col(norm_results[&#34;well&#34;])
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        norm_results = norm_results.replace({np.nan: None})
+        norm_results = self.fix_for_mysql(norm_results)
         self.session.bulk_insert_mappings(
             db_models.NE_normalized_results, norm_results.to_dict(orient=&#34;records&#34;)
         )
@@ -309,9 +322,8 @@ class DatabaseUploader:
         assert results[&#34;experiment&#34;].nunique() == 1
         assert results[&#34;variant&#34;].nunique() == 1
         results[&#34;workflow_id&#34;] = results[&#34;experiment&#34;].astype(int)
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        results = results.replace({np.nan: None})
         results[&#34;well&#34;] = utils.unpad_well_col(results[&#34;well&#34;])
+        results = self.fix_for_mysql(results)
         self.session.bulk_insert_mappings(
             db_models.NE_final_results, results.to_dict(orient=&#34;records&#34;)
         )
@@ -348,8 +360,7 @@ class DatabaseUploader:
         &#34;&#34;&#34;
         model_parameters = model_parameters.copy()
         model_parameters.rename(columns={&#34;experiment&#34;: &#34;workflow_id&#34;}, inplace=True)
-        # can&#39;t store NaNs
-        model_parameters = model_parameters.replace({np.nan: None})
+        model_parameters = self.fix_for_mysql(model_parameters)
         model_parameters[&#34;well&#34;] = utils.unpad_well_col(model_parameters[&#34;well&#34;])
         self.session.bulk_insert_mappings(
             db_models.NE_model_parameters, model_parameters.to_dict(orient=&#34;records&#34;)
@@ -418,7 +429,7 @@ class DatabaseUploader:
             Uploads results to the LIMS database.
         &#34;&#34;&#34;
         # can&#39;t store NaNs
-        titration_results = titration_results.replace({np.nan: None})
+        titration_results = self.fix_for_mysql(titration_results)
         self.session.bulk_insert_mappings(
             db_models.NE_virus_titration_results,
             titration_results.to_dict(orient=&#34;records&#34;),
@@ -485,6 +496,22 @@ class DatabaseUploader:
     def __init__(self, session):
         self.session = session
 
+    @staticmethod
+    def fix_for_mysql(df: pd.DataFrame) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Replace NaN and inf values with None, as these cannot be used
+        with MySQL and None values are converted to null
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+
+        Returns
+        --------
+        pd.DataFrame
+        &#34;&#34;&#34;
+        return df.replace({np.inf: None, -np.inf: None}).replace({np.nan: None})
+
     def commit(self) -&gt; None:
         &#34;&#34;&#34;commit data to LIMS serology database&#34;&#34;&#34;
         self.session.commit()
@@ -632,8 +659,7 @@ class DatabaseUploader:
         plate_results_dataset[&#34;well&#34;] = utils.unpad_well_col(
             plate_results_dataset[&#34;well&#34;]
         )
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        plate_results_dataset = plate_results_dataset.replace({np.nan: None})
+        plate_results_dataset = self.fix_for_mysql(plate_results_dataset)
         self.session.bulk_insert_mappings(
             db_models.NE_raw_results, plate_results_dataset.to_dict(orient=&#34;records&#34;)
         )
@@ -680,8 +706,7 @@ class DatabaseUploader:
         # get workflow ID
         workflow_id = [int(i[3:]) for i in indexfiles_dataset[&#34;plate_barcode&#34;]]
         indexfiles_dataset[&#34;workflow_id&#34;] = workflow_id
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        indexfiles_dataset = indexfiles_dataset.replace({np.nan: None})
+        indexfiles_dataset = self.fix_for_mysql(indexfiles_dataset)
         for i in range(0, len(indexfiles_dataset), 1000):
             df_slice = indexfiles_dataset.iloc[i : i + 1000]
             self.session.bulk_insert_mappings(
@@ -720,8 +745,7 @@ class DatabaseUploader:
         assert len(set(workflow_id)) == 1
         norm_results[&#34;workflow_id&#34;] = workflow_id
         norm_results[&#34;well&#34;] = utils.unpad_well_col(norm_results[&#34;well&#34;])
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        norm_results = norm_results.replace({np.nan: None})
+        norm_results = self.fix_for_mysql(norm_results)
         self.session.bulk_insert_mappings(
             db_models.NE_normalized_results, norm_results.to_dict(orient=&#34;records&#34;)
         )
@@ -746,9 +770,8 @@ class DatabaseUploader:
         assert results[&#34;experiment&#34;].nunique() == 1
         assert results[&#34;variant&#34;].nunique() == 1
         results[&#34;workflow_id&#34;] = results[&#34;experiment&#34;].astype(int)
-        # can&#39;t store NaN in mysql, to convert to None which are stored as null
-        results = results.replace({np.nan: None})
         results[&#34;well&#34;] = utils.unpad_well_col(results[&#34;well&#34;])
+        results = self.fix_for_mysql(results)
         self.session.bulk_insert_mappings(
             db_models.NE_final_results, results.to_dict(orient=&#34;records&#34;)
         )
@@ -785,8 +808,7 @@ class DatabaseUploader:
         &#34;&#34;&#34;
         model_parameters = model_parameters.copy()
         model_parameters.rename(columns={&#34;experiment&#34;: &#34;workflow_id&#34;}, inplace=True)
-        # can&#39;t store NaNs
-        model_parameters = model_parameters.replace({np.nan: None})
+        model_parameters = self.fix_for_mysql(model_parameters)
         model_parameters[&#34;well&#34;] = utils.unpad_well_col(model_parameters[&#34;well&#34;])
         self.session.bulk_insert_mappings(
             db_models.NE_model_parameters, model_parameters.to_dict(orient=&#34;records&#34;)
@@ -855,7 +877,7 @@ class DatabaseUploader:
             Uploads results to the LIMS database.
         &#34;&#34;&#34;
         # can&#39;t store NaNs
-        titration_results = titration_results.replace({np.nan: None})
+        titration_results = self.fix_for_mysql(titration_results)
         self.session.bulk_insert_mappings(
             db_models.NE_virus_titration_results,
             titration_results.to_dict(orient=&#34;records&#34;),
@@ -886,6 +908,46 @@ class DatabaseUploader:
             )
         # fmt: on</code></pre>
 </details>
+<h3>Static methods</h3>
+<dl>
+<dt id="plaque_assay.db_uploader.DatabaseUploader.fix_for_mysql"><code class="name flex">
+<span>def <span class="ident">fix_for_mysql</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Replace NaN and inf values with None, as these cannot be used
+with MySQL and None values are converted to null</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>pd.DataFrame</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def fix_for_mysql(df: pd.DataFrame) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Replace NaN and inf values with None, as these cannot be used
+    with MySQL and None values are converted to null
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+
+    Returns
+    --------
+    pd.DataFrame
+    &#34;&#34;&#34;
+    return df.replace({np.inf: None, -np.inf: None}).replace({np.nan: None})</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="plaque_assay.db_uploader.DatabaseUploader.already_uploaded"><code class="name flex">
@@ -1232,9 +1294,8 @@ by <code><a title="plaque_assay.db_uploader.DatabaseUploader.is_final_upload" hr
     assert results[&#34;experiment&#34;].nunique() == 1
     assert results[&#34;variant&#34;].nunique() == 1
     results[&#34;workflow_id&#34;] = results[&#34;experiment&#34;].astype(int)
-    # can&#39;t store NaN in mysql, to convert to None which are stored as null
-    results = results.replace({np.nan: None})
     results[&#34;well&#34;] = utils.unpad_well_col(results[&#34;well&#34;])
+    results = self.fix_for_mysql(results)
     self.session.bulk_insert_mappings(
         db_models.NE_final_results, results.to_dict(orient=&#34;records&#34;)
     )</code></pre>
@@ -1305,8 +1366,7 @@ column is added.</p>
     # get workflow ID
     workflow_id = [int(i[3:]) for i in indexfiles_dataset[&#34;plate_barcode&#34;]]
     indexfiles_dataset[&#34;workflow_id&#34;] = workflow_id
-    # can&#39;t store NaN in mysql, to convert to None which are stored as null
-    indexfiles_dataset = indexfiles_dataset.replace({np.nan: None})
+    indexfiles_dataset = self.fix_for_mysql(indexfiles_dataset)
     for i in range(0, len(indexfiles_dataset), 1000):
         df_slice = indexfiles_dataset.iloc[i : i + 1000]
         self.session.bulk_insert_mappings(
@@ -1346,8 +1406,7 @@ column is added.</p>
     &#34;&#34;&#34;
     model_parameters = model_parameters.copy()
     model_parameters.rename(columns={&#34;experiment&#34;: &#34;workflow_id&#34;}, inplace=True)
-    # can&#39;t store NaNs
-    model_parameters = model_parameters.replace({np.nan: None})
+    model_parameters = self.fix_for_mysql(model_parameters)
     model_parameters[&#34;well&#34;] = utils.unpad_well_col(model_parameters[&#34;well&#34;])
     self.session.bulk_insert_mappings(
         db_models.NE_model_parameters, model_parameters.to_dict(orient=&#34;records&#34;)
@@ -1408,8 +1467,7 @@ metadata, into the LIMS serology database.</p>
     assert len(set(workflow_id)) == 1
     norm_results[&#34;workflow_id&#34;] = workflow_id
     norm_results[&#34;well&#34;] = utils.unpad_well_col(norm_results[&#34;well&#34;])
-    # can&#39;t store NaN in mysql, to convert to None which are stored as null
-    norm_results = norm_results.replace({np.nan: None})
+    norm_results = self.fix_for_mysql(norm_results)
     self.session.bulk_insert_mappings(
         db_models.NE_normalized_results, norm_results.to_dict(orient=&#34;records&#34;)
     )</code></pre>
@@ -1482,8 +1540,7 @@ renamed, some columns moved, some metadata columns added.</p>
     plate_results_dataset[&#34;well&#34;] = utils.unpad_well_col(
         plate_results_dataset[&#34;well&#34;]
     )
-    # can&#39;t store NaN in mysql, to convert to None which are stored as null
-    plate_results_dataset = plate_results_dataset.replace({np.nan: None})
+    plate_results_dataset = self.fix_for_mysql(plate_results_dataset)
     self.session.bulk_insert_mappings(
         db_models.NE_raw_results, plate_results_dataset.to_dict(orient=&#34;records&#34;)
     )</code></pre>
@@ -1562,7 +1619,7 @@ reporter decision (pass, fail).</p>
         Uploads results to the LIMS database.
     &#34;&#34;&#34;
     # can&#39;t store NaNs
-    titration_results = titration_results.replace({np.nan: None})
+    titration_results = self.fix_for_mysql(titration_results)
     self.session.bulk_insert_mappings(
         db_models.NE_virus_titration_results,
         titration_results.to_dict(orient=&#34;records&#34;),
@@ -1592,6 +1649,7 @@ reporter decision (pass, fail).</p>
 <ul class="">
 <li><code><a title="plaque_assay.db_uploader.DatabaseUploader.already_uploaded" href="#plaque_assay.db_uploader.DatabaseUploader.already_uploaded">already_uploaded</a></code></li>
 <li><code><a title="plaque_assay.db_uploader.DatabaseUploader.commit" href="#plaque_assay.db_uploader.DatabaseUploader.commit">commit</a></code></li>
+<li><code><a title="plaque_assay.db_uploader.DatabaseUploader.fix_for_mysql" href="#plaque_assay.db_uploader.DatabaseUploader.fix_for_mysql">fix_for_mysql</a></code></li>
 <li><code><a title="plaque_assay.db_uploader.DatabaseUploader.is_final_upload" href="#plaque_assay.db_uploader.DatabaseUploader.is_final_upload">is_final_upload</a></code></li>
 <li><code><a title="plaque_assay.db_uploader.DatabaseUploader.update_titration_workflow_tracking" href="#plaque_assay.db_uploader.DatabaseUploader.update_titration_workflow_tracking">update_titration_workflow_tracking</a></code></li>
 <li><code><a title="plaque_assay.db_uploader.DatabaseUploader.update_workflow_tracking" href="#plaque_assay.db_uploader.DatabaseUploader.update_workflow_tracking">update_workflow_tracking</a></code></li>
