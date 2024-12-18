@@ -24,7 +24,7 @@ class Titration:
     def __init__(self, titration_dataset: pd.DataFrame, variant: str):
         self.dataset = titration_dataset
         self.variant = variant
-        self.workflow_id = self.dataset["Plate_barcode"].values[0][3:]
+        self.workflow_id = self.dataset["Plate_barcode"].values[0][-6:]
         dilution_store = dict()
         for dilution, df in titration_dataset.groupby("Virus_dilution_factor"):
             dilution_store[dilution] = TitrationDilution(df)

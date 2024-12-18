@@ -270,7 +270,8 @@ def calc_heuristics_curve(
     """
     result = None
     # look for sharp changes in the curve shape indicating a bad fit
-    outliers = hampel(y, 5)
+    # outliers = hampel(y, 5)
+    outliers = None
     if outliers:
         result = "failed to fit model"
         logging.warning("well %s model failed due to hampel outliers on curve", name)

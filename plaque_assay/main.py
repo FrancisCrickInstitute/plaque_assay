@@ -47,9 +47,10 @@ def create_engine(test: bool = True) -> sqlalchemy.engine.base.Engine:
             "db credentials not found in environent.",
             "Need to set NE_USER, NE_HOST_{TEST,PROD}, NE_PASSWORD",
         )
-    engine = sqlalchemy.create_engine(
-        f"mysql+mysqldb://{user}:{password}@{host}/serology"
-    )
+    # engine = sqlalchemy.create_engine(
+    #     f"mysql+mysqldb://{user}:{password}@{host}/serology"
+    # )
+    engine = sqlalchemy.create_engine(f'mysql+pymysql://{user}:{password}@{host}/serology')
     return engine
 
 

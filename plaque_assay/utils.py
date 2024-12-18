@@ -6,6 +6,7 @@ from typing import List, Union
 import pandas as pd
 import sqlalchemy
 import sqlalchemy.orm
+from sqlalchemy import or_, and_
 
 from plaque_assay.db_models import NE_available_strains
 from plaque_assay.errors import VariantLookupError
@@ -220,7 +221,7 @@ def mock_384_barcode(
     for well, barcode in zip(wells, existing_barcodes):
         dilution_int = get_dilution_from_384_well_label(well)
         replicate_int = barcode[2]
-        workflow_id = barcode[3:]
+        workflow_id = barcode[-6:]
         new_barcode = f"A{dilution_int}{replicate_int}{workflow_id}"
         new_barcodes.append(new_barcode)
     return new_barcodes
@@ -243,9 +244,9 @@ def get_prefix_from_full_path(full_path: str) -> str:
         prefix name
     """
     basename = os.path.basename(full_path)
-    barcode = basename.split("__")[0]
-    prefix = barcode[:3]
-    return prefix
+    plate_name = basename.split("__")[0]
+    plate_prefix = plate_name[:-6]
+    return plate_prefix
 
 
 def get_variant_from_plate_list(
@@ -282,19 +283,31 @@ def get_variant_from_plate_list(
         # titration plates start with T rather than S
         # swap T for S at beginning i.e "T01" -> "S01"
         # so they match those in NE_available_strains
-        prefixes = [i.replace("T", "S") for i in prefixes]
-    else:
-        prefixes = ["S" + prefix[1:] for prefix in prefixes]
+        prefixes = [i.replace("T", "S", 1) if i.startswith("T") else i for i in prefixes]
+    
+    # Check prefix legnth, if 3 remove S prefix, otherwise keep it
+    # for i in range(len(prefixes)):
+    #     if len(prefixes[i]) == 3:
+    #         prefixes[i] = prefixes[i][1:]
+
     prefix_1, prefix_2 = sorted(prefixes)
     # query table to return variant name (mutant_strain) for entry matching
     # both the plate barcode prefixes
     return_val = (
         session.query(NE_available_strains.mutant_strain)
         .filter(
-            NE_available_strains.plate_id_1 == prefix_1,
-            NE_available_strains.plate_id_2 == prefix_2,
+            or_(
+                and_(
+                    NE_available_strains.plate_id_1 == prefix_1,
+                    NE_available_strains.plate_id_2 == prefix_2,
+                ),
+                and_(
+                    NE_available_strains.deprecated_plate_id_1 == prefix_1,
+                    NE_available_strains.deprecated_plate_id_2 == prefix_2,
+                )
+            )
         )
-        .first()
+    .first()
     )
     if return_val is None or len(return_val) != 1:
         # try without sample prefix if variant is found.
@@ -313,7 +326,7 @@ def get_variant_from_plate_list(
         if return_val is None or len(return_val) != 1:
             raise VariantLookupError(
                 "plate barcode prefixes do not match any known variants in the ",
-                f"LIMS database: {prefixes}",
+                f"LIMS database: {prefixes} - {plate_list}",
             )
     return return_val.mutant_strain
 

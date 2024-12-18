@@ -35,7 +35,7 @@ class Experiment:
 
     def __init__(self, df: pd.DataFrame):
         self.df = df
-        self.experiment_name = df["Plate_barcode"].values[0][3:]
+        self.experiment_name = df["Plate_barcode"].values[0][-6:]
         self.variant = df["variant"].values[0]
         self.plate_store = {name: Plate(df) for name, df in df.groupby("Plate_barcode")}
         self.df = pd.concat([plate.df for plate in self.plate_store.values()])

@@ -175,7 +175,7 @@ class AnalysisDatabaseUploader(BaseDatabaseUploader):
         plate_results_dataset.rename(columns=rename_dict, inplace=True)
         # filter to only desired columns
         plate_results_dataset = plate_results_dataset[list(rename_dict.values())]
-        workflow_id = [int(i[3:]) for i in plate_results_dataset["plate_barcode"]]
+        workflow_id = [int(i[-6:]) for i in plate_results_dataset["plate_barcode"]]
         plate_results_dataset["workflow_id"] = workflow_id
         plate_results_dataset["well"] = utils.unpad_well_col(
             plate_results_dataset["well"]
@@ -225,14 +225,14 @@ class AnalysisDatabaseUploader(BaseDatabaseUploader):
         # filter to only desired columns
         indexfiles_dataset = indexfiles_dataset[list(rename_dict.values())]
         # get workflow ID
-        workflow_id = [int(i[3:]) for i in indexfiles_dataset["plate_barcode"]]
+        workflow_id = [int(i[-6:]) for i in indexfiles_dataset["plate_barcode"]]
         indexfiles_dataset["workflow_id"] = workflow_id
         indexfiles_dataset = self.fix_for_mysql(indexfiles_dataset)
-        for i in range(0, len(indexfiles_dataset), 1000):
-            df_slice = indexfiles_dataset.iloc[i : i + 1000]
-            self.session.bulk_insert_mappings(
-                db_models.NE_raw_index, df_slice.to_dict(orient="records")
-            )
+        # for i in range(0, len(indexfiles_dataset), 1000):
+        #     df_slice = indexfiles_dataset.iloc[i : i + 1000]
+        #     self.session.bulk_insert_mappings(
+        #         db_models.NE_raw_index, df_slice.to_dict(orient="records")
+        #     )
 
     def upload_normalised_results(self, norm_results: pd.DataFrame) -> None:
         """Upload normalised results into the database.
@@ -262,14 +262,14 @@ class AnalysisDatabaseUploader(BaseDatabaseUploader):
         }
         norm_results.rename(columns=rename_dict, inplace=True)
         norm_results = norm_results[list(rename_dict.values())]
-        workflow_id = [int(i[3:]) for i in norm_results["plate_barcode"]]
+        workflow_id = [int(i[-6:]) for i in norm_results["plate_barcode"]]
         assert len(set(workflow_id)) == 1
         norm_results["workflow_id"] = workflow_id
         norm_results["well"] = utils.unpad_well_col(norm_results["well"])
         norm_results = self.fix_for_mysql(norm_results)
-        self.session.bulk_insert_mappings(
-            db_models.NE_normalized_results, norm_results.to_dict(orient="records")
-        )
+        # self.session.bulk_insert_mappings(
+        #     db_models.NE_normalized_results, norm_results.to_dict(orient="records")
+        # )
 
     def upload_final_results(self, results: pd.DataFrame) -> None:
         """Upload final results to database
